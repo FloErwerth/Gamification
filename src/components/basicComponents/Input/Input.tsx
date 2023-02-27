@@ -53,7 +53,7 @@ export const Input = ({
    const inputRef = useRef<HTMLInputElement>(null);
 
 
-   return <>
+   return <div>
       {label && <label className={cssClasses.label} htmlFor={id}>{label}</label>}
       <div className={cssClasses.wrapper} onClick={() => inputRef.current?.focus()}>
          <div className={wrapperClasses}>
@@ -66,5 +66,5 @@ export const Input = ({
              <div
                  className={cssClasses.errorMessage}>{(validationResult && validationResult.error.errors.map((error) => error.message).join("\n")) ?? getErrorText(type)}</div>}
       </div>
-   </>
+   </div>
 }

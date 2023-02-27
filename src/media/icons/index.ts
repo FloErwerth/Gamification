@@ -5,5 +5,7 @@ import {ReactComponent as EyeClosed} from "./eyeClosed.svg";
 import {ReactComponent as EyeOpened} from "./eyeOpened.svg";
 import {ReactComponent as Controller} from "./controller.svg";
 import {ReactComponent as Star} from "./star_yellow.svg";
+import {ReactComponent as Arrow} from "./arrow.svg";
+import {ReactComponent as ArrowFilled} from "./arrow_filled.svg";
 
-export {Close, CloseCircle, EyeClosed, EyeOpened, LoginIcon, Controller, Star}
+export {Arrow, ArrowFilled, Close, CloseCircle, Controller, EyeClosed, EyeOpened, LoginIcon, Star}

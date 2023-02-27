@@ -5,11 +5,13 @@ export const getMaxValueFromLevelAndActivity = (level: number, activity: Activit
       case "Hours":
          return level;
       case "Days":
-         return level * 0.25;
+         return level;
       case "Minutes":
-         return level * 20;
+         return level * 5;
       case "Pages":
-         return level * 20;
+         return level * 5;
+      case "Times":
+         return level;
       default:
          return 0;
    }

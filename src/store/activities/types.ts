@@ -5,6 +5,6 @@ export const ACTIVITY_TYPE = z.enum([
    "Hours",
    "Days",
    "Pages",
-   "ACTIVITY",
+   "Times",
    "UNDEFINED"]);
 export type ActivityType = z.infer<typeof ACTIVITY_TYPE>;

@@ -2,6 +2,7 @@ import {style} from "../../../utils/styleUtils";
 
 export const modalStyle = style({
    modal: {
+      minWidth: 400,
       border: "none",
       position: "relative",
       borderRadius: 10,

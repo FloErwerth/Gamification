@@ -5,7 +5,6 @@ import {getClasses} from "../../utils/styleUtils";
 import {activityAdderClasses} from "./styles";
 import {Input} from "../basicComponents/Input/Input";
 import {Dropdown} from "../basicComponents/Dropdown/Dropdown";
-import {enumToObjectMapper} from "../../utils/enumToObjectMapper";
 import {useAppDispatch} from "../../store/store";
 import {addActivity} from "../../store/activities/acitivityActions";
 import {ACTIVITY_TYPE, ActivityType} from "../../store/activities/types";
@@ -21,19 +20,22 @@ const AddActivityModalContent = ({onCreation}: ActivityAdderModalContentProps) =
    const [activityType, setActivityType] = useState<ActivityType>("UNDEFINED");
    const dispatch = useAppDispatch();
 
-
    const handleCreation = useCallback(() => {
-      if (activityType !== "UNDEFINED" && activityType) {
+      if (activityType !== "UNDEFINED" && activityType && activityName) {
          onCreation();
          dispatch(addActivity({name: activityName, type: activityType}))
       }
-   }, [activityType]);
+   }, [activityType, activityName]);
 
-   return <div className={cssClasses.modalWrapper}><h3>Add an activity</h3>
-      <Input id={"activity_name"} placeholder={"Choose activity name"} onChange={value => setActivityName(value)}
+   return <div className={cssClasses.modalWrapper}>
+      <div>Add an activity</div>
+      <Input id={"activity_name"} customWrapperClasses={cssClasses.input} label={"Activity Name"}
+             onChange={value => setActivityName(value)}
              value={activityName}/>
-      <Dropdown options={enumToObjectMapper(ACTIVITY_TYPE.Enum)} label={"Activity Type"}
-                setValue={(value) => setActivityType(ACTIVITY_TYPE.parse(value))}/>
+      <Dropdown
+         options={ACTIVITY_TYPE.options.filter((option) => option !== "UNDEFINED")}
+         label={"Activity Type"}
+         setValue={(value) => setActivityType(ACTIVITY_TYPE.parse(value))}/>
       <Button onClick={handleCreation}>Create Activity</Button>
    </div>
 }

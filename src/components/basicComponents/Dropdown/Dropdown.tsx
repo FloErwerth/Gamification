@@ -1,4 +1,8 @@
-import {useCallback, useState} from "react";
+import {useCallback, useMemo, useState} from "react";
+import {getClasses} from "../../../utils/styleUtils";
+import {styles} from "./styles";
+import {useToggle} from "../../../utils/useToggle";
+import {ArrowFilled} from "../../../media/icons";
 
 interface Dropdown {
    options: string[];
@@ -6,21 +10,25 @@ interface Dropdown {
    setValue: (value: string) => void;
 }
 
+
 export const Dropdown = ({options, label, setValue}: Dropdown) => {
-   const [showDropdown, setShowDropdown] = useState(false);
+
+   const {value: showDropdown, toggleValue: toggleDropdown} = useToggle(false);
    const [chosenOption, setChosenOption] = useState("");
+   const cssClasses = useMemo(() => getClasses(styles(showDropdown, !!chosenOption)), [showDropdown]);
 
    const handleOptionSelection = useCallback((value: string) => {
       setValue(value);
       setChosenOption(value);
-      setShowDropdown(false);
+      toggleDropdown(false);
    }, [setValue]);
 
-   return <>
-      <button onClick={() => setShowDropdown(true)}>{label}</button>
-      <div>{chosenOption}</div>
-      {showDropdown && <ul id={"dropdown"}>{options.map((option) => <li>
-         <button onClick={() => handleOptionSelection(option)}>{option}</button>
+   return <div className={cssClasses.dropdownWrapper}>
+      <button className={cssClasses.toggle}
+              onClick={() => toggleDropdown()}>{!chosenOption ? label : chosenOption}<ArrowFilled
+         className={cssClasses.icon}/></button>
+      {showDropdown && <ul className={cssClasses.dropdownList} id={"dropdown"}>{options.map((option) => <li>
+         <button className={cssClasses.dropdownItem} onClick={() => handleOptionSelection(option)}>{option}</button>
       </li>)}</ul>}
-   </>
+   </div>
 }
