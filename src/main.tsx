@@ -22,8 +22,8 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
    <React.StrictMode>
       <Provider store={store}>
          <BrowserRouter>
-            <Header/>
             <Body>
+               <Header/>
                <Routes>
                   <Route element={<LandingPage/>} path={Pages.HOME}/>
                   <Route element={<LoginPage/>} path={Pages.LOGIN}/>

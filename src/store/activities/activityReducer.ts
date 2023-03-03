@@ -2,7 +2,6 @@ import {Reducer} from "@reduxjs/toolkit";
 import {GamificationActionTypes, GamificationModel} from "../types";
 import {InitialGamificiationState} from "../store";
 import {ActivityActions} from "./acitivityActions";
-import {getMaxValueFromLevelAndActivity} from "./util";
 
 export const activityReducer: Reducer<GamificationModel, ActivityActions> = (state = {activities: InitialGamificiationState.activities}, action) => {
    let newState: GamificationModel = state;
@@ -11,8 +10,7 @@ export const activityReducer: Reducer<GamificationModel, ActivityActions> = (sta
          newState = {
             activities: [...state.activities, {
                currentValue: 0,
-               level: 1,
-               maxValue: getMaxValueFromLevelAndActivity(1, action.payload.type), ...action.payload
+               level: 1, ...action.payload
             }]
          }
    }

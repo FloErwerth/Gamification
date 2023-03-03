@@ -6,8 +6,9 @@ export const headerStyle = style({
       display: "flex",
       justifyContent: "space-between",
       alignItems: "center",
-      backgroundColor: "rgb(220,220,220)",
-      paddingInline: "10%",
+      marginBottom: 50,
+      backgroundColor: "lightgray",
+      paddingInline: 10,
       "@media (max-width: 768px)": {
          paddingInline: 50,
       }

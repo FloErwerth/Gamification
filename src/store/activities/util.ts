@@ -1,18 +1,18 @@
 import {ActivityType} from "./types";
 
-export const getMaxValueFromLevelAndActivity = (level: number, activity: ActivityType): number => {
+export const getInitialMaxValue = (activity: ActivityType): number => {
    switch (activity) {
       case "Hours":
-         return level;
+         return 1;
       case "Days":
-         return level;
+         return 1;
       case "Minutes":
-         return level * 5;
+         return 1;
       case "Pages":
-         return level * 5;
+         return 1;
       case "Times":
-         return level;
+         return 1;
       default:
-         return 0;
+         return 1;
    }
 }

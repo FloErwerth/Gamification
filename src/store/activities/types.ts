@@ -7,4 +7,8 @@ export const ACTIVITY_TYPE = z.enum([
    "Pages",
    "Times",
    "UNDEFINED"]);
+export const ACTIVITY_INCREASE_TYPES = z.enum([
+   "Linear", "Exponential", "UNDEFINED"
+])
 export type ActivityType = z.infer<typeof ACTIVITY_TYPE>;
+export type ActivityIncrease = z.infer<typeof ACTIVITY_INCREASE_TYPES>;

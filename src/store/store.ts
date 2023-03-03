@@ -3,7 +3,7 @@ import {TypedUseSelectorHook, useDispatch, useSelector} from "react-redux";
 import {GamificationModel} from "./types";
 import {activityReducer} from "./activities/activityReducer";
 import {ActivityActions} from "./activities/acitivityActions";
-import {ACTIVITY_TYPE} from "./activities/types";
+import {ACTIVITY_INCREASE_TYPES, ACTIVITY_TYPE} from "./activities/types";
 
 export const InitialGamificiationState: GamificationModel = {
    activities: [{
@@ -12,6 +12,7 @@ export const InitialGamificiationState: GamificationModel = {
       maxValue: 15,
       name: "Hiking",
       type: ACTIVITY_TYPE.Enum.Hours,
+      increasement: ACTIVITY_INCREASE_TYPES.Enum.Linear
    }]
 };
 

@@ -2,7 +2,7 @@ import {getClasses} from "../../utils/styleUtils";
 import {useCallback, useEffect, useMemo, useState} from "react";
 import {statStyles} from "./statStyles";
 import {Star} from "../../media/icons";
-import {ActivityType} from "../../store/activities/types";
+import {ActivityIncrease, ActivityType} from "../../store/activities/types";
 
 //TODO: implement type
 export type StatsProps = {
@@ -11,6 +11,7 @@ export type StatsProps = {
    name: string;
    level: number;
    type: ActivityType
+   increasement: ActivityIncrease
 }
 
 const useNumberIncreaser = (currentXP: number) => {
