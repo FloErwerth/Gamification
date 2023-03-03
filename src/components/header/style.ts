@@ -13,4 +13,8 @@ export const headerStyle = style({
          paddingInline: 50,
       }
    },
+   signedInWrapper: {
+      display: "grid",
+      gridTemplateColumns: "auto 30px",
+   }
 });

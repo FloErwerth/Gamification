@@ -1,6 +1,6 @@
 import {style} from "../../../utils/styleUtils";
 
-export const loginStyles = style({
+export const loginStyles = (loggedIn: boolean) => style({
    loginWrapper: {},
    login: {
       display: "flex",
@@ -10,8 +10,10 @@ export const loginStyles = style({
       width: 70,
       padding: 5,
       paddingRight: 10,
+
    },
    icon: {
       width: 30,
+      transform: loggedIn ? "rotate(180deg)" : ""
    }
 })
