@@ -5,10 +5,10 @@ import {getClasses} from "../../utils/styleUtils";
 import {activityAdderClasses} from "./styles";
 import {Input} from "../basicComponents/Input/Input";
 import {Dropdown} from "../basicComponents/Dropdown/Dropdown";
-import {useAppDispatch} from "../../store/store";
 import {addActivity} from "../../store/activities/acitivityActions";
 import {ACTIVITY_INCREASE_TYPES, ACTIVITY_TYPE, ActivityIncrease, ActivityType} from "../../store/activities/types";
 import {getInitialMaxValue} from "../../store/activities/util";
+import {useAppDispatch} from "../../store/store";
 
 const cssClasses = getClasses(activityAdderClasses);
 
@@ -21,7 +21,6 @@ const AddActivityModalContent = ({onCreation}: ActivityAdderModalContentProps) =
    const [activityType, setActivityType] = useState<ActivityType>("UNDEFINED");
    const [increasement, setIncreasement] = useState<ActivityIncrease>("UNDEFINED");
    const dispatch = useAppDispatch();
-
    const handleCreation = useCallback(() => {
       if (activityType !== "UNDEFINED" && activityType && activityName) {
          onCreation();
@@ -30,7 +29,7 @@ const AddActivityModalContent = ({onCreation}: ActivityAdderModalContentProps) =
             type: activityType,
             increasement,
             maxValue: getInitialMaxValue(activityType)
-         }))
+         }));
       }
    }, [activityType, activityName]);
 

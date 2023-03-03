@@ -4,6 +4,11 @@ import {getClasses} from "../../../utils/styleUtils";
 import {registerStyles} from "./registerStyles";
 import {useCallback, useMemo, useState} from "react";
 import {SafeParseReturnType, z} from "zod";
+import {Signup} from "../../../../firebase";
+import {useNavigate} from "react-router-dom";
+import {Pages} from "../../../types/pages";
+import {useAppDispatch} from "../../../store/store";
+import {setEmailAction, setLoggedIn} from "../../../store/authentication/authActions";
 
 const cssClasses = getClasses(registerStyles);
 
@@ -17,12 +22,13 @@ export const Register = () => {
 
    const [email, setEmail] = useState("");
    const [password, setPassword] = useState("");
-   const [name, setName] = useState("");
    const [secondPassword, setSecondPassword] = useState("");
    const [secondPasswordValidationResult, setSecondPasswordValidationResult] = useState<SafeParseReturnType<string, string> | undefined>(undefined);
    const [passwordValidationResult, setpasswordValidationResult] = useState<SafeParseReturnType<string, string> | undefined>(undefined);
    const [emailValidationResult, setEmailValidationResult] = useState<SafeParseReturnType<string, string> | undefined>(undefined);
    const secondPasswordValidation = useMemo(() => z.string().regex(new RegExp(password), "The second password must match the first password"), [password]);
+   const navigate = useNavigate();
+   const dispatch = useAppDispatch();
 
    const handlePasswordChange = useCallback((value: string) => {
       setPassword(value);
@@ -34,7 +40,8 @@ export const Register = () => {
       setSecondPasswordValidationResult(secondPasswordValidation.safeParse(value));
    }, []);
 
-   const handleRegister = useCallback(() => {
+
+   const handleRegister = useCallback(async () => {
 
       const emailValidationResult = emailValidation.safeParse(email);
       setEmailValidationResult(emailValidationResult);
@@ -56,16 +63,17 @@ export const Register = () => {
          return;
       }
 
-      console.log("redirect");
+      const signupResult = await Signup(email, password);
+      if (signupResult.user.email) {
+         dispatch(setEmailAction(email));
+         dispatch(setLoggedIn(true))
+         navigate(Pages.OVERVIEW);
+      }
    }, [password, secondPassword])
 
    return <>
       <div className={cssClasses.title}>Register</div>
       <div className={cssClasses.inputWrapper}>
-         <Input onChange={(value) => setName(value)} value={name}
-                label={"Display Name"}
-                id="name"
-                type={"text"}/>
 
          <Input validationResult={emailValidationResult} onChange={(value) => setEmail(value)} value={email}
                 label={"Email"}

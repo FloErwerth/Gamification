@@ -1,19 +1,19 @@
-import {Reducer} from "@reduxjs/toolkit";
 import {GamificationActionTypes, GamificationModel} from "../types";
 import {InitialGamificiationState} from "../store";
 import {ActivityActions} from "./acitivityActions";
 
-export const activityReducer: Reducer<GamificationModel, ActivityActions> = (state = {activities: InitialGamificiationState.activities}, action) => {
-   let newState: GamificationModel = state;
+export const activityReducer = (oldActivities = InitialGamificiationState.activities, action: ActivityActions) => {
+   let activities: GamificationModel["activities"] = oldActivities;
    switch (action.type) {
       case GamificationActionTypes.ADD_ACTIVITY:
-         newState = {
-            activities: [...state.activities, {
+         activities = [...oldActivities,
+            {
                currentValue: 0,
                level: 1, ...action.payload
-            }]
-         }
+            }
+         ]
+
    }
 
-   return newState;
+   return activities;
 }
