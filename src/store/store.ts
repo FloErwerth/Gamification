@@ -5,17 +5,11 @@ import {activityReducer} from "./activities/activityReducer";
 import {ActivityActions} from "./activities/acitivityActions";
 import {ACTIVITY_INCREASE_TYPES, ACTIVITY_TYPE} from "./activities/types";
 import {authReducer} from "./authentication/authReducer";
+import { getStoredActivities } from "../../firebase";
 
 export const InitialGamificiationState: GamificationModel = {
-   activities: [{
-      currentValue: 0,
-      level: 1,
-      maxValue: 15,
-      name: "Hiking",
-      type: ACTIVITY_TYPE.Enum.Hours,
-      increasement: ACTIVITY_INCREASE_TYPES.Enum.Linear
-   }],
-   authentication: {username: "", loggedIn: false}
+   activities: [],
+   authentication: {email: "", loggedIn: false, userId: ""}
 };
 
 type GamificationActions = ActivityActions;

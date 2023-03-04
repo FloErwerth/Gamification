@@ -4,15 +4,12 @@ import {ActivityActions} from "./acitivityActions";
 
 export const activityReducer = (oldActivities = InitialGamificiationState.activities, action: ActivityActions) => {
    let activities: GamificationModel["activities"] = oldActivities;
-   switch (action.type) {
-      case GamificationActionTypes.ADD_ACTIVITY:
-         activities = [...oldActivities,
-            {
-               currentValue: 0,
-               level: 1, ...action.payload
-            }
-         ]
 
+   if(action.type === GamificationActionTypes.ADD_ACTIVITY) {
+      return [...oldActivities, action.payload]
+   }
+   if(action.type === GamificationActionTypes.SET_ACTIVITIES) {
+      return activities = action.payload
    }
 
    return activities;
