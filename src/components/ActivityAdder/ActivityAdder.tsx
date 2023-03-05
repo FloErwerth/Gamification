@@ -19,6 +19,8 @@ import {
   getIsLoggedIn,
   getUserId,
 } from "../../store/authentication/authSelectors";
+import { Checkmark } from "../basicComponents/Checkmark/Checkmark";
+import { setStayLoggedIn } from "../../store/authentication/authActions";
 
 const cssClasses = getClasses(activityAdderClasses);
 
