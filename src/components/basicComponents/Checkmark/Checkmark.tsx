@@ -16,9 +16,6 @@ interface CheckmarkProps {
 
 export const Checkmark = ({ onToggle, label }: CheckmarkProps) => {
   const isStayLoggedIn = useAppSelector(getStayLoggedIn);
-
-  console.log(isStayLoggedIn);
-
   const { value, toggleValue } = useToggle(isStayLoggedIn ?? false);
   const handleToggle = useCallback(() => {
     toggleValue();

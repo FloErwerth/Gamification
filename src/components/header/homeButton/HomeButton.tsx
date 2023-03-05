@@ -11,9 +11,11 @@ const cssClasses = getClasses(homeButtonStyles);
 export const HomeButton = () => {
   const navigate = useNavigate();
   const isLoggedIn = useAppSelector(getIsLoggedIn);
+
   const handleClick = useCallback(() => {
     navigate(isLoggedIn ? Pages.OVERVIEW : Pages.HOME);
   }, [isLoggedIn]);
+
   return (
     <button onClick={handleClick} className={cssClasses.wrapper}>
       <Controller className={cssClasses.icon} />{" "}

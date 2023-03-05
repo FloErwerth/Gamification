@@ -1,6 +1,6 @@
 import {style} from "../../../utils/styleUtils";
 
-export const loginStyles = (loggedIn: boolean) => style({
+export const styles = (loggedIn: boolean) => style({
    login: {
       display: "flex",
       alignItems: "center",
@@ -9,6 +9,7 @@ export const loginStyles = (loggedIn: boolean) => style({
    },
    icon: {
       height: 15,
-      transform: loggedIn ? "rotate(180deg)" : ""
+      transform: loggedIn ? "rotate(180deg)" : "",
+      marginRight: 5,
    }
 })

@@ -11,10 +11,8 @@ import { RegisterPage } from "./pages/RegisterPage/RegisterPage";
 import { Overview } from "./pages/Overview/Overview";
 import { Provider } from "react-redux";
 import { store, useAppSelector } from "./store/store";
-import { getActivities } from "./store/activities/activitySelectors";
 import { Dashboard } from "./pages/Dashboard/Dashboard";
 import { getIsLoggedIn } from "./store/authentication/authSelectors";
-import { is } from "immer/dist/internal";
 
 const cssClasses = getClasses(mainStyles);
 
@@ -26,12 +24,7 @@ const App = () => {
       <Body>
         <Header />
         <Routes>
-          <Route
-            element={
-              isLoggedIn ? <Navigate to={Pages.OVERVIEW} /> : <LandingPage />
-            }
-            path={Pages.HOME}
-          />
+          <Route element={<LandingPage />} path={Pages.HOME} />
           <Route element={<LoginPage />} path={Pages.LOGIN} />
           <Route element={<RegisterPage />} path={Pages.REGISTER} />
           <Route
