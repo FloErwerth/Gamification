@@ -1,7 +1,7 @@
 import {SignOut, Signup} from "../../../firebase";
 import { GamificationActionTypes } from "../types";
 
-type AuthPayload = { userId?: string, loggedIn?: boolean, email?: string }
+type AuthPayload = { userId?: string, loggedIn?: boolean, email?: string, stayLoggedIn?: boolean }
 type AuthAction = { type: GamificationActionTypes, payload: AuthPayload }
 
 export type AuthenticationActions = AuthAction;
@@ -24,6 +24,13 @@ export const setEmailAction = (email: string): AuthAction => {
    return {
       type: GamificationActionTypes.SET_EMAIL,
       payload: {email}
+   }
+}
+
+export const setStayLoggedIn = (stayLoggedIn: boolean): AuthAction => {
+   return {
+      type: GamificationActionTypes.SET_STAY_LOGGED_IN,
+      payload: {stayLoggedIn}
    }
 }
 

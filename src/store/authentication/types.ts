@@ -1,3 +1,3 @@
 import {z} from "zod";
 
-export type AuthenticationPayload = { userId: string, email: string, loggedIn: boolean };
+export type AuthenticationPayload = { userId: string, email: string, loggedIn: boolean, stayLoggedIn?: boolean };

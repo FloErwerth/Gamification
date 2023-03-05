@@ -3,4 +3,5 @@ export enum Pages {
    LOGIN = "/login",
    REGISTER = "/register",
    OVERVIEW = "/overview",
+   DASHBOARD = "/dashboard",
 }

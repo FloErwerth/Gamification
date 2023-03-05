@@ -9,11 +9,13 @@ import { FormWrapper } from "../../components/basicComponents/FormWrapper/FormWr
 import {
   setEmailAction,
   setLoggedIn,
+  setStayLoggedIn,
   setUserId,
 } from "../../store/authentication/authActions";
 import { useAppDispatch } from "../../store/store";
 import { getStoredActivities, Signin } from "../../../firebase";
 import { setActivities } from "../../store/activities/acitivityActions";
+import { Checkmark } from "../../components/basicComponents/Checkmark/Checkmark";
 
 const cssClasses = getClasses(loginStyles);
 
@@ -41,6 +43,10 @@ export const LoginPage = () => {
     }
   }, [email, password]);
 
+  const handleStayLoggedIn = useCallback((value: boolean) => {
+    dispatch(setStayLoggedIn(value));
+  }, []);
+
   return (
     <FormWrapper>
       <div className={cssClasses.title}>Login</div>
@@ -60,6 +66,8 @@ export const LoginPage = () => {
           id="password"
           type={"password"}
         />
+
+        <Checkmark label="Stay logged in" onToggle={handleStayLoggedIn} />
       </div>
       <div className={cssClasses.buttonWrapper}>
         <Button className={cssClasses.loginButton} onClick={handleLogin}>

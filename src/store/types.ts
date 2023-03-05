@@ -8,6 +8,7 @@ export enum GamificationActionTypes {
    LOGIN ="gamification/login",
    SET_USER_ID ="gamification/set_user_id",
    SET_EMAIL = "gamification/set_email",
+   SET_STAY_LOGGED_IN = "gamification/set_stay_logged_in"
 }
 
 

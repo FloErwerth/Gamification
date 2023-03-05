@@ -13,7 +13,8 @@ export const authReducer = (oldAuthentication = InitialGamificiationState.authen
          break;
       case GamificationActionTypes.SET_EMAIL:
          authentication = {...oldAuthentication, ...{email: action.payload.email ?? oldAuthentication.email}}; break;
-      case GamificationActionTypes.SET_USER_ID: authentication = {...oldAuthentication, ...{userId: action.payload.userId ?? oldAuthentication.userId}}
+      case GamificationActionTypes.SET_USER_ID: authentication = {...oldAuthentication, ...{userId: action.payload.userId ?? oldAuthentication.userId}}; break;
+      case GamificationActionTypes.SET_STAY_LOGGED_IN: authentication = {...oldAuthentication, ...{stayLoggedIn: action.payload.stayLoggedIn ?? false}}; break;
    }
 
    return authentication;
