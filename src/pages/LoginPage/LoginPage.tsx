@@ -14,7 +14,7 @@ import {
 } from "../../store/authentication/authActions";
 import { useAppDispatch } from "../../store/store";
 import { getStoredActivities, Signin } from "../../../firebase";
-import { setActivities } from "../../store/activities/acitivityActions";
+import { setActivities } from "../../store/activities/activitiesActions";
 import { Checkmark } from "../../components/basicComponents/Checkmark/Checkmark";
 
 const cssClasses = getClasses(loginStyles);

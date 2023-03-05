@@ -1,4 +1,6 @@
-export const statStyles = (width: string) => {
+import { style } from "../../utils/styleUtils";
+
+export const styles = (width: string) => {
    return {
       bar: {
          zIndex: 1,
@@ -45,3 +47,12 @@ export const statStyles = (width: string) => {
       }
    } as const;
 }
+
+export const wrapperStyles = style({
+   activityWrapper: {
+         textAlign: "left",
+         width: "fit-content",
+         padding: 10,
+         paddingLeft: 20,
+      },
+})

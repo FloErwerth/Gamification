@@ -5,7 +5,7 @@ import { getClasses } from "../../utils/styleUtils";
 import { activityAdderClasses } from "./styles";
 import { Input } from "../basicComponents/Input/Input";
 import { Dropdown } from "../basicComponents/Dropdown/Dropdown";
-import { addActivity } from "../../store/activities/acitivityActions";
+import { addActivity } from "../../store/activities/activitiesActions";
 import {
   ACTIVITY_INCREASE_TYPES,
   ACTIVITY_TYPE,

@@ -13,6 +13,7 @@ import { Provider } from "react-redux";
 import { store, useAppSelector } from "./store/store";
 import { Dashboard } from "./pages/Dashboard/Dashboard";
 import { getIsLoggedIn } from "./store/authentication/authSelectors";
+import { ActivityPage } from "./pages/ActivityPage/ActivityPage";
 
 const cssClasses = getClasses(mainStyles);
 
@@ -32,6 +33,7 @@ const App = () => {
             path={Pages.OVERVIEW}
           />
           <Route element={<Dashboard />} path={Pages.DASHBOARD} />
+          <Route element={<ActivityPage />} path={Pages.ACTIVITY} />
         </Routes>
       </Body>
     </BrowserRouter>

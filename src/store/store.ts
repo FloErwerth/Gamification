@@ -1,20 +1,21 @@
 import {combineReducers, configureStore} from "@reduxjs/toolkit";
 import {TypedUseSelectorHook, useDispatch, useSelector} from "react-redux";
 import {GamificationModel} from "./types";
-import {activityReducer} from "./activities/activityReducer";
-import {ActivityActions} from "./activities/acitivityActions";
-import {ACTIVITY_INCREASE_TYPES, ACTIVITY_TYPE} from "./activities/types";
+import {activitiesReducer} from "./activities/activitiesReducer";
+import {ActivitiesActions} from "./activities/activitiesActions";
 import {authReducer} from "./authentication/authReducer";
-import { getStoredActivities } from "../../firebase";
 import { getState, saveState } from "../browserStorage/localStorage";
+import { activityReducer } from "./activity/activityReducer";
 
-export const InitialGamificiationState: GamificationModel = getState() ?? {
+const defaultState = {
       activities: [],
+      activity: { index: -1 },
       authentication: {email: "", loggedIn: false, userId: ""}
    };
-type GamificationActions = ActivityActions;
+export const InitialGamificiationState: GamificationModel = {...defaultState, ...getState()}
+type GamificationActions = ActivitiesActions;
 
-const reducers = combineReducers({activities: activityReducer, authentication: authReducer})
+const reducers = combineReducers({activities: activitiesReducer, authentication: authReducer, activity: activityReducer})
 
 export const store = configureStore<GamificationModel, GamificationActions>({
    preloadedState: InitialGamificiationState,

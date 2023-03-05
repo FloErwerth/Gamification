@@ -1,9 +1,9 @@
 import {GamificationActionTypes, GamificationModel} from "../types";
 import {InitialGamificiationState} from "../store";
-import {ActivityActions} from "./acitivityActions";
+import {ActivitiesActions} from "./activitiesActions";
 
-export const activityReducer = (oldActivities = InitialGamificiationState.activities, action: ActivityActions) => {
-   let activities: GamificationModel["activities"] = oldActivities;
+export const activitiesReducer = (oldActivities = InitialGamificiationState.activities, action: ActivitiesActions) => {
+   let activities = oldActivities;
 
    if(action.type === GamificationActionTypes.ADD_ACTIVITY) {
       return [...oldActivities, action.payload]

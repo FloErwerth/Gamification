@@ -1,11 +1,14 @@
 import { getClasses } from "../../utils/styleUtils";
 import { overStyles } from "./overStyles";
-import { Stats, StatsProps } from "../../components/stats/Stats";
+import {
+  ActivityWrapper,
+  StatsProps,
+} from "../../components/activity/ActivityWrapper";
 import { useFilter } from "../../utils/useFilter";
 import { css } from "@emotion/css";
 import { InputWithDelete } from "../../components/basicComponents/Input/InputWithDelete";
 import { useAppSelector } from "../../store/store";
-import { getActivities } from "../../store/activities/activitySelectors";
+import { getActivities } from "../../store/activities/activitiesSelectors";
 import { ActivityAdder } from "../../components/ActivityAdder/ActivityAdder";
 import { redirect } from "react-router-dom";
 import { getIsLoggedIn } from "../../store/authentication/authSelectors";
@@ -13,8 +16,8 @@ import { Pages } from "../../types/pages";
 const cssClasses = getClasses(overStyles);
 
 export const Overview = () => {
-  const stats = useAppSelector(getActivities).map((stats) => (
-    <Stats {...stats} />
+  const stats = useAppSelector(getActivities).map((stats, index) => (
+    <ActivityWrapper {...stats} index={index} />
   ));
   const { filteredArray, setFilter, filter } = useFilter<StatsProps>(stats);
 
