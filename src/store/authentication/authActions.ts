@@ -1,43 +1,53 @@
 import {SignOut, Signup} from "../../../firebase";
-import { GamificationActionTypes } from "../types";
+import {GamificationActionTypes, GamificationModel} from "../types";
 
-type AuthPayload = { userId?: string, loggedIn?: boolean, email?: string, stayLoggedIn?: boolean }
-type AuthAction = { type: GamificationActionTypes, payload: AuthPayload }
+export type AuthenticationActions =
+   { type: GamificationActionTypes.LOGIN, payload: boolean }
+   | { type: GamificationActionTypes.SET_USER_ID, payload: string }
+   | { type: GamificationActionTypes.SET_CREATION_DATE, payload: string }
+   | { type: GamificationActionTypes.SET_EMAIL, payload: string }
+   | { type: GamificationActionTypes.SET_STAY_LOGGED_IN, payload: boolean }
+   | { type: GamificationActionTypes.REGISTER, payload: GamificationModel["authentication"] }
 
-export type AuthenticationActions = AuthAction;
-
-export const setLoggedIn = (loggedIn: boolean): AuthAction => {
+export const setLoggedIn = (payload: boolean) => {
    return {
       type: GamificationActionTypes.LOGIN,
-      payload: {loggedIn}
+      payload
    }
 }
 
-export const setUserId = (userId: string): AuthAction => {
+export const setUserId = (payload: string) => {
    return {
       type: GamificationActionTypes.SET_USER_ID,
-      payload: {userId}
+      payload
    }
 }
 
-export const setEmailAction = (email: string): AuthAction => {
+export const setCreationTime = (payload: string) => {
+   return {
+      type: GamificationActionTypes.SET_CREATION_DATE,
+      payload
+   }
+}
+
+export const setEmailAction = (payload: string) => {
    return {
       type: GamificationActionTypes.SET_EMAIL,
-      payload: {email}
+      payload
    }
 }
 
-export const setStayLoggedIn = (stayLoggedIn: boolean): AuthAction => {
+export const setStayLoggedIn = (payload: boolean) => {
    return {
       type: GamificationActionTypes.SET_STAY_LOGGED_IN,
-      payload: {stayLoggedIn}
+      payload
    }
 }
 
 export const logoutAction = async () => {
    SignOut().then(() => {
       return {
-         type: GamificationActionTypes.LOGIN, payload: {loggedIn: false}
+         type: GamificationActionTypes.LOGIN, payload: false
       }
    })
 }

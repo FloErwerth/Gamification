@@ -9,7 +9,7 @@ export const ACTIVITY_TYPE = z.enum([
    "UNDEFINED"]);
 
 export const ACTIVITY_INCREASE_TYPES = z.enum([
-   "Linear", "Exponential", "UNDEFINED"
+   "Linear", "Quadratic", "Factor", "UNDEFINED"
 ])
 
 export type ActivityType = z.infer<typeof ACTIVITY_TYPE>;

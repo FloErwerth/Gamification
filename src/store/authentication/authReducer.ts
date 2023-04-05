@@ -1,21 +1,35 @@
 import {AuthenticationActions} from "./authActions";
 import {InitialGamificiationState} from "../store";
-import { GamificationActionTypes } from "../types";
+import {GamificationActionTypes} from "../types";
+import produce from "immer";
 
 export const authReducer = (oldAuthentication = InitialGamificiationState.authentication, action: AuthenticationActions) => {
-   let authentication = oldAuthentication;
    switch (action.type) {
       case GamificationActionTypes.REGISTER:
-         authentication = {...oldAuthentication, ...action.payload};
-         break;
+         return produce(oldAuthentication, () => {
+            action.payload;
+         })
       case GamificationActionTypes.LOGIN:
-         authentication = {...oldAuthentication, ...{loggedIn: action.payload.loggedIn ?? false}};
-         break;
+         return produce(oldAuthentication, newAuth => {
+            newAuth.loggedIn = action.payload
+         })
       case GamificationActionTypes.SET_EMAIL:
-         authentication = {...oldAuthentication, ...{email: action.payload.email ?? oldAuthentication.email}}; break;
-      case GamificationActionTypes.SET_USER_ID: authentication = {...oldAuthentication, ...{userId: action.payload.userId ?? oldAuthentication.userId}}; break;
-      case GamificationActionTypes.SET_STAY_LOGGED_IN: authentication = {...oldAuthentication, ...{stayLoggedIn: action.payload.stayLoggedIn ?? false}}; break;
+         return produce(oldAuthentication, newAuth => {
+            newAuth.email = action.payload;
+         })
+      case GamificationActionTypes.SET_USER_ID:
+         return produce(oldAuthentication, newAuth => {
+            newAuth.userId = action.payload;
+         })
+      case GamificationActionTypes.SET_STAY_LOGGED_IN:
+         return produce(oldAuthentication, newAuth => {
+            newAuth.stayLoggedIn = action.payload;
+         })
+      case GamificationActionTypes.SET_CREATION_DATE:
+         return produce(oldAuthentication, newAuth => {
+            newAuth.creationDate = action.payload;
+         })
+      default:
+         return oldAuthentication;
    }
-
-   return authentication;
 }

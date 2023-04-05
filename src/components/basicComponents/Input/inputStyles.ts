@@ -20,9 +20,18 @@ export const inputStyles = style({
    input: {
       all: "unset",
       height: 30,
+      margin: 0,
       "::placeholder": {
          fontStyle: "italic",
          fontSize: 13,
+      },
+      "::-webkit-outer-spin-button": {
+         "-webkit-appearance": "none"
+      },
+      "::-webkit-inner-spin-button": {
+         "-webkit-appearance": "none"
+      }, "input[type=number]": {
+         "-moz-appearance": "textfield",
       }
    },
    inputWithDeleteWrapper: {

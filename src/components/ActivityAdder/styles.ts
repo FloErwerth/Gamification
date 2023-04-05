@@ -1,7 +1,7 @@
 export const activityAdderClasses = {
    modalWrapper: {
-      display: "grid",
-      gridTemplateRows: "30px 65px auto auto 40px",
+      display: "flex",
+      flexDirection: "column",
       gap: 5,
    },
    adder: {
