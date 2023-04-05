@@ -1,7 +1,7 @@
 import {createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, signOut} from "firebase/auth";
 import {initializeApp} from "firebase/app";
 import {arrayUnion, collection, doc, getDoc, getFirestore, setDoc, updateDoc} from "firebase/firestore";
-import {StatsProps} from "./src/components/activity/ActivityWrapper";
+import {StatsProps} from "./src/store/activities/types";
 
 const firebaseApp = initializeApp({
    apiKey: "AIzaSyDFK3fGAEFWRpdAhwC5FPE5beGcNDzAMXk",

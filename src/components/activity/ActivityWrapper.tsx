@@ -7,7 +7,7 @@ import {setActiveActivity} from "../../store/activity/activityActions";
 import {useNavigate} from "react-router-dom";
 import {Pages} from "../../types/pages";
 import {Activity} from "./Activitiy";
-import {StatsProps} from "./types";
+import {StatsProps} from "../../store/activities/types";
 
 
 //TODO: implement type

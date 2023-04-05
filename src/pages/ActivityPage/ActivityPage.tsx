@@ -18,7 +18,6 @@ const cssClasses = getClasses(styles);
 
 export const ActivityPage = () => {
    const [progress, setProgress] = useState<number>(0);
-   const [confirmed, setConfirmed] = useState(false);
    const activeActivity = useAppSelector(getActiveActivity);
    const uid = useAppSelector(getUserId);
    const activities = useAppSelector(getActivities);
@@ -26,9 +25,10 @@ export const ActivityPage = () => {
    const navigate = useNavigate();
 
    useEffect(() => {
-      if (confirmed) {
+      return () => {
+         updateActivitiesInDatabase(uid, activities);
       }
-   }, [confirmed]);
+   }, []);
 
    const [editProgress, setEditProgress] = useState(false);
 

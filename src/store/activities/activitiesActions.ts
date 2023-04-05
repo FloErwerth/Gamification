@@ -1,8 +1,8 @@
 import {GamificationActionTypes} from "../types";
-import {Date, StatsProps} from "../../components/activity/types";
+import {DateType, StatsProps} from "./types";
 
 type UpdateActivityPayload = { index: number, activity: StatsProps };
-type UpdateActivityCalendarCell = { activityIndex: number, date: Date, marked: boolean };
+type UpdateActivityCalendarCell = { activityIndex: number, date: DateType, marked: boolean };
 export type ActivitiesActions =
    { type: GamificationActionTypes.SET_ACTIVE_ACTIVITY, payload: number }
    | { type: GamificationActionTypes.ADD_ACTIVITY, payload: StatsProps }

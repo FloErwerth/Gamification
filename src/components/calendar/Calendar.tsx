@@ -6,7 +6,8 @@ import {useAppDispatch, useAppSelector} from "../../store/store";
 import {getActiveActivity} from "../../store/activity/activitySelector";
 import {updateActivityCalendarCell} from "../../store/activities/activitiesActions";
 import {getCreationDate} from "../../store/authentication/authSelectors";
-import {Date} from "../activity/types";
+import {DateType} from "../../store/activities/types";
+import {getCalendarEntries} from "../../store/activities/activitiesSelectors";
 
 const gregorian = Temporal.Calendar.from('gregory');
 
@@ -22,20 +23,39 @@ const getShowJump = (month: number) => {
    return month !== Temporal.Now.plainDateISO().month;
 }
 
+const generateISOString = (date: string): DateType => {
+   return date.split(".").join("-") as DateType;
+}
+
+
 const useCalendar = () => {
    const [shownDate, setShownDate] = useState(Temporal.Now.zonedDateTime(gregorian));
    const [currentCalendar, setCurrentCalendar] = useState<{ date: string, marked: boolean }[]>([]);
    const creationDate = useAppSelector(getCreationDate);
    const [showNextMonth, setShowNextMonth] = useState(getShowNextMonth(shownDate.month));
+   const activtiyIndex = useAppSelector(getActiveActivity).index;
+   const calendarEntries = useAppSelector(getCalendarEntries(activtiyIndex));
    const [showPreviousMonth, setShowPreviousMonth] = useState(getShowPreviousMonth(shownDate.month, creationDate));
    const [showJump, setShowJump] = useState(getShowJump(shownDate.month));
+
+   useEffect(() => {
+      const calendar = [...currentCalendar];
+      for (let i = 0; i < currentCalendar.length; i++) {
+         calendar[i].marked = calendarEntries[generateISOString(currentCalendar[i].date)]?.marked ?? false;
+      }
+      setCurrentCalendar(calendar);
+   }, [calendarEntries])
 
    const constructCalendar = useCallback(() => {
       const calendar: { date: string, marked: boolean }[] = [];
       const daysInMonth = gregorian.daysInMonth(shownDate);
       for (let day = 1; day <= daysInMonth; day++) {
-         const date = gregorian.dateFromFields({day, year: shownDate.year, month: shownDate.month});
-         calendar.push({date: date.toLocaleString().toString(), marked: false});
+         const date = gregorian.dateFromFields({
+            day,
+            year: shownDate.year,
+            month: shownDate.month
+         }).toLocaleString().toString();
+         calendar.push({date, marked: calendarEntries[generateISOString(date)]?.marked ?? false});
       }
       return calendar;
    }, [shownDate])
@@ -70,27 +90,23 @@ const useCalendar = () => {
    return [currentCalendar, showPreviousMonth, showNextMonth, showJump, decreaseMonth, increaseMonth, thisMonth] as const;
 }
 
-const generateISOString = (date: string): Date => {
-   return date.split(".").join("-") as Date;
-}
-
 const cssClasses = getClasses(styles);
 export const Calendar = () => {
    const [currentCalendar, showPreviousMonth, showNextMonth, showJump, decreaseMonth, increaseMonth, thisMonth] = useCalendar();
    const dispatch = useAppDispatch();
    const activeActivityIndex = useAppSelector(getActiveActivity).index;
 
-   const handleClick = useCallback((cellIndex: number, marked: boolean, date: Date) => {
+   const handleClick = useCallback((cellIndex: number, marked: boolean, date: DateType) => {
       dispatch(updateActivityCalendarCell({
          activityIndex: activeActivityIndex,
          date,
-         marked: !marked,
+         marked,
       }));
    }, [activeActivityIndex])
 
    return <>
       <div className={cssClasses.calendarWrapper}>{currentCalendar.map((calendarObject, index) =>
-         <button onClick={() => handleClick(index, calendarObject.marked, generateISOString(calendarObject.date))}
+         <button onClick={() => handleClick(index, !calendarObject.marked, generateISOString(calendarObject.date))}
                  className={cssClasses.calendarCell}
                  style={{backgroundColor: calendarObject.marked ? "green" : ""}}>{calendarObject.date}</button>)}</div>
       {showPreviousMonth && <button onClick={decreaseMonth}>Previous Month</button>}

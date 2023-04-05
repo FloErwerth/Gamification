@@ -1,5 +1,5 @@
 import {AuthenticationPayload} from "./authentication/types";
-import {StatsProps} from "../components/activity/types";
+import {StatsProps} from "./activities/types";
 
 export enum GamificationActionTypes {
    ADD_ACTIVITY = "gamification/activity/add",
@@ -13,10 +13,7 @@ export enum GamificationActionTypes {
    SET_ACTIVE_ACTIVITY = "gamification/set_active_activity",
    CHANGE_ACTIVITY = "gamification/change_activity",
    DELETE_ACTIVITY = "gamification/delete_activity",
-   UPDATE_ACTIVITY_CALENDAR = "gamification/update_activity_calendar",
-   ADD_ACTIVITY_CALENDAR = "gamification/add_activity_calendar",
    UPDATE_ACTIVITY_CALENDAR_CELL = "gamification/update_activity_calendar_cell",
-   ADD_CALENDAR_ENTRY = "gamification/add_calendar_entry"
 }
 
 
