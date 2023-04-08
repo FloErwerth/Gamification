@@ -45,6 +45,8 @@ const useCalendar = () => {
             if (currentEntry) {
                calendar[i].marked = currentEntry.marked ?? false;
                calendar[i].progress = currentEntry.progress;
+            } else {
+               calendar[i] = {date: currentCalendar[i].date, marked: false, progress: undefined};
             }
          }
       }

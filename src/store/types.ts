@@ -13,7 +13,6 @@ export enum GamificationActionTypes {
    SET_ACTIVE_ACTIVITY = "gamification/set_active_activity",
    CHANGE_ACTIVITY = "gamification/change_activity",
    DELETE_ACTIVITY = "gamification/delete_activity",
-   UPDATE_ACTIVITY_CALENDAR_CELL = "gamification/update_activity_calendar_cell",
 }
 
 
