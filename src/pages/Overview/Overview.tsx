@@ -1,12 +1,13 @@
 import {getClasses} from "../../utils/styleUtils";
 import {overStyles} from "./overStyles";
-import {ActivityWrapper, StatsProps,} from "../../components/activity/ActivityWrapper";
+import {ActivityWrapper} from "../../components/activity/ActivityWrapper";
 import {useFilter} from "../../utils/useFilter";
-import {css} from "@emotion/css";
 import {InputWithDelete} from "../../components/basicComponents/Input/InputWithDelete";
+import {css} from "@emotion/css";
 import {useAppSelector} from "../../store/store";
 import {getActivities} from "../../store/activities/activitiesSelectors";
 import {ActivityAdder} from "../../components/ActivityAdder/ActivityAdder";
+import {StatsProps} from "../../store/activities/types";
 
 const cssClasses = getClasses(overStyles);
 

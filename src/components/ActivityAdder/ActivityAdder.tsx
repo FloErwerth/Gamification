@@ -40,11 +40,12 @@ const AddActivityModalContent = ({
          const generatedActivity = {
             name: activityName,
             type: activityType,
+            calendarEntries: {},
             increasement,
             increasementFactor,
             maxValue: getInitialMaxValue(activityType),
             currentValue: 0,
-            level: 1,
+            level: 0,
          };
          addActivityInDatabase(userId, generatedActivity).then(() => {
             dispatch(addActivity(generatedActivity));
