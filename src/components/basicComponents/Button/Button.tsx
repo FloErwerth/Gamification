@@ -3,14 +3,14 @@ import {getClasses} from "../../../utils/styleUtils";
 import {buttonStyle} from "./buttonStyle";
 import {PropsWithChildren, useMemo} from "react";
 
-interface ButtonProps extends PropsWithChildren {
+export interface ButtonProps extends PropsWithChildren {
    className?: string;
    onClick?: () => void;
+   disabled?: boolean
 }
 
-const cssClasses = getClasses(buttonStyle);
-
-export const Button = ({className, onClick, children}: ButtonProps) => {
+export const Button = ({disabled, className, onClick, children}: ButtonProps) => {
+   const cssClasses = useMemo(() => getClasses(buttonStyle(disabled)), [disabled]);
    const buttonClasses = useMemo(() => cx(cssClasses.button, className), [cssClasses.button, className]);
-   return <button onClick={onClick} className={buttonClasses}>{children}</button>
+   return <button disabled={disabled} onClick={onClick} className={buttonClasses}>{children}</button>
 }

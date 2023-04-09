@@ -12,7 +12,8 @@ export enum GamificationActionTypes {
    SET_STAY_LOGGED_IN = "gamification/set_stay_logged_in",
    SET_ACTIVE_ACTIVITY = "gamification/set_active_activity",
    CHANGE_ACTIVITY = "gamification/change_activity",
-   DELETE_ACTIVITY = "gamification/delete_activity",
+   DECREASE_PROGRESS = "gamification/decrease_activity_progress",
+   INCREASE_PROGRESS = "gamification/increase_activity_progress",
 }
 
 

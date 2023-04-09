@@ -26,7 +26,7 @@ const AddActivityModalContent = ({
    const [increasement, setIncreasement] =
       useState<ActivityIncrease>("UNDEFINED");
    const userId = useAppSelector(getUserId);
-   const [increasementFactor, setIncreasementFactor] = useState(0);
+   const [increasementFactor, setIncreasementFactor] = useState(2);
 
    const dispatch = useAppDispatch();
    const handleCreation = useCallback(() => {
@@ -43,7 +43,7 @@ const AddActivityModalContent = ({
             calendarEntries: {},
             increasement,
             increasementFactor,
-            maxValue: getInitialMaxValue(activityType),
+            maxValue: getInitialMaxValue(increasement),
             currentValue: 0,
             level: 0,
          };
@@ -52,6 +52,20 @@ const AddActivityModalContent = ({
          });
       }
    }, [getInitialMaxValue, increasementFactor, increasement, activityType, activityName]);
+
+   const handleSetIncreasementFactor = useCallback((value: string) => {
+      try {
+         const number = parseInt(value);
+         if (number < 2) {
+            setIncreasementFactor(2);
+            return;
+         }
+         setIncreasementFactor(number);
+      } catch {
+         setIncreasementFactor(2);
+      }
+
+   }, []);
 
    return (
       <div className={cssClasses.modalWrapper}>
@@ -81,8 +95,8 @@ const AddActivityModalContent = ({
          />
          {increasement === "Factor" &&
              <Input customWrapperClasses={cssClasses.input} id={"increasement_factor"}
-                    onChange={(value) => setIncreasementFactor(parseInt(value))}
-                    value={increasementFactor} type={"number"} placeholder={"Factor"}/>}
+                    onChange={handleSetIncreasementFactor}
+                    value={increasementFactor} type={"number"} placeholder={"Factor bigger or equal 2"}/>}
          <Button onClick={handleCreation}>Create Activity</Button>
       </div>
    );

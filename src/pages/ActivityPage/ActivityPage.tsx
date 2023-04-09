@@ -1,11 +1,14 @@
 import {useCallback, useEffect, useState} from "react";
-import {Activity} from "../../components/activity/Activitiy";
-import {Button} from "../../components/basicComponents/Button/Button";
 import {getActiveActivity} from "../../store/activity/activitySelector";
 import {useAppDispatch, useAppSelector} from "../../store/store";
 import {getClasses} from "../../utils/styleUtils";
 import {styles} from "./styles";
-import {setActivities, updateActivity} from "../../store/activities/activitiesActions";
+import {
+   decreaseActivityProgress,
+   increaseActivityProgress,
+   setActivities,
+   updateActivity
+} from "../../store/activities/activitiesActions";
 import {useNavigate} from "react-router-dom";
 import {Pages} from "../../types/pages";
 import {getActivities} from "../../store/activities/activitiesSelectors";
@@ -14,78 +17,28 @@ import {getUserId} from "../../store/authentication/authSelectors";
 import {Calendar} from "../../components/calendar/Calendar";
 import {DateType, StatsProps} from "../../store/activities/types";
 import {Modal} from "../../components/basicComponents/Modal/Modal";
+import {CellInfo, OpenedActivity} from "../../components/OpenedActivity/OpenedActivity";
+import {ConfirmButton} from "../../components/basicComponents/ConfirmButton/ConfirmButton";
 
 const cssClasses = getClasses(styles);
 
-const getLevelAndMaxProgress = (activity: StatsProps, currentValue: StatsProps["currentValue"]): { maxValue: StatsProps["maxValue"], level: StatsProps["level"] } => {
-   let level = activity.level;
-   let maxValue = activity.maxValue;
-   if (currentValue >= maxValue) {
-      while (currentValue >= maxValue) {
-         switch (activity.increasement) {
-            case "Linear":
-               level++;
-               maxValue += 1;
-               break;
-            case "Quadratic":
-               level++;
-               maxValue = maxValue <= 1 ? 2 : Math.pow(maxValue, 2);
-               break;
-            case "Factor":
-               level++;
-               maxValue *= activity.increasementFactor;
-               break;
-            case "UNDEFINED":
-               level++;
-               maxValue += 1;
-               break;
-         }
-      }
-   } else {
-      switch (activity.increasement) {
-         case "Linear":
-            while (currentValue < maxValue - 1) {
-               level--;
-               maxValue -= 1;
-            }
-            break;
-         case "Quadratic":
-            while (currentValue < Math.sqrt(maxValue)) {
-               if (Math.sqrt(maxValue) === 2) {
-                  maxValue = 1;
-                  level = 0;
-                  break;
-               }
-               level--;
-               maxValue = Math.sqrt(maxValue) === 2 ? 1 : Math.sqrt(maxValue);
-            }
-            break;
-         case "Factor":
-            while (currentValue < maxValue / activity.increasementFactor && maxValue / activity.increasementFactor >= 1) {
-               level--;
-               maxValue /= activity.increasementFactor;
-            }
-            break;
-         case "UNDEFINED":
-            while (currentValue < maxValue - 1) {
-               level--;
-               maxValue -= 1;
-            }
-            break;
-      }
+const getTitleByActivityType = (activityType: StatsProps["type"], currentValue: StatsProps["currentValue"], activityName: StatsProps["name"]) => {
+   switch (activityType) {
+      case "Days":
+         return `Already ${currentValue === 1 ? "a" : ""} ${currentValue > 1 ? currentValue : ""} ${currentValue > 1 ? "Days" : "Day"} on ${activityName}. Keep on going!`
    }
-   return {level, maxValue};
-};
+}
 
 export const ActivityPage = () => {
    const [progress, setProgress] = useState<number>(0);
    const [editProgress, setEditProgress] = useState(false);
-   const [cellInfo, setCellInfo] = useState<{ date?: DateType, marked: boolean, progress?: number } | undefined>();
+   const [cellInfo, setCellInfo] = useState<CellInfo>();
    const activeActivity = useAppSelector(getActiveActivity);
    const uid = useAppSelector(getUserId);
    const activities = useAppSelector(getActivities);
    const dispatch = useAppDispatch();
    const navigate = useNavigate();
+   const [deleteWarningOpen, setDeleteWarningOpen] = useState(false);
 
    useEffect(() => {
       return () => {
@@ -93,46 +46,48 @@ export const ActivityPage = () => {
       }
    }, []);
 
-   const getCopyOfCalendarEntries = useCallback(() => {
-      return {...activities[activeActivity.index].calendarEntries};
-   }, [activities]);
+   const getCalendarEntries = useCallback(() => {
+      return {...activeActivity.activity.calendarEntries}
+   }, [activeActivity]);
 
-   const getUpdatedCells = useCallback(() => {
-      const cells = getCopyOfCalendarEntries();
-      if (cellInfo?.date) {
-         if (cellInfo?.marked) {
-            cells[cellInfo?.date] = {marked: true, progress}
-         } else {
-            cells[cellInfo?.date] = {marked: false}
-         }
+   const updateCell = useCallback((date: DateType, content: { marked?: boolean, progress?: number }): StatsProps["calendarEntries"] => {
+      const cells = getCalendarEntries();
+      if (date && content) {
+         cells[date] = {marked: content.marked ?? false, progress: content.progress};
       }
       return cells;
-   }, [getCopyOfCalendarEntries, cellInfo, progress])
+   }, [activeActivity, getCalendarEntries])
 
-   const getUpdatedActivity = useCallback(() => {
-      const cells = getUpdatedCells();
-      let currentValue = progress;
-      if (cellInfo && cellInfo.progress) {
-         currentValue = cellInfo.progress * -1;
+   const handleIncreaseProgress = useCallback(() => {
+      if (cellInfo && cellInfo.date) {
+         let currentValue = activeActivity.activity.currentValue;
+         currentValue += activeActivity.activity.type === "Days" ? 1 : progress;
+         const calendarEntries = updateCell(cellInfo.date, {marked: cellInfo.marked, progress});
+         dispatch(updateActivity({
+            index: activeActivity.index,
+            activity: {...activeActivity.activity, currentValue, calendarEntries}
+         }));
+         dispatch(increaseActivityProgress({index: activeActivity.index, currentValue}))
+         setEditProgress(false);
+         setProgress(0);
       }
-      currentValue += activeActivity.activity.currentValue;
-      return {
-         ...activeActivity.activity,
-         currentValue,
-         ...getLevelAndMaxProgress(activeActivity.activity, currentValue),
-         calendarEntries: cells
-      }
-   }, [cellInfo, progress, getUpdatedCells, activeActivity]);
+   }, [activeActivity, progress, cellInfo]);
 
-   const handleProgress = useCallback(() => {
-      const updatedActivity = getUpdatedActivity();
-      dispatch(updateActivity({
-         index: activeActivity.index,
-         activity: updatedActivity
-      }));
+   const handleDeleteProgress = useCallback(() => {
+      const currentValue = activeActivity.activity.type === "Days" ? activeActivity.activity.currentValue - 1 : activeActivity.activity.currentValue + (cellInfo?.progress ?? 0) * -1;
+      if (cellInfo?.date) {
+         const calendarEntries = updateCell(cellInfo?.date, {marked: false})
+         const updatedActivity = {
+            ...activeActivity.activity,
+            currentValue,
+            calendarEntries,
+            progress: cellInfo?.progress
+         }
+         dispatch(updateActivity({index: activeActivity.index, activity: updatedActivity}))
+         dispatch(decreaseActivityProgress({index: activeActivity.index, currentValue}))
+      }
       setEditProgress(false);
-      setProgress(0);
-   }, [activeActivity, getUpdatedActivity]);
+   }, [updateCell, activeActivity, cellInfo]);
 
    const handleProgressChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
       const parsedNum = parseInt(e.target.value);
@@ -143,42 +98,41 @@ export const ActivityPage = () => {
       }
    }, []);
 
-   const deleteCurrentActivity = useCallback(() => {
-      const newActivitires = activities.filter((activity) => !Object.values(activity).every((val, index) => val === Object.values(activeActivity.activity)[index]))
-      updateActivitiesInDatabase(uid, newActivitires).then(() => {
-         navigate(Pages.OVERVIEW);
-         dispatch(setActivities(newActivitires));
-      });
-   }, [uid, activeActivity, activities]);
-
-   useEffect(() => {
-      if (cellInfo) {
-         if (cellInfo.marked) {
-            setEditProgress(true);
-         } else {
-            handleProgress();
-         }
+   const handleDeletion = useCallback((deleteConfirmed: boolean) => {
+      setDeleteWarningOpen(false);
+      if (deleteConfirmed) {
+         const newActivitires = activities.filter((activity) => !Object.values(activity).every((val, index) => val === Object.values(activeActivity.activity)[index]))
+         updateActivitiesInDatabase(uid, newActivitires).then(() => {
+            navigate(Pages.OVERVIEW);
+            dispatch(setActivities(newActivitires));
+         });
       }
-   }, [cellInfo]);
+   }, [uid, activeActivity, activities]);
 
    const handleCalendarClick = useCallback((date: DateType, marked: boolean, progress?: number) => {
       setCellInfo({date, marked, progress});
-   }, []);
+      setEditProgress(true);
+   }, [editProgress]);
+
+   if (!activeActivity || !activeActivity.activity) {
+      return null;
+   }
 
    return (
       <div className={cssClasses.wrapper}>
-         <div className={cssClasses.title}>{activeActivity.activity.name}</div>
-         <Activity {...activeActivity.activity} />
+         <div
+            className={cssClasses.title}>{getTitleByActivityType(activeActivity.activity.type, activeActivity.activity.currentValue, activeActivity.activity.name)}</div>
          <Calendar onClick={handleCalendarClick}/>
-         <Modal open={editProgress}>
-            <div className={cssClasses.progressWrapper}>
-               Cool, that you have made progress!{" "}
-               <div>Tell us how many {activeActivity.activity.type} you got:</div>
-               <input type={"text"} value={progress} onChange={handleProgressChange}></input>
-               <Button onClick={handleProgress}>Confirm progress</Button>
-            </div>
-         </Modal>
-         <Button onClick={deleteCurrentActivity}>Delete Activity</Button>
+         {editProgress && <Modal onClose={() => setEditProgress(false)} open={editProgress}>
+             <OpenedActivity activity={activeActivity.activity} progress={progress} cellInfo={cellInfo}
+                             onProgressChange={handleProgressChange} onIncreaseProgress={handleIncreaseProgress}
+                             onDecreaseProgress={handleDeleteProgress}/>
+         </Modal>}
+         <ConfirmButton
+            hoverColor={"rgba(255,50,50,0.8)"} backgroundColor={"rgba(255,150,150,0.8)"} barColor={"red"}
+            textColor={"black"}
+            onClick={() => handleDeletion(true)}>Delete
+            Activity</ConfirmButton>
       </div>
    );
 };
