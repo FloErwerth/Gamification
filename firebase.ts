@@ -1,7 +1,8 @@
 import {createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, signOut} from "firebase/auth";
 import {initializeApp} from "firebase/app";
-import {collection, getDoc, doc, updateDoc,getFirestore, setDoc, arrayUnion, FirestoreDataConverter} from "firebase/firestore";
-import {StatsProps} from "./src/components/activity/ActivityWrapper";
+import {arrayUnion, collection, doc, getDoc, getFirestore, setDoc, updateDoc} from "firebase/firestore";
+import {StatsProps} from "./src/store/activities/types";
+
 const firebaseApp = initializeApp({
    apiKey: "AIzaSyDFK3fGAEFWRpdAhwC5FPE5beGcNDzAMXk",
    authDomain: "gamification-a0ec5.firebaseapp.com",
@@ -29,14 +30,18 @@ export const addFirebaseUser = async (userId: string) => {
 const getActivitiesRef = (uid: string) => doc(firebaseDB, "Nutzerdaten", uid);
 export const getStoredActivities = async (userId: string): Promise<StatsProps[]> => {
    const doc = await getDoc(getActivitiesRef(userId));
-   if(doc.exists()) {
+   if (doc.exists()) {
       return doc.data().activities as StatsProps[];
-   }
-   else return []
+   } else return []
 }
 
 export const addActivityInDatabase = async (uid: string, data: StatsProps) => {
    const activityRef = getActivitiesRef(uid);
    await updateDoc(activityRef, {activities: arrayUnion({...data})});
+}
+
+export const updateActivitiesInDatabase = async (uid: string, activities: StatsProps[]) => {
+   const activityRef = getActivitiesRef(uid);
+   await updateDoc(activityRef, {activities})
 }
 

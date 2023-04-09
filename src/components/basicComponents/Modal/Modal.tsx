@@ -6,7 +6,7 @@ import {CloseCircle} from "../../../media/icons";
 
 interface ModalProps extends PropsWithChildren {
    open: boolean;
-   onClose: () => void;
+   onClose?: () => void;
 }
 
 const cssClasses = getClasses(modalStyle);
@@ -19,7 +19,7 @@ export const Modal = ({open, children, onClose}: ModalProps) => {
       }
    }, [open])
 
-   return <dialog className={cssClasses.modal} ref={modalRef}>{children}
-      <Button className={cssClasses.close} onClick={onClose}><CloseCircle/></Button>
+   return <dialog onClose={onClose} className={cssClasses.modal} ref={modalRef}>{children}
+      {onClose && <Button className={cssClasses.close} onClick={() => onClose()}><CloseCircle/></Button>}
    </dialog>
 }

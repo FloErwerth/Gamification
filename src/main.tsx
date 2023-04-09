@@ -19,7 +19,6 @@ const cssClasses = getClasses(mainStyles);
 
 const App = () => {
    const isLoggedIn = useAppSelector(getIsLoggedIn);
-
    return (
       <BrowserRouter>
          <Body>

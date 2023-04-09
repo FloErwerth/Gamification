@@ -7,7 +7,7 @@ export const activityReducer = (oldActivity = InitialGamificiationState.activity
    let activity = oldActivity;
 
    if (action.type === GamificationActionTypes.SET_ACTIVE_ACTIVITY) {
-      return activity = {index: action.payload};
+      return {index: action.payload};
    }
 
    return activity;
