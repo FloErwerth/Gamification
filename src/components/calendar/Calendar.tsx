@@ -11,15 +11,15 @@ interface CalendarProps {
 }
 
 interface CalendarCell extends CalendarProps {
-   calendarObject: { date: string, marked?: boolean, progress?: number }
+   calendarObject: { date: string, marked?: boolean, progress?: number, interactable?: boolean }
 }
 
 const CalendarCell = ({onClick, calendarObject}: CalendarCell) => {
 
-   const cssClasses = useMemo(() => getClasses(cellStyles(calendarObject.marked ?? false)), [calendarObject.marked]);
-   return <button
-      onClick={() => onClick(generateISOString(calendarObject?.date), !calendarObject?.marked, calendarObject?.progress)}
-      className={cssClasses.calendarCell}>
+   const cssClasses = useMemo(() => getClasses(cellStyles(calendarObject.marked ?? false, calendarObject.interactable ?? true)), [calendarObject.marked]);
+   return <button disabled={!calendarObject.interactable && calendarObject.interactable === false}
+                  onClick={() => onClick(generateISOString(calendarObject?.date), !calendarObject?.marked, calendarObject?.progress)}
+                  className={cssClasses.calendarCell}>
       <div>{calendarObject?.date}</div>
    </button>;
 }

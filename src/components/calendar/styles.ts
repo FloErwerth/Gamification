@@ -1,22 +1,23 @@
 import {style} from "../../utils/styleUtils";
 
-export const cellStyles = (marked: boolean) => style({
+export const cellStyles = (marked: boolean, interactable: boolean) => style({
    calendarCell: {
       all: "unset",
       padding: 5,
       borderRadius: 5,
-      width: 75,
-      backgroundColor: marked ? "lightcoral" : "",
+      height: "clamp(1vw, 1.5vw, 2vw)",
+      textAlign: "center",
+      backgroundColor: marked ? "lightcoral" : interactable ? "" : "rgb(232,232,232)",
+      color: interactable ? "black" : "rgb(200,200,200)",
       ":hover": {
-         backgroundColor: "coral",
-         cursor: "pointer",
+         backgroundColor: interactable ? "coral" : "",
+         cursor: interactable ? "pointer" : "",
       }
    }
 })
 
 export const styles = style({
    mainWrapper: {
-      width: "fit-content",
       marginBlock: 30,
    },
    calendarWrapper: {

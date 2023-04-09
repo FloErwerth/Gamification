@@ -21,9 +21,14 @@ const getShowJump = (month: number) => {
    return month !== Temporal.Now.plainDateISO().month;
 }
 
+const getDate = (day: number, year: number, month: number) => {
+   return gregorian.dateFromFields({day, year, month}).toLocaleString();
+}
+const staticNumberOfDaysShownFromPreviousMonth = 2;
+
 export const useCalendar = () => {
    const [shownDate, setShownDate] = useState(Temporal.Now.zonedDateTime(gregorian));
-   const [currentCalendar, setCurrentCalendar] = useState<{ date: string, marked?: boolean, progress?: number }[]>([]);
+   const [currentCalendar, setCurrentCalendar] = useState<{ date: string, marked?: boolean, progress?: number, interactable?: boolean }[]>([]);
    const creationDate = useAppSelector(getCreationDate);
    const [showNextMonth, setShowNextMonth] = useState(getShowNextMonth(shownDate.month));
    const activtiyIndex = useAppSelector(getActiveActivity).index;
@@ -40,7 +45,12 @@ export const useCalendar = () => {
                calendar[i].marked = currentEntry.marked ?? false;
                calendar[i].progress = currentEntry.progress;
             } else {
-               calendar[i] = {date: currentCalendar[i].date, marked: false, progress: undefined};
+               calendar[i] = {
+                  date: currentCalendar[i].date,
+                  marked: false,
+                  progress: undefined,
+                  interactable: currentCalendar[i].interactable ?? undefined
+               };
             }
          }
       }
@@ -48,20 +58,30 @@ export const useCalendar = () => {
    }, [calendarEntries])
 
    const constructCalendar = useCallback(() => {
-      const calendar: { date: string, marked?: boolean, progress?: number }[] = [];
-      const daysInMonth = gregorian.daysInMonth(shownDate);
-      for (let day = 1; day <= daysInMonth; day++) {
-         const date = gregorian.dateFromFields({
-            day,
-            year: shownDate.year,
-            month: shownDate.month
-         }).toLocaleString().toString();
+      const calendar: { date: string, marked?: boolean, progress?: number, interactable?: boolean }[] = [];
+      const totalDays = 35;
+      const daysInCurrentMonth = gregorian.daysInMonth(shownDate);
+      const daysFromNextMonth = totalDays - staticNumberOfDaysShownFromPreviousMonth - daysInCurrentMonth;
+      const previousMonth = Temporal.PlainDate.from(shownDate).subtract({months: 1});
+      const daysFromPreviousMonth = gregorian.daysInMonth(previousMonth);
+      const nextMonth = Temporal.PlainDate.from(shownDate).add({months: 1});
+
+      for (let previousMonthDay = daysFromPreviousMonth; previousMonthDay > daysFromPreviousMonth - staticNumberOfDaysShownFromPreviousMonth; previousMonthDay--) {
+         const date = getDate(previousMonthDay, previousMonth.year, previousMonth.month);
+         calendar.push({date, interactable: false});
+      }
+      for (let day = 1; day <= daysInCurrentMonth; day++) {
+         const date = getDate(day, shownDate.year, shownDate.month);
          const entry = calendarEntries?.[generateISOString(date)];
          if (entry) {
             calendar.push({date, marked: entry.marked, progress: entry.progress});
          } else {
             calendar.push({date});
          }
+      }
+      for (let nextMonthDay = 1; nextMonthDay <= daysFromNextMonth; nextMonthDay++) {
+         const date = getDate(nextMonthDay, nextMonth.year, nextMonth.month);
+         calendar.push({date, interactable: false});
       }
       return calendar;
    }, [shownDate])
