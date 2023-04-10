@@ -66,7 +66,7 @@ export const ActivityPage = () => {
       if (cellInfo && cellInfo.date) {
          let currentValue = activeActivity.activity.currentValue;
          currentValue += activeActivity.activity.type === "Days" ? 1 : progress;
-         const calendarEntries = updateCell(cellInfo.date, {...cellInfo, marked: !cellInfo.marked});
+         const calendarEntries = updateCell(cellInfo.date, {...cellInfo, marked: !cellInfo.marked, progress});
          dispatch(updateActivity({
             activityIndex: activeActivity.index,
             activity: {...activeActivity.activity, currentValue, calendarEntries}
