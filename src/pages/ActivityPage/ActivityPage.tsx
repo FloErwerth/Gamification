@@ -32,7 +32,6 @@ const getTitleByActivityType = (activityType: StatsProps["type"], currentValue: 
 }
 
 export const ActivityPage = () => {
-   const [progress, setProgress] = useState<number>(0);
    const [editProgress, setEditProgress] = useState(false);
    const [cellInfo, setCellInfo] = useState<CellInfo>({date: "00-00-00"});
    const activeActivity = useAppSelector(getActiveActivity);
@@ -65,17 +64,16 @@ export const ActivityPage = () => {
    const handleIncreaseProgress = useCallback(() => {
       if (cellInfo && cellInfo.date) {
          let currentValue = activeActivity.activity.currentValue;
-         currentValue += activeActivity.activity.type === "Days" ? 1 : progress;
-         const calendarEntries = updateCell(cellInfo.date, {...cellInfo, marked: !cellInfo.marked, progress});
+         currentValue += activeActivity.activity.type === "Days" ? 1 : cellInfo?.progress ?? 0;
+         const calendarEntries = updateCell(cellInfo.date, {...cellInfo, marked: !cellInfo.marked});
          dispatch(updateActivity({
             activityIndex: activeActivity.index,
             activity: {...activeActivity.activity, currentValue, calendarEntries}
          }));
          dispatch(increaseActivityProgress({activityIndex: activeActivity.index, currentValue}));
          setEditProgress(false);
-         setProgress(0);
       }
-   }, [activeActivity, progress, cellInfo]);
+   }, [activeActivity, cellInfo]);
 
    const handleDeleteProgress = useCallback(() => {
       const currentValue = activeActivity.activity.type === "Days" ? activeActivity.activity.currentValue - 1 : activeActivity.activity.currentValue + (cellInfo?.progress ?? 0) * -1;
@@ -94,12 +92,12 @@ export const ActivityPage = () => {
       setEditProgress(false);
    }, [updateCell, activeActivity, cellInfo]);
 
-   const handleProgressChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-      const parsedNum = parseInt(e.target.value);
-      if (isNaN(parsedNum) && -1) {
-         setProgress(0);
-      } else {
-         setProgress(parsedNum);
+   const handleProgressChange = useCallback((value: string) => {
+      const parsedNum = parseInt(value);
+      if (!isNaN(parsedNum) && parsedNum !== -1) {
+         setCellInfo(current => {
+            return {...current, progress: parsedNum}
+         });
       }
    }, []);
 
@@ -137,7 +135,7 @@ export const ActivityPage = () => {
             className={cssClasses.title}>{getTitleByActivityType(activeActivity.activity.type, activeActivity.activity.currentValue, activeActivity.activity.name)}</div>
          <Calendar onClick={handleCalendarClick}/>
          {editProgress && <Modal onClose={() => setEditProgress(false)} open={editProgress}>
-             <OpenedActivity activity={activeActivity.activity} progress={progress} cellInfo={cellInfo}
+             <OpenedActivity activity={activeActivity.activity} cellInfo={cellInfo}
                              onProgressChange={handleProgressChange} onIncreaseProgress={handleIncreaseProgress}
                              onDecreaseProgress={handleDeleteProgress} onInfoChange={handleInfoChange}/>
          </Modal>}

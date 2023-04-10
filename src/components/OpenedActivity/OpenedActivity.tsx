@@ -6,14 +6,14 @@ import {useMemo} from "react";
 import {ConfirmButton} from "../basicComponents/ConfirmButton/ConfirmButton";
 import {TextArea} from "../basicComponents/TextArea/TextArea";
 import {getDisplayDate} from "../calendar/utils";
+import {Input} from "../basicComponents/Input/Input";
 
 export type CellInfo =
    { date: DateType, marked?: boolean, progress?: number, info?: string, interactable?: boolean };
 
 interface OpenedActivityProps {
    activity: StatsProps,
-   progress: number,
-   onProgressChange: (e: React.ChangeEvent<HTMLInputElement>) => void,
+   onProgressChange: (value: string) => void,
    onIncreaseProgress: () => void;
    onDecreaseProgress: () => void;
    onInfoChange?: (info: string) => void;
@@ -28,7 +28,6 @@ const getShowProgress = (type: StatsProps["type"]) => {
 
 export const OpenedActivity = ({
                                   activity,
-                                  progress,
                                   cellInfo,
                                   onInfoChange,
                                   onProgressChange,
@@ -39,9 +38,10 @@ export const OpenedActivity = ({
    return <div className={cssClasses.wrapper}>
       <div className={cssClasses.title}>{activity.name} on {getDisplayDate(cellInfo?.date)}</div>
       <div>
-         {showProgress && <div>Progress: {cellInfo?.progress}</div>}
-         {showProgress &&
-             <input type={"text"} value={progress} onChange={onProgressChange}></input>}
+         {cellInfo.marked && showProgress && <div>Progress: {cellInfo?.progress}</div>}
+         {!cellInfo.marked && showProgress &&
+             <Input label={"Type in your progress"} type={"number"} value={cellInfo?.progress}
+                    onChange={onProgressChange}></Input>}
          <TextArea label={"Notes"} initialValue={cellInfo?.info} onChange={onInfoChange}/>
       </div>
       <div className={cssClasses.buttons}>
