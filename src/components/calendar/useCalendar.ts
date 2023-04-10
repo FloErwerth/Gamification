@@ -5,7 +5,7 @@ import {getCreationDate} from "../../store/authentication/authSelectors";
 import {getActiveActivity} from "../../store/activity/activitySelector";
 import {getCalendarEntries} from "../../store/activities/activitiesSelectors";
 import {generateISOString} from "./utils";
-import {CellInfo} from "../OpenedActivity/OpenedActivity";
+import {CalendarType} from "../../store/activities/types";
 
 
 const gregorian = Temporal.Calendar.from('gregory');
@@ -23,13 +23,23 @@ const getShowJump = (month: number) => {
 }
 
 const getDate = (day: number, year: number, month: number) => {
-   return gregorian.dateFromFields({day, year, month}).toLocaleString();
+   return generateISOString(gregorian.dateFromFields({day, year, month}).toLocaleString());
 }
-const staticNumberOfDaysShownFromPreviousMonth = 2;
+
+function getDates(date: Temporal.ZonedDateTime) {
+   let day = 1;
+   const daysInMonth = gregorian.daysInMonth(date);
+   const singleDays = Array(daysInMonth).fill(0).map(() => day++);
+   return singleDays.map((day) => getDate(day, date.year, date.month));
+}
+
+function getClampedDays(date: Temporal.ZonedDateTime, startIndex: number, numberOfDates: number) {
+   return getDates(date).slice(startIndex, startIndex + numberOfDates);
+}
 
 export const useCalendar = () => {
    const [shownDate, setShownDate] = useState(Temporal.Now.zonedDateTime(gregorian));
-   const [currentCalendarEntries, setCurrentCalendarEntries] = useState<CellInfo[]>([]);
+   const [producedCalendar, setProducedCalendar] = useState<CalendarType>({});
    const creationDate = useAppSelector(getCreationDate);
    const [showNextMonth, setShowNextMonth] = useState(getShowNextMonth(shownDate.month));
    const activtiyIndex = useAppSelector(getActiveActivity).index;
@@ -37,63 +47,44 @@ export const useCalendar = () => {
    const [showPreviousMonth, setShowPreviousMonth] = useState(getShowPreviousMonth(shownDate.month, creationDate));
    const [showJump, setShowJump] = useState(getShowJump(shownDate.month));
 
-   useEffect(() => {
-      const calendar = [...currentCalendarEntries] ?? [];
-      for (let i = 0; i < currentCalendarEntries.length; i++) {
-         if (currentCalendarEntries[i]?.date) {
-            const currentEntry = calendarEntries[generateISOString(currentCalendarEntries[i].date)];
-            if (currentEntry && calendar[i]) {
-               calendar[i].marked = currentEntry.marked ?? false;
-               calendar[i].progress = currentEntry.progress;
-               calendar[i].info = currentEntry.info ?? undefined;
-            } else {
-               calendar[i] = {
-                  date: currentCalendarEntries[i]?.date,
-                  marked: false,
-                  progress: undefined,
-                  interactable: currentCalendarEntries[i]?.interactable ?? undefined,
-                  info: currentCalendarEntries[i]?.info ?? undefined
-               };
+   const constructCalendar = useCallback(() => {
+      const calendar: CalendarType = {};
+      const daysInCurrentMonth = gregorian.daysInMonth(shownDate);
+      const previousMonth = Temporal.ZonedDateTime.from(shownDate).subtract({months: 1});
+      const nextMonth = Temporal.ZonedDateTime.from(shownDate).add({months: 1});
+      const spaceInCalendar = 35;
+      const fillableSpace = spaceInCalendar - daysInCurrentMonth;
+      const numberDatesInFront = Math.ceil(fillableSpace / 2);
+      const numberDatesInBack = fillableSpace - numberDatesInFront;
+      const startDayIndex = gregorian.daysInMonth(previousMonth) - numberDatesInFront;
+      const dates = getClampedDays(previousMonth, startDayIndex, numberDatesInFront).concat(getDates(shownDate)).concat(getClampedDays(nextMonth, 0, numberDatesInBack));
+
+      for (let i = 0; i < dates.length; i++) {
+         const existentCellInfos = calendarEntries[dates[i]];
+         const fNotInteract = i >= numberDatesInFront;
+         const bNotInteract = i < dates.length - numberDatesInBack;
+         const interactable = fNotInteract && bNotInteract;
+         if (existentCellInfos) {
+            calendar[dates[i]] = {...existentCellInfos, interactable};
+         } else {
+            calendar[dates[i]] = {
+               marked: false,
+               interactable,
             }
          }
       }
-      setCurrentCalendarEntries(calendar);
+      setProducedCalendar(calendar);
+   }, [shownDate, calendarEntries])
+
+   useEffect(() => {
+      constructCalendar();
    }, [calendarEntries])
-
-   const constructCalendar = useCallback(() => {
-      const calendar: CellInfo[] = [];
-      const totalDays = 35;
-      const daysInCurrentMonth = gregorian.daysInMonth(shownDate);
-      const daysFromNextMonth = totalDays - staticNumberOfDaysShownFromPreviousMonth - daysInCurrentMonth;
-      const previousMonth = Temporal.PlainDate.from(shownDate).subtract({months: 1});
-      const daysFromPreviousMonth = gregorian.daysInMonth(previousMonth);
-      const nextMonth = Temporal.PlainDate.from(shownDate).add({months: 1});
-
-      for (let previousMonthDay = daysFromPreviousMonth; previousMonthDay > daysFromPreviousMonth - staticNumberOfDaysShownFromPreviousMonth; previousMonthDay--) {
-         const date = getDate(previousMonthDay, previousMonth.year, previousMonth.month);
-         calendar.push({date: generateISOString(date), interactable: false});
-      }
-      for (let day = 1; day <= daysInCurrentMonth; day++) {
-         const date = getDate(day, shownDate.year, shownDate.month);
-         const entry = calendarEntries?.[generateISOString(date)];
-         if (entry) {
-            calendar.push({date: generateISOString(date), marked: entry.marked, progress: entry.progress});
-         } else {
-            calendar.push({date: generateISOString(date)});
-         }
-      }
-      for (let nextMonthDay = 1; nextMonthDay <= daysFromNextMonth; nextMonthDay++) {
-         const date = getDate(nextMonthDay, nextMonth.year, nextMonth.month);
-         calendar.push({date: generateISOString(date), interactable: false});
-      }
-      return calendar;
-   }, [shownDate])
 
    useEffect(() => {
       setShowPreviousMonth(getShowPreviousMonth(shownDate.month, creationDate));
       setShowNextMonth(getShowNextMonth(shownDate.month));
       setShowJump(getShowJump(shownDate.month));
-      setCurrentCalendarEntries(constructCalendar());
+      constructCalendar();
    }, [shownDate]);
 
    const decreaseMonth = useCallback(() => {
@@ -116,5 +107,5 @@ export const useCalendar = () => {
       setShownDate(Temporal.Now.zonedDateTime(gregorian));
    }, []);
 
-   return [currentCalendarEntries, showPreviousMonth, showNextMonth, showJump, decreaseMonth, increaseMonth, thisMonth] as const;
+   return [producedCalendar, showPreviousMonth, showNextMonth, showJump, decreaseMonth, increaseMonth, thisMonth] as const;
 }

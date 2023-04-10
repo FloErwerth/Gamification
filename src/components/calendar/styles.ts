@@ -1,5 +1,13 @@
 import {style} from "../../utils/styleUtils";
 
+const getBackgroundColor = (marked: boolean, interactable: boolean) => {
+   if (marked) {
+      return interactable ? "lightcoral" : "rgb(220, 180, 180)";
+   } else {
+      return interactable ? "" : "rgb(232,232,232)";
+   }
+}
+
 export const cellStyles = (marked: boolean, interactable: boolean) => style({
    calendarCell: {
       all: "unset",
@@ -7,7 +15,7 @@ export const cellStyles = (marked: boolean, interactable: boolean) => style({
       borderRadius: 5,
       height: "clamp(1vw, 1.5vw, 2vw)",
       textAlign: "center",
-      backgroundColor: marked ? "lightcoral" : interactable ? "" : "rgb(232,232,232)",
+      backgroundColor: getBackgroundColor(marked, interactable),
       color: interactable ? "black" : "rgb(200,200,200)",
       ":hover": {
          backgroundColor: interactable ? "coral" : "",

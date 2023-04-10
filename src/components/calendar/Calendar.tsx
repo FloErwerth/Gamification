@@ -12,27 +12,28 @@ interface CalendarProps {
 }
 
 interface CalendarCell extends CalendarProps {
-   calendarObject: CellInfo
+   date: DateType,
+   calendarObject: Omit<CellInfo, "date">
 }
 
 
-const CalendarCell = ({onClick, calendarObject}: CalendarCell) => {
+const CalendarCell = ({onClick, calendarObject, date}: CalendarCell) => {
    const cssClasses = useMemo(() => getClasses(cellStyles(calendarObject?.marked ?? false, calendarObject?.interactable ?? true)), [calendarObject, calendarObject?.marked]);
    return <button disabled={!calendarObject?.interactable && calendarObject?.interactable === false}
-                  onClick={() => onClick(calendarObject.date, calendarObject?.marked ?? false, calendarObject?.progress, calendarObject.info)}
+                  onClick={() => onClick(date, calendarObject?.marked ?? false, calendarObject?.progress, calendarObject.info)}
                   className={cssClasses.calendarCell}>
-      <div>{getDisplayDate(calendarObject?.date)}</div>
+      <div>{getDisplayDate(date)}</div>
    </button>;
 }
 
 const calendarClasses = getClasses(styles);
 export const Calendar = ({onClick}: CalendarProps) => {
    const [currentCalendar, showPreviousMonth, showNextMonth, showJump, decreaseMonth, increaseMonth, thisMonth] = useCalendar();
-
    return <div className={calendarClasses.mainWrapper}>
-      <div className={calendarClasses.calendarWrapper}>{currentCalendar.map((calendarObject) => {
+      <div className={calendarClasses.calendarWrapper}>{Object.keys(currentCalendar).map((date, index) => {
+         const typedDate = date as DateType;
          return <CalendarCell
-            calendarObject={calendarObject} onClick={onClick}/>
+            date={typedDate} calendarObject={currentCalendar[typedDate]} onClick={onClick}/>
       })}
       </div>
       <div className={calendarClasses.calendarButtons}><Button
