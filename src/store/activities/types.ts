@@ -1,4 +1,5 @@
 import {z} from "zod";
+import {CellInfo} from "../../components/OpenedActivity/OpenedActivity";
 
 export const ACTIVITY_TYPE = z.enum([
    "Minutes",
@@ -17,7 +18,7 @@ export type ActivityIncrease = z.infer<typeof ACTIVITY_INCREASE_TYPES>;
 
 
 export type DateType = `${string}-${string}-${string}`;
-export type CalendarType = { [date: DateType]: { marked: boolean, progress?: number } };
+export type CalendarType = { [date: DateType]: Omit<CellInfo, "date"> };
 export type StatsProps = {
    currentValue: number;
    maxValue: number;

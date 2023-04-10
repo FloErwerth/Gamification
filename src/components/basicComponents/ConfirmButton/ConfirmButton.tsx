@@ -3,7 +3,6 @@ import {useEffect, useMemo, useRef, useState} from "react";
 import {getClasses} from "../../../utils/styleUtils";
 import {styles} from "./styles";
 
-const confirmTime = 1000;
 const intervalTime = 10;
 
 interface ConfirmButtonProps extends ButtonProps {
@@ -11,6 +10,7 @@ interface ConfirmButtonProps extends ButtonProps {
    textColor?: string;
    backgroundColor?: string;
    hoverColor?: string;
+   confirmTime?: number;
 }
 
 export const ConfirmButton = ({
@@ -20,6 +20,7 @@ export const ConfirmButton = ({
                                  textColor = "black",
                                  backgroundColor = "white",
                                  hoverColor = "lightgray",
+                                 confirmTime = 1000,
                               }: ConfirmButtonProps) => {
 
    const [timeProgess, setTimeProgress] = useState(0);

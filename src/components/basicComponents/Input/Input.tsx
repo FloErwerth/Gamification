@@ -1,4 +1,4 @@
-import {HTMLInputTypeAttribute, PropsWithChildren, useMemo, useRef, useState} from "react";
+import {HTMLInputTypeAttribute, PropsWithChildren, useId, useMemo, useRef, useState} from "react";
 import {cx} from "@emotion/css";
 import {getClasses} from "../../../utils/styleUtils";
 import {inputStyles} from "./inputStyles";
@@ -8,7 +8,6 @@ import {SafeParseReturnType} from "zod";
 type InputValues = string | number | string[] | undefined
 
 export interface InputProps extends PropsWithChildren {
-   id: string;
    onChange: (value: string) => void;
    value: InputValues;
    label?: string;
@@ -41,7 +40,6 @@ export const Input = ({
                          onChange,
                          value,
                          label,
-                         id,
                          customWrapperClasses,
                          type = "text",
                          required = false,
@@ -51,7 +49,7 @@ export const Input = ({
    const wrapperClasses = useMemo(() => cx(cssClasses.inputWrapper, customWrapperClasses, {[cssClasses.error]: validationResult && !validationResult.success}), [cssClasses.input, customWrapperClasses, validationResult]);
    const [showPW, setShowPW] = useState(false);
    const inputRef = useRef<HTMLInputElement>(null);
-
+   const id = useId();
 
    return <div>
       {label && <label className={cssClasses.label} htmlFor={id}>{label}</label>}

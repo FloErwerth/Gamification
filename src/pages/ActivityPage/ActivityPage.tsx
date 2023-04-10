@@ -1,5 +1,4 @@
 import {useCallback, useEffect, useState} from "react";
-import {getActiveActivity} from "../../store/activity/activitySelector";
 import {useAppDispatch, useAppSelector} from "../../store/store";
 import {getClasses} from "../../utils/styleUtils";
 import {styles} from "./styles";
@@ -7,11 +6,11 @@ import {
    decreaseActivityProgress,
    increaseActivityProgress,
    setActivities,
-   updateActivity
+   updateActivity,
+   updateAdditionalCellInfo
 } from "../../store/activities/activitiesActions";
 import {useNavigate} from "react-router-dom";
 import {Pages} from "../../types/pages";
-import {getActivities} from "../../store/activities/activitiesSelectors";
 import {updateActivitiesInDatabase} from "../../../firebase";
 import {getUserId} from "../../store/authentication/authSelectors";
 import {Calendar} from "../../components/calendar/Calendar";
@@ -19,6 +18,9 @@ import {DateType, StatsProps} from "../../store/activities/types";
 import {Modal} from "../../components/basicComponents/Modal/Modal";
 import {CellInfo, OpenedActivity} from "../../components/OpenedActivity/OpenedActivity";
 import {ConfirmButton} from "../../components/basicComponents/ConfirmButton/ConfirmButton";
+import produce from "immer";
+import {getActiveActivity} from "../../store/activity/activitySelector";
+import {getActivities} from "../../store/activities/activitiesSelectors";
 
 const cssClasses = getClasses(styles);
 
@@ -32,13 +34,12 @@ const getTitleByActivityType = (activityType: StatsProps["type"], currentValue: 
 export const ActivityPage = () => {
    const [progress, setProgress] = useState<number>(0);
    const [editProgress, setEditProgress] = useState(false);
-   const [cellInfo, setCellInfo] = useState<CellInfo>();
+   const [cellInfo, setCellInfo] = useState<CellInfo>({date: "00-00-00"});
    const activeActivity = useAppSelector(getActiveActivity);
    const uid = useAppSelector(getUserId);
    const activities = useAppSelector(getActivities);
    const dispatch = useAppDispatch();
    const navigate = useNavigate();
-   const [deleteWarningOpen, setDeleteWarningOpen] = useState(false);
 
    useEffect(() => {
       return () => {
@@ -50,24 +51,27 @@ export const ActivityPage = () => {
       return {...activeActivity.activity.calendarEntries}
    }, [activeActivity]);
 
-   const updateCell = useCallback((date: DateType, content: { marked?: boolean, progress?: number }): StatsProps["calendarEntries"] => {
-      const cells = getCalendarEntries();
-      if (date && content) {
-         cells[date] = {marked: content.marked ?? false, progress: content.progress};
-      }
-      return cells;
+   const updateCell = useCallback((date: DateType, content: Partial<Omit<CellInfo, "date">>, hard?: boolean): StatsProps["calendarEntries"] => {
+      return produce(getCalendarEntries(), newCells => {
+         if (hard && hard) {
+            {
+               newCells[date] = content;
+            }
+         }
+         newCells[date] = {...newCells[date], ...content} ?? {...content};
+      });
    }, [activeActivity, getCalendarEntries])
 
    const handleIncreaseProgress = useCallback(() => {
       if (cellInfo && cellInfo.date) {
          let currentValue = activeActivity.activity.currentValue;
          currentValue += activeActivity.activity.type === "Days" ? 1 : progress;
-         const calendarEntries = updateCell(cellInfo.date, {marked: cellInfo.marked, progress});
+         const calendarEntries = updateCell(cellInfo.date, {...cellInfo, marked: !cellInfo.marked});
          dispatch(updateActivity({
-            index: activeActivity.index,
+            activityIndex: activeActivity.index,
             activity: {...activeActivity.activity, currentValue, calendarEntries}
          }));
-         dispatch(increaseActivityProgress({index: activeActivity.index, currentValue}))
+         dispatch(increaseActivityProgress({activityIndex: activeActivity.index, currentValue}));
          setEditProgress(false);
          setProgress(0);
       }
@@ -76,15 +80,16 @@ export const ActivityPage = () => {
    const handleDeleteProgress = useCallback(() => {
       const currentValue = activeActivity.activity.type === "Days" ? activeActivity.activity.currentValue - 1 : activeActivity.activity.currentValue + (cellInfo?.progress ?? 0) * -1;
       if (cellInfo?.date) {
-         const calendarEntries = updateCell(cellInfo?.date, {marked: false})
+         const calendarEntries = updateCell(cellInfo?.date, {marked: false}, true)
          const updatedActivity = {
             ...activeActivity.activity,
             currentValue,
             calendarEntries,
-            progress: cellInfo?.progress
+            progress: cellInfo?.progress,
          }
-         dispatch(updateActivity({index: activeActivity.index, activity: updatedActivity}))
-         dispatch(decreaseActivityProgress({index: activeActivity.index, currentValue}))
+         setCellInfo({date: "00-00-00"})
+         dispatch(updateActivity({activityIndex: activeActivity.index, activity: updatedActivity}))
+         dispatch(decreaseActivityProgress({activityIndex: activeActivity.index, currentValue}))
       }
       setEditProgress(false);
    }, [updateCell, activeActivity, cellInfo]);
@@ -99,7 +104,6 @@ export const ActivityPage = () => {
    }, []);
 
    const handleDeletion = useCallback((deleteConfirmed: boolean) => {
-      setDeleteWarningOpen(false);
       if (deleteConfirmed) {
          const newActivitires = activities.filter((activity) => !Object.values(activity).every((val, index) => val === Object.values(activeActivity.activity)[index]))
          updateActivitiesInDatabase(uid, newActivitires).then(() => {
@@ -109,14 +113,23 @@ export const ActivityPage = () => {
       }
    }, [uid, activeActivity, activities]);
 
-   const handleCalendarClick = useCallback((date: DateType, marked: boolean, progress?: number) => {
-      setCellInfo({date, marked, progress});
+   const handleCalendarClick = useCallback((date: DateType, marked: boolean, progress?: number, info?: string) => {
+      setCellInfo({date, marked, progress, info});
       setEditProgress(true);
    }, [editProgress]);
 
    if (!activeActivity || !activeActivity.activity) {
       return null;
    }
+   const handleInfoChange = useCallback((info: string) => {
+      if (cellInfo) {
+         const newCellInfo = produce(cellInfo, newCellInfo => {
+            return {...newCellInfo, info}
+         });
+         setCellInfo(newCellInfo);
+         dispatch(updateAdditionalCellInfo({activityIndex: activeActivity.index, info, date: cellInfo.date}))
+      }
+   }, [cellInfo]);
 
    return (
       <div className={cssClasses.wrapper}>
@@ -126,7 +139,7 @@ export const ActivityPage = () => {
          {editProgress && <Modal onClose={() => setEditProgress(false)} open={editProgress}>
              <OpenedActivity activity={activeActivity.activity} progress={progress} cellInfo={cellInfo}
                              onProgressChange={handleProgressChange} onIncreaseProgress={handleIncreaseProgress}
-                             onDecreaseProgress={handleDeleteProgress}/>
+                             onDecreaseProgress={handleDeleteProgress} onInfoChange={handleInfoChange}/>
          </Modal>}
          <ConfirmButton
             hoverColor={"rgba(255,50,50,0.8)"} backgroundColor={"rgba(255,150,150,0.8)"} barColor={"red"}

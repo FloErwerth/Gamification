@@ -5,6 +5,7 @@ import {getCreationDate} from "../../store/authentication/authSelectors";
 import {getActiveActivity} from "../../store/activity/activitySelector";
 import {getCalendarEntries} from "../../store/activities/activitiesSelectors";
 import {generateISOString} from "./utils";
+import {CellInfo} from "../OpenedActivity/OpenedActivity";
 
 
 const gregorian = Temporal.Calendar.from('gregory');
@@ -28,7 +29,7 @@ const staticNumberOfDaysShownFromPreviousMonth = 2;
 
 export const useCalendar = () => {
    const [shownDate, setShownDate] = useState(Temporal.Now.zonedDateTime(gregorian));
-   const [currentCalendar, setCurrentCalendar] = useState<{ date: string, marked?: boolean, progress?: number, interactable?: boolean }[]>([]);
+   const [currentCalendarEntries, setCurrentCalendarEntries] = useState<CellInfo[]>([]);
    const creationDate = useAppSelector(getCreationDate);
    const [showNextMonth, setShowNextMonth] = useState(getShowNextMonth(shownDate.month));
    const activtiyIndex = useAppSelector(getActiveActivity).index;
@@ -37,28 +38,30 @@ export const useCalendar = () => {
    const [showJump, setShowJump] = useState(getShowJump(shownDate.month));
 
    useEffect(() => {
-      const calendar = [...currentCalendar];
-      for (let i = 0; i < currentCalendar.length; i++) {
-         if (currentCalendar[i].date) {
-            const currentEntry = calendarEntries[generateISOString(currentCalendar[i].date)];
-            if (currentEntry) {
+      const calendar = [...currentCalendarEntries] ?? [];
+      for (let i = 0; i < currentCalendarEntries.length; i++) {
+         if (currentCalendarEntries[i]?.date) {
+            const currentEntry = calendarEntries[generateISOString(currentCalendarEntries[i].date)];
+            if (currentEntry && calendar[i]) {
                calendar[i].marked = currentEntry.marked ?? false;
                calendar[i].progress = currentEntry.progress;
+               calendar[i].info = currentEntry.info ?? undefined;
             } else {
                calendar[i] = {
-                  date: currentCalendar[i].date,
+                  date: currentCalendarEntries[i]?.date,
                   marked: false,
                   progress: undefined,
-                  interactable: currentCalendar[i].interactable ?? undefined
+                  interactable: currentCalendarEntries[i]?.interactable ?? undefined,
+                  info: currentCalendarEntries[i]?.info ?? undefined
                };
             }
          }
       }
-      setCurrentCalendar(calendar);
+      setCurrentCalendarEntries(calendar);
    }, [calendarEntries])
 
    const constructCalendar = useCallback(() => {
-      const calendar: { date: string, marked?: boolean, progress?: number, interactable?: boolean }[] = [];
+      const calendar: CellInfo[] = [];
       const totalDays = 35;
       const daysInCurrentMonth = gregorian.daysInMonth(shownDate);
       const daysFromNextMonth = totalDays - staticNumberOfDaysShownFromPreviousMonth - daysInCurrentMonth;
@@ -68,20 +71,20 @@ export const useCalendar = () => {
 
       for (let previousMonthDay = daysFromPreviousMonth; previousMonthDay > daysFromPreviousMonth - staticNumberOfDaysShownFromPreviousMonth; previousMonthDay--) {
          const date = getDate(previousMonthDay, previousMonth.year, previousMonth.month);
-         calendar.push({date, interactable: false});
+         calendar.push({date: generateISOString(date), interactable: false});
       }
       for (let day = 1; day <= daysInCurrentMonth; day++) {
          const date = getDate(day, shownDate.year, shownDate.month);
          const entry = calendarEntries?.[generateISOString(date)];
          if (entry) {
-            calendar.push({date, marked: entry.marked, progress: entry.progress});
+            calendar.push({date: generateISOString(date), marked: entry.marked, progress: entry.progress});
          } else {
-            calendar.push({date});
+            calendar.push({date: generateISOString(date)});
          }
       }
       for (let nextMonthDay = 1; nextMonthDay <= daysFromNextMonth; nextMonthDay++) {
          const date = getDate(nextMonthDay, nextMonth.year, nextMonth.month);
-         calendar.push({date, interactable: false});
+         calendar.push({date: generateISOString(date), interactable: false});
       }
       return calendar;
    }, [shownDate])
@@ -90,7 +93,7 @@ export const useCalendar = () => {
       setShowPreviousMonth(getShowPreviousMonth(shownDate.month, creationDate));
       setShowNextMonth(getShowNextMonth(shownDate.month));
       setShowJump(getShowJump(shownDate.month));
-      setCurrentCalendar(constructCalendar());
+      setCurrentCalendarEntries(constructCalendar());
    }, [shownDate]);
 
    const decreaseMonth = useCallback(() => {
@@ -113,5 +116,5 @@ export const useCalendar = () => {
       setShownDate(Temporal.Now.zonedDateTime(gregorian));
    }, []);
 
-   return [currentCalendar, showPreviousMonth, showNextMonth, showJump, decreaseMonth, increaseMonth, thisMonth] as const;
+   return [currentCalendarEntries, showPreviousMonth, showNextMonth, showJump, decreaseMonth, increaseMonth, thisMonth] as const;
 }

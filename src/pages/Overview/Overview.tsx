@@ -25,7 +25,6 @@ export const Overview = () => {
             <InputWithDelete
                placeholder={"Filter activities"}
                type="text"
-               id="Search"
                customWrapperClasses={css({outlineColor: "rgb(100,200,200)"})}
                value={filter}
                onChange={(value) => setFilter(value)}

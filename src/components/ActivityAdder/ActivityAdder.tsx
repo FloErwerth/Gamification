@@ -71,7 +71,6 @@ const AddActivityModalContent = ({
       <div className={cssClasses.modalWrapper}>
          <div>Add an activity</div>
          <Input
-            id={"activity_name"}
             customWrapperClasses={cssClasses.input}
             label={"Activity Name"}
             onChange={(value) => setActivityName(value)}
@@ -94,7 +93,7 @@ const AddActivityModalContent = ({
             }
          />
          {increasement === "Factor" &&
-             <Input customWrapperClasses={cssClasses.input} id={"increasement_factor"}
+             <Input customWrapperClasses={cssClasses.input}
                     onChange={handleSetIncreasementFactor}
                     value={increasementFactor} type={"number"} placeholder={"Factor bigger or equal 2"}/>}
          <Button onClick={handleCreation}>Create Activity</Button>
