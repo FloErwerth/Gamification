@@ -1,13 +1,13 @@
 import {getClasses} from "../../utils/styleUtils";
 import {useCallback} from "react";
 import {wrapperStyles} from "./styles";
-import {Button} from "../basicComponents/Button/Button";
 import {useAppDispatch} from "../../store/store";
 import {useNavigate} from "react-router-dom";
 import {Pages} from "../../types/pages";
 import {Activity} from "./Activitiy";
 import {StatsProps} from "../../store/activities/types";
 import {setActiveActivity} from "../../store/activity/activityActions";
+import {Button} from "../basicComponents/Button/Button";
 
 const wrapperClasses = getClasses(wrapperStyles);
 export const ActivityWrapper = ({
@@ -29,7 +29,7 @@ export const ActivityWrapper = ({
 
    return (
       <Button className={wrapperClasses.activityWrapper} onClick={openActivity}>
-         {name}
+         <div className={wrapperClasses.text}>{name}</div>
          <Activity
             currentValue={currentValue}
             maxValue={maxValue}

@@ -2,37 +2,46 @@ import {style} from "../../utils/styleUtils";
 
 export const landingPageStyles = style({
    wrapper: {
-      margin: "auto",
       display: "flex",
-      height: "calc(96vh - 70px)",
       flexDirection: "column",
-      justifyContent: "center",
       alignItems: "center",
-      gap: 20,
+      justifyContent: "center", textAlign: "center",
+      gap: 40,
+   },
+   section1: {
+      zIndex: -1,
+      transform: "rotate(3deg)",
+      background: "rgba(0,120,255,0.5)",
+      width: "150vw",
+      height: 220,
+      display: "flex",
+      position: "absolute",
+      justifyContent: "center",
+      top: 450,
+   },
+   grid3: {
+      display: "grid",
+      width: 800,
+      gridTemplateColumns: "repeat(3, 33%)",
+      gap: 10,
+      marginTop: 80,
+   },
+   game: {
+      textDecoration: "underline",
+      textUnderlinePosition: "under",
+      textDecorationColor: "#0078FF"
    },
    title: {
-      fontSize: 80,
+      fontSize: 48,
       marginBlock: 0,
       textAlign: "center",
    },
-   button: {
-      borderRadius: 35,
-      width: 200,
-      height: 70,
-      fontSize: 30,
-      marginTop: 30,
-      backgroundColor: "rgb(150, 200, 200)",
-      ":hover": {
-         backgroundColor: "rgba(0, 200,200)",
-      }
+   text: {
+      width: "80%",
    },
-   userbutton: {
-      borderRadius: 35,
-      outline: "1px solid rgb(100,200,200)",
-      width: 200,
-      height: 70,
-      ":hover": {
-         backgroundColor: "rgba(100,200,200,0.5)",
-      }
-   }
+   button: {
+      width: 115,
+      height: 35,
+      fontSize: 15,
+   },
 })

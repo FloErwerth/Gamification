@@ -7,7 +7,6 @@ const cssClasses = getClasses(inputStyles);
 
 
 export const InputWithDelete = ({
-                                   id,
                                    onChange,
                                    value,
                                    validationResult,
@@ -18,12 +17,15 @@ export const InputWithDelete = ({
                                    customWrapperClasses,
                                    children,
                                 }: InputProps) => {
-   return <div className={cssClasses.inputWithDeleteWrapper}><Input id={id} onChange={onChange} value={value}
-                                                                    validationResult={validationResult} label={label}
-                                                                    placeholder={placeholder} type={type}
-                                                                    required={required}
-                                                                    customWrapperClasses={customWrapperClasses}>{children}</Input>
-      {value && <button className={cssClasses.delete} onClick={() => onChange("")}><Close className={cssClasses.icon}/>
-      </button>}
+   return <div className={cssClasses.inputWithDeleteWrapper}>
+      <Input onChange={onChange} value={value}
+             validationResult={validationResult} label={label}
+             placeholder={placeholder} type={type}
+             required={required}
+             customWrapperClasses={customWrapperClasses}>{children}</Input>
+      {value && <>
+          <button className={cssClasses.delete} onClick={() => onChange("")}><Close className={cssClasses.icon}/>
+          </button>
+      </>}
    </div>
 }

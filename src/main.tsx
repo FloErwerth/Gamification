@@ -5,9 +5,7 @@ import {LandingPage} from "./pages";
 import {Header} from "./components/header/Header";
 import {getClasses} from "./utils/styleUtils";
 import {mainStyles} from "./mainStyles";
-import {LoginPage} from "./pages/LoginPage/LoginPage";
 import {Pages} from "./types/pages";
-import {RegisterPage} from "./pages/RegisterPage/RegisterPage";
 import {Overview} from "./pages/Overview/Overview";
 import {Provider} from "react-redux";
 import {store, useAppSelector} from "./store/store";
@@ -25,10 +23,8 @@ const App = () => {
             <Header/>
             <Routes>
                <Route element={isLoggedIn ? <Navigate to={Pages.OVERVIEW}/> : <LandingPage/>} path={Pages.HOME}/>
-               <Route element={<LoginPage/>} path={Pages.LOGIN}/>
-               <Route element={<RegisterPage/>} path={Pages.REGISTER}/>
                <Route
-                  element={isLoggedIn ? <Overview/> : <Navigate to={Pages.LOGIN}/>}
+                  element={isLoggedIn ? <Overview/> : <Navigate to={Pages.HOME}/>}
                   path={Pages.OVERVIEW}
                />
                <Route element={<Dashboard/>} path={Pages.DASHBOARD}/>

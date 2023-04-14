@@ -38,13 +38,15 @@ export const ActivityPage = () => {
    const uid = useAppSelector(getUserId);
    const activities = useAppSelector(getActivities);
    const dispatch = useAppDispatch();
-   const navigate = useNavigate();
+   const navigate = useNavigate()
 
    useEffect(() => {
       return () => {
-         updateActivitiesInDatabase(uid, activities).then();
+         if (document.location.href.split("//")[1].replace(document.location.host, "") === Pages.OVERVIEW) {
+            updateActivitiesInDatabase(uid, activities).then(() => console.log("updated activities!"))
+         }
       }
-   }, []);
+   }, [uid, activities])
 
    const getCalendarEntries = useCallback(() => {
       return {...activeActivity.activity.calendarEntries}
@@ -64,7 +66,7 @@ export const ActivityPage = () => {
    const handleIncreaseProgress = useCallback(() => {
       if (cellInfo && cellInfo.date) {
          let currentValue = activeActivity.activity.currentValue;
-         currentValue += activeActivity.activity.type === "Days" ? 1 : cellInfo?.progress ?? 0;
+         currentValue += cellInfo.progress ?? 0;
          const calendarEntries = updateCell(cellInfo.date, {...cellInfo, marked: !cellInfo.marked});
          dispatch(updateActivity({
             activityIndex: activeActivity.index,
@@ -99,7 +101,7 @@ export const ActivityPage = () => {
             return {...current, progress: parsedNum}
          });
       }
-   }, []);
+   }, [cellInfo]);
 
    const handleDeletion = useCallback((deleteConfirmed: boolean) => {
       if (deleteConfirmed) {
@@ -111,7 +113,7 @@ export const ActivityPage = () => {
       }
    }, [uid, activeActivity, activities]);
 
-   const handleCalendarClick = useCallback((date: DateType, marked: boolean, progress?: number, info?: string) => {
+   const handleCalendarClick = useCallback((date: DateType, marked: boolean, progress: number, info?: string) => {
       setCellInfo({date, marked, progress, info});
       setEditProgress(true);
    }, [editProgress]);
@@ -120,13 +122,10 @@ export const ActivityPage = () => {
       return null;
    }
    const handleInfoChange = useCallback((info: string) => {
-      if (cellInfo) {
-         const newCellInfo = produce(cellInfo, newCellInfo => {
-            return {...newCellInfo, info}
-         });
-         setCellInfo(newCellInfo);
-         dispatch(updateAdditionalCellInfo({activityIndex: activeActivity.index, info, date: cellInfo.date}))
-      }
+      setCellInfo((current) => {
+         return {...current, info}
+      })
+      dispatch(updateAdditionalCellInfo({activityIndex: activeActivity.index, info, date: cellInfo.date}))
    }, [cellInfo]);
 
    return (
@@ -134,16 +133,17 @@ export const ActivityPage = () => {
          <div
             className={cssClasses.title}>{getTitleByActivityType(activeActivity.activity.type, activeActivity.activity.currentValue, activeActivity.activity.name)}</div>
          <Calendar onClick={handleCalendarClick}/>
-         {editProgress && <Modal onClose={() => setEditProgress(false)} open={editProgress}>
-             <OpenedActivity activity={activeActivity.activity} cellInfo={cellInfo}
-                             onProgressChange={handleProgressChange} onIncreaseProgress={handleIncreaseProgress}
-                             onDecreaseProgress={handleDeleteProgress} onInfoChange={handleInfoChange}/>
-         </Modal>}
          <ConfirmButton
             hoverColor={"rgba(255,50,50,0.8)"} backgroundColor={"rgba(255,150,150,0.8)"} barColor={"red"}
             textColor={"black"}
             onClick={() => handleDeletion(true)}>Delete
             Activity</ConfirmButton>
+         {editProgress && <Modal onClose={() => setEditProgress(false)} open={editProgress}>
+             <OpenedActivity activity={activeActivity.activity} cellInfo={cellInfo}
+                             onProgressChange={handleProgressChange} onIncreaseProgress={handleIncreaseProgress}
+                             onDecreaseProgress={handleDeleteProgress} onInfoChange={handleInfoChange}/>
+         </Modal>}
       </div>
+
    );
 };

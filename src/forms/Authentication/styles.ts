@@ -1,15 +1,18 @@
 import {style} from "../../utils/styleUtils";
 
-export const loginStyles = style({
-   title: {
-      fontSize: 20,
-      fontWeight: "bold",
-      marginBottom: 10,
+export const styles = style({
+   wrapper: {
+      marginInline: 30,
+      marginBlock: 50,
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "space-evenly",
+      gap: 50,
    },
    buttonWrapper: {
       display: "flex",
       flexDirection: "column",
-      gap: 10,
+      gap: 15,
    },
    inputWrapper: {
       display: "flex",
@@ -21,9 +24,8 @@ export const loginStyles = style({
    },
    loginButton: {
       marginInline: "auto",
-      width: 290,
-      height: 45,
-      borderRadius: 22,
+      width: 90,
+      height: 25,
    },
    registerLink: {
       all: "unset",

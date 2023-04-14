@@ -51,12 +51,12 @@ export const Input = ({
    const inputRef = useRef<HTMLInputElement>(null);
    const id = useId();
 
-   return <div>
+   return <>
       {label && <label className={cssClasses.label} htmlFor={id}>{label}</label>}
       <div className={cssClasses.wrapper} onClick={() => inputRef.current?.focus()}>
          <div className={wrapperClasses}>
             <input placeholder={placeholder ? placeholder : ""} ref={inputRef}
-                   onChange={(value) => onChange(value.target.value)} value={value} required={required}
+                   onChange={(e) => onChange(e.target.value)} value={value} required={required}
                    type={showPW ? "text" : type} className={cssClasses.input} name={id} id={id}/>
             {type === "password" && value && <PasswordVisibiltyToggler setShow={setShowPW} show={showPW}/>}
          </div>
@@ -64,5 +64,5 @@ export const Input = ({
              <div
                  className={cssClasses.errorMessage}>{(validationResult && validationResult.error.errors.map((error) => error.message).join("\n")) ?? getErrorText(type)}</div>}
       </div>
-   </div>
+   </>
 }

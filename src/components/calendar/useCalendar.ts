@@ -52,10 +52,10 @@ export const useCalendar = () => {
       const daysInCurrentMonth = gregorian.daysInMonth(shownDate);
       const previousMonth = Temporal.ZonedDateTime.from(shownDate).subtract({months: 1});
       const nextMonth = Temporal.ZonedDateTime.from(shownDate).add({months: 1});
-      const spaceInCalendar = 35;
+      const spaceInCalendar = 42;
       const fillableSpace = spaceInCalendar - daysInCurrentMonth;
-      const numberDatesInFront = Math.ceil(fillableSpace / 2);
-      const numberDatesInBack = fillableSpace - numberDatesInFront;
+      const numberDatesInFront = shownDate.with({day: 1}).dayOfWeek - 1;
+      const numberDatesInBack = fillableSpace - numberDatesInFront >= 7 ? fillableSpace - numberDatesInFront - 7 : fillableSpace - numberDatesInFront;
       const startDayIndex = gregorian.daysInMonth(previousMonth) - numberDatesInFront;
       const dates = getClampedDays(previousMonth, startDayIndex, numberDatesInFront).concat(getDates(shownDate)).concat(getClampedDays(nextMonth, 0, numberDatesInBack));
 
@@ -107,5 +107,5 @@ export const useCalendar = () => {
       setShownDate(Temporal.Now.zonedDateTime(gregorian));
    }, []);
 
-   return [producedCalendar, showPreviousMonth, showNextMonth, showJump, decreaseMonth, increaseMonth, thisMonth] as const;
+   return [producedCalendar, showPreviousMonth, showNextMonth, showJump, decreaseMonth, increaseMonth, thisMonth, shownDate] as const;
 }

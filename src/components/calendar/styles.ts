@@ -13,8 +13,7 @@ export const cellStyles = (marked: boolean, interactable: boolean) => style({
       all: "unset",
       padding: 5,
       borderRadius: 5,
-      height: "clamp(1vw, 1.5vw, 2vw)",
-      textAlign: "center",
+      textAlign: "left",
       backgroundColor: getBackgroundColor(marked, interactable),
       color: interactable ? "black" : "rgb(200,200,200)",
       ":hover": {
@@ -26,16 +25,27 @@ export const cellStyles = (marked: boolean, interactable: boolean) => style({
 
 export const styles = style({
    mainWrapper: {
-      marginBlock: 30,
+      width: "fit-content",
+      margin: "auto",
+   },
+   weekdaysWrapper: {
+      display: "grid",
+      gridTemplateColumns: "repeat(7, 60px)",
+      gap: 5,
+   },
+   weekday: {
+      paddingInline: 15,
    },
    calendarWrapper: {
-      outline: "2px solid lightcoral",
       display: "grid",
+      outline: "1px solid black",
       borderRadius: 5,
       gap: 5,
-      padding: 5,
+      padding: 10,
       marginBlock: 5,
-      gridTemplateColumns: "repeat(7, auto)",
+      gridTemplateColumns: "repeat(7, 60px)",
+      gridTemplateRows: "repeat(6, 30px)",
+      textAlign: "left",
    },
    calendarButtons: {
       display: "grid",

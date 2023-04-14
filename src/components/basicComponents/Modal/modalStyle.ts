@@ -2,7 +2,6 @@ import {style} from "../../../utils/styleUtils";
 
 export const modalStyle = style({
    modal: {
-      minWidth: 400,
       border: "none",
       position: "relative",
       borderRadius: 10,
@@ -17,8 +16,6 @@ export const modalStyle = style({
       height: 20,
       right: 4,
       borderRadius: "100%",
-      ":hover": {
-         filter: "invert(1)"
-      }
+      outline: "none",
    }
 })

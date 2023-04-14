@@ -19,7 +19,7 @@ export const Modal = ({open, children, onClose}: ModalProps) => {
       }
    }, [open])
 
-   return <dialog onClose={onClose} className={cssClasses.modal} ref={modalRef}>{children}
+   return <>{open && <dialog onClose={onClose} className={cssClasses.modal} ref={modalRef}>{children}
       {onClose && <Button className={cssClasses.close} onClick={() => onClose()}><CloseCircle/></Button>}
-   </dialog>
+   </dialog>}</>
 }

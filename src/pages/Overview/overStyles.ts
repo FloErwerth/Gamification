@@ -1,12 +1,13 @@
 export const overStyles = {
    statsWrapper: {
       display: "grid",
-      gridTemplateColumns: "auto auto auto",
-      gap: 20,
+      gridTemplateColumns: "calc(33% - 3.342px) calc(33% - 3.342px) calc(33% - 3.342px)",
+      gap: 10,
       marginBlock: 50,
    },
-   filterWrapper: {
-      width: 300
+   headerWrapper: {
+      display: "flex",
+      justifyContent: "space-between",
    },
    activityAdderWrapper: {
       width: "100%", display: "flex",

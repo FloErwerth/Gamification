@@ -15,16 +15,19 @@ const errorMessageAnimation = keyframes({
 export const inputStyles = style({
    wrapper: {
       cursor: "text",
-      width: "100%",
    },
    input: {
       all: "unset",
       height: 30,
       width: "100%",
-      margin: 0,
+      padding: 5,
+      paddingInline: 15,
       "::placeholder": {
-         fontStyle: "italic",
          fontSize: 13,
+         color: "rgb(50,50,50)"
+      },
+      ":-webkit-autofill, :-webkit-autofill:hover, :-webkit-autofill:focus": {
+         "-webkit-box-shadow": " 0 0 0px 1000px white inset",
       },
       "::-webkit-outer-spin-button": {
          "-webkit-appearance": "none"
@@ -36,18 +39,18 @@ export const inputStyles = style({
       }
    },
    inputWithDeleteWrapper: {
-      display: "flex",
       position: "relative",
-      width: "100%",
+      display: "flex",
+      alignItems: "center",
+      "& > div > div > input": {
+         paddingRight: 30,
+      },
    },
    delete: {
       all: "unset",
-      cursor: "pointer",
       position: "absolute",
-      zIndex: 1,
-      right: 15,
-      top: "50%",
-      transform: "translateY(-50%)"
+      cursor: "pointer",
+      right: 10,
    },
    icon: {
       width: 12,
@@ -55,13 +58,11 @@ export const inputStyles = style({
    },
    inputWrapper: {
       display: "flex",
-      outline: "3px solid white",
-      padding: 5,
-      marginBlock: 5,
+      outline: "3px solid black",
       ":focus-within": {
-         backgroundColor: "white"
+         outlineColor: "#0078FF"
       },
-      borderRadius: 15, paddingInline: 10,
+      borderRadius: 5,
       transition: "outline-color 200ms",
       alignItems: "center",
       justifyContent: "space-between",

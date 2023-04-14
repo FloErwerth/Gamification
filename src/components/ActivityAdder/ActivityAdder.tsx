@@ -70,32 +70,33 @@ const AddActivityModalContent = ({
    return (
       <div className={cssClasses.modalWrapper}>
          <div>Add an activity</div>
-         <Input
+         <div className={cssClasses.inputWrapper}><Input
             customWrapperClasses={cssClasses.input}
-            label={"Activity Name"}
+            placeholder={"Activity Name"}
             onChange={(value) => setActivityName(value)}
             value={activityName}
          />
-         <Dropdown
-            options={ACTIVITY_TYPE.options.filter(
-               (option) => option !== "UNDEFINED"
-            )}
-            label={"Activity Type"}
-            setValue={(value) => setActivityType(ACTIVITY_TYPE.parse(value))}
-         />
-         <Dropdown
-            options={ACTIVITY_INCREASE_TYPES.options.filter(
-               (option) => option !== "UNDEFINED"
-            )}
-            label={"Activity Increase"}
-            setValue={(value) =>
-               setIncreasement(ACTIVITY_INCREASE_TYPES.parse(value))
-            }
-         />
-         {increasement === "Factor" &&
-             <Input customWrapperClasses={cssClasses.input}
-                    onChange={handleSetIncreasementFactor}
-                    value={increasementFactor} type={"number"} placeholder={"Factor bigger or equal 2"}/>}
+            <Dropdown
+               options={ACTIVITY_TYPE.options.filter(
+                  (option) => option !== "UNDEFINED"
+               )}
+               label={"Activity Type"}
+               setValue={(value) => setActivityType(ACTIVITY_TYPE.parse(value))}
+            />
+            <Dropdown
+               options={ACTIVITY_INCREASE_TYPES.options.filter(
+                  (option) => option !== "UNDEFINED"
+               )}
+               label={"Activity Increase"}
+               setValue={(value) =>
+                  setIncreasement(ACTIVITY_INCREASE_TYPES.parse(value))
+               }
+            />
+            {increasement === "Factor" &&
+                <Input customWrapperClasses={cssClasses.input}
+                       onChange={handleSetIncreasementFactor}
+                       value={increasementFactor} type={"number"} placeholder={"Factor bigger or equal 2"}/>}
+         </div>
          <Button onClick={handleCreation}>Create Activity</Button>
       </div>
    );

@@ -1,19 +1,21 @@
 export const activityAdderClasses = {
    modalWrapper: {
-      display: "flex",
-      flexDirection: "column",
-      gap: 5,
+      display: "grid",
+      gridTemplateRows: "30px 440px 30px",
+      padding: 20,
+      gap: 20,
+      minHeight: 500,
    },
    adder: {
       padding: 15,
       width: 150,
-      ":hover": {backgroundColor: "rgb(150,200,200)"}
+   },
+   inputWrapper: {
+      display: "flex",
+      gap: 10,
    },
    input: {
       borderRadius: 6,
       backgroundColor: "lightgrey",
-      ":focus-within": {
-         backgroundColor: "lightgrey",
-      }
    },
 } as const;

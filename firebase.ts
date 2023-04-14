@@ -42,6 +42,7 @@ export const addActivityInDatabase = async (uid: string, data: StatsProps) => {
 
 export const updateActivitiesInDatabase = async (uid: string, activities: StatsProps[]) => {
    const activityRef = getActivitiesRef(uid);
+   console.log(activities);
    await updateDoc(activityRef, {activities})
 }
 

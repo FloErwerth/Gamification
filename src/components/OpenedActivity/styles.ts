@@ -7,7 +7,7 @@ export const styles = style({
       width: "400px",
       height: "400px",
       gap: 20,
-      padding: 10
+      padding: 20
    },
    title: {
       fontWeight: "bold",

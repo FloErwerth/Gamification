@@ -5,6 +5,7 @@ export const togglerStyles = style({
       all: "unset", position: "relative",
       width: 20,
       height: 20,
+      marginRight: 10,
       cursor: "pointer",
    }
 })

@@ -5,8 +5,9 @@ import {styles} from "./styles";
 import {useMemo} from "react";
 import {ConfirmButton} from "../basicComponents/ConfirmButton/ConfirmButton";
 import {TextArea} from "../basicComponents/TextArea/TextArea";
-import {getDisplayDate} from "../calendar/utils";
+import {getGeneratedDisplayDate} from "../calendar/utils";
 import {Input} from "../basicComponents/Input/Input";
+import {useEffectOnce} from "usehooks-ts";
 
 export type CellInfo =
    { date: DateType, marked?: boolean, progress?: number, info?: string, interactable?: boolean };
@@ -35,8 +36,15 @@ export const OpenedActivity = ({
                                   onDecreaseProgress
                                }: OpenedActivityProps) => {
    const showProgress = useMemo(() => getShowProgress(activity.type), [activity.type]);
+
+   useEffectOnce(() => {
+      if (activity.type === "Days") {
+         onProgressChange("1");
+      }
+   })
+
    return <div className={cssClasses.wrapper}>
-      <div className={cssClasses.title}>{activity.name} on {getDisplayDate(cellInfo?.date)}</div>
+      <div className={cssClasses.title}>{activity.name} on {getGeneratedDisplayDate(cellInfo?.date)}</div>
       <div>
          {cellInfo.marked && showProgress && <div>Progress: {cellInfo?.progress}</div>}
          {!cellInfo.marked && showProgress &&

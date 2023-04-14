@@ -3,7 +3,6 @@ import {overStyles} from "./overStyles";
 import {ActivityWrapper} from "../../components/activity/ActivityWrapper";
 import {useFilter} from "../../utils/useFilter";
 import {InputWithDelete} from "../../components/basicComponents/Input/InputWithDelete";
-import {css} from "@emotion/css";
 import {useAppSelector} from "../../store/store";
 import {getActivities} from "../../store/activities/activitiesSelectors";
 import {ActivityAdder} from "../../components/ActivityAdder/ActivityAdder";
@@ -19,18 +18,17 @@ export const Overview = () => {
 
    return (
       <div>
-         <h3>Hello Florian, good to see you back.</h3>
-         <p>Your current stats are the following:</p>
-         <div className={cssClasses.filterWrapper}>
-            <InputWithDelete
-               placeholder={"Filter activities"}
-               type="text"
-               customWrapperClasses={css({outlineColor: "rgb(100,200,200)"})}
-               value={filter}
-               onChange={(value) => setFilter(value)}
-            />
+         <div className={cssClasses.headerWrapper}><h3>Activity overview</h3>
+            {stats.length > 0 && <InputWithDelete
+                placeholder={"Filter activities"}
+                type="text"
+                value={filter}
+                onChange={(value) => setFilter(value)}
+            />}
          </div>
+
          <div className={cssClasses.statsWrapper}>{filteredArray}</div>
+
          <div className={cssClasses.activityAdderWrapper}>
             <ActivityAdder/>
          </div>

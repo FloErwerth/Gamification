@@ -1,4 +1,4 @@
-import { style } from "../../utils/styleUtils";
+import {style} from "../../utils/styleUtils";
 
 export const styles = (width: string) => {
    return {
@@ -32,27 +32,38 @@ export const styles = (width: string) => {
          transform: "translate(-50%, -50%)",
       },
       star: {
-         position: "relative",
-         top: -3,
-         height: 60,
-         width: 60,
+         position: "absolute",
+         height: 40,
+         width: 40,
       },
       levelWrapper: {
+         width: 40,
+         height: 40,
          position: "relative",
+         top: -0,
       },
       level: {
          position: "absolute",
-         top: 21,
-         left: 26.5
+         top: 12,
+         left: 0,
+         width: 40,
+         height: 40,
+         fontSize: 14,
+         textAlign: "center",
       }
    } as const;
 }
 
 export const wrapperStyles = style({
    activityWrapper: {
-         textAlign: "left",
-         width: "fit-content",
-         padding: 10,
-         paddingLeft: 20,
-      },
+      textAlign: "left",
+      padding: "5px 7px 10px 15px",
+      ":hover": {
+         filter: "none",
+         backgroundColor: "rgb(235,235,255)",
+      }
+   },
+   text: {
+      marginBottom: 5,
+   }
 })

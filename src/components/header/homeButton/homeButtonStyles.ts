@@ -6,10 +6,14 @@ export const homeButtonStyles = {
       alignItems: "center",
    },
    title: {
-      fontSize: 20,
+      position: "relative",
+      fontSize: 16,
+      letterSpacing: -1,
    },
    icon: {
-      width: 50,
-      height: 50,
+      position: "relative",
+      top: 10,
+      width: 60,
+      height: 60,
    }
 } as const;

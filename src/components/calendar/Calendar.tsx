@@ -5,10 +5,10 @@ import {useCalendar} from "./useCalendar";
 import {useMemo} from "react";
 import {Button} from "../basicComponents/Button/Button";
 import {CellInfo} from "../OpenedActivity/OpenedActivity";
-import {getDisplayDate} from "./utils";
+import {getDay, getDisplayMonth} from "./utils";
 
 interface CalendarProps {
-   onClick: (date: DateType, marked: boolean, progress?: number, info?: string) => void;
+   onClick: (date: DateType, marked: boolean, progress: number, info?: string) => void;
 }
 
 interface CalendarCell extends CalendarProps {
@@ -20,29 +20,35 @@ interface CalendarCell extends CalendarProps {
 const CalendarCell = ({onClick, calendarObject, date}: CalendarCell) => {
    const cssClasses = useMemo(() => getClasses(cellStyles(calendarObject?.marked ?? false, calendarObject?.interactable ?? true)), [calendarObject, calendarObject?.marked]);
    return <button disabled={!calendarObject?.interactable && calendarObject?.interactable === false}
-                  onClick={() => onClick(date, calendarObject?.marked ?? false, calendarObject?.progress, calendarObject.info)}
+                  onClick={() => onClick(date, calendarObject.marked ?? false, calendarObject.progress ?? 0, calendarObject.info)}
                   className={cssClasses.calendarCell}>
-      <div>{getDisplayDate(date)}</div>
+      <div>{getDay(date)}</div>
    </button>;
 }
-
+const weekDays = ["Mo", "Tues", "Wed", "Thur", "Fr", "Sa", "So"];
 const calendarClasses = getClasses(styles);
+
 export const Calendar = ({onClick}: CalendarProps) => {
-   const [currentCalendar, showPreviousMonth, showNextMonth, showJump, decreaseMonth, increaseMonth, thisMonth] = useCalendar();
+   const [currentCalendar, showPreviousMonth, showNextMonth, showJump, decreaseMonth, increaseMonth, showCurrentMonth, shownDate] = useCalendar();
    return <div className={calendarClasses.mainWrapper}>
-      <div className={calendarClasses.calendarWrapper}>{Object.keys(currentCalendar).map((date, index) => {
-         const typedDate = date as DateType;
-         return <CalendarCell
-            date={typedDate} calendarObject={currentCalendar[typedDate]} onClick={onClick}/>
-      })}
+      <h2>{getDisplayMonth(shownDate.month)} {shownDate.year}</h2>
+      <div className={calendarClasses.weekdaysWrapper}>{weekDays.map((weekday) => <div
+         className={calendarClasses.weekday}>{weekday}</div>)}</div>
+      <div className={calendarClasses.calendarWrapper}>
+         {Object.keys(currentCalendar).map((date, index) => {
+            const typedDate = date as DateType;
+            return <CalendarCell
+               date={typedDate} calendarObject={currentCalendar[typedDate]} onClick={onClick}/>
+         })}
       </div>
       <div className={calendarClasses.calendarButtons}><Button
          disabled={!showPreviousMonth} onClick={decreaseMonth}>Previous
          Month</Button>
-         <Button disabled={!showJump} onClick={thisMonth}>Jump to current
+         <Button disabled={!showJump} onClick={showCurrentMonth}>Jump to current
             month</Button>
          <Button disabled={!showNextMonth} onClick={increaseMonth}>Next
             Month</Button></div>
+      <small style={{marginBottom: 10}}>Click on a date to make progress</small>
    </div>
 
 }
