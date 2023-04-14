@@ -1,7 +1,7 @@
 import {AuthenticationActions} from "./authActions";
 import {InitialGamificiationState} from "../store";
-import {GamificationActionTypes} from "../types";
 import produce from "immer";
+import {GamificationActionTypes} from "../actions";
 
 export const authReducer = (oldAuthentication = InitialGamificiationState.authentication, action: AuthenticationActions) => {
    switch (action.type) {

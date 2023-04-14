@@ -1,6 +1,6 @@
-import {GamificationActionTypes} from "../types";
 import {DateType, StatsProps} from "./types";
 import {CellInfo} from "../../components/OpenedActivity/OpenedActivity";
+import {GamificationActionTypes} from "../actions";
 
 type UpdateActivityPayload = { activityIndex: number, activity: StatsProps };
 type ChangeActivityProgressPayload = { activityIndex: number, currentValue: StatsProps["currentValue"] };

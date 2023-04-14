@@ -1,8 +1,8 @@
-import {GamificationActionTypes} from "../types";
 import {InitialGamificiationState} from "../store";
 import {ActivitiesActions} from "./activitiesActions";
 import produce from "immer";
 import {DateType, StatsProps} from "./types";
+import {GamificationActionTypes} from "../actions";
 
 const getCleanedCalendar = (calendar: StatsProps["calendarEntries"]): StatsProps["calendarEntries"] => {
    const filteredValues = Object.keys(calendar).filter((entry) => {

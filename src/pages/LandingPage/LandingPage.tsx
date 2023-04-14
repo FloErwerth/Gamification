@@ -12,11 +12,10 @@ const cssClasses = getClasses(landingPageStyles);
 export const LandingPage = () => {
 
    const [showAuth, setShowAuth] = useState(false);
-
    return <>
       <div className={cssClasses.wrapper}>
          <h2 className={cssClasses.title}>Transform your life into an exciting
-            <div className={cssClasses.game}>game.</div>
+            <div className={cssClasses.underscore}>game.</div>
          </h2>
          <div className={cssClasses.wrapper}>
             <div className={cssClasses.text}>Gamify helps you define your goals and keep track of the progress. Earn
@@ -36,8 +35,34 @@ export const LandingPage = () => {
             </Card>
             <Card title={"SHARE"}>Share your progress and badges with your friends and family.</Card>
          </div>
+         <div className={cssClasses.section2}>
+            <div className={cssClasses.title}>Unlock your full potential with <div
+               className={cssClasses.underscore}>gamification.</div></div>
+            <br/>
+            <br/>
+            <br/>
+            <div className={cssClasses.text}>The goal of
+               gamification is to make complex tasks or learning content more entertaining and accessible,
+               encouraging
+               participants to actively engage and succeed.
+            </div>
+            <div className={cssClasses.grid2}>
+               <div><h3><i>XP</i></h3>Earn experience with every progress you make. This experience is then transfered
+                  to your overall experience.
+               </div>
+               <div><h3>Badges</h3> Every activity comes with own badges. Also your experience level unlocks badges.
+               </div>
+               <div><h3>Sharing</h3>You can share your badges, experience from an activity or several other things to
+                  showcase your progress.
+               </div>
+               <div><h3>Leaderboards</h3>A main driver of motivation is competition. Compete with your score on
+                  leaderboards with selected friends or among all users.
+               </div>
+            </div>
 
-         <div className={cssClasses.section1}/>
+         </div>
+         <div className={cssClasses.background1}/>
+         <div className={cssClasses.background2}/>
       </div>
       {showAuth && <Modal open={showAuth} onClose={() => setShowAuth(false)}><AuthenticationForm
           forcedMode={"REGISTER"}/></Modal>}</>

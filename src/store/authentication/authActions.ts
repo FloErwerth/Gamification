@@ -1,5 +1,6 @@
 import {SignOut, Signup} from "../../../firebase";
-import {GamificationActionTypes, GamificationModel} from "../types";
+import {GamificationActionTypes} from "../actions";
+import {GamificationModel} from "../types";
 
 export type AuthenticationActions =
    { type: GamificationActionTypes.LOGIN, payload: boolean }

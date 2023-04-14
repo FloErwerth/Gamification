@@ -5,10 +5,23 @@ export const landingPageStyles = style({
       display: "flex",
       flexDirection: "column",
       alignItems: "center",
-      justifyContent: "center", textAlign: "center",
-      gap: 40,
+      justifyContent: "center",
+      textAlign: "center",
+      gap: 80,
    },
-   section1: {
+
+   contentLeft: {
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "left",
+      textAlign: "left",
+   },
+   subtitle: {
+      marginTop: 110,
+      fontSize: 40,
+      fontWeight: "bold",
+   },
+   background1: {
       zIndex: -1,
       transform: "rotate(3deg)",
       background: "rgba(0,120,255,0.5)",
@@ -17,7 +30,23 @@ export const landingPageStyles = style({
       display: "flex",
       position: "absolute",
       justifyContent: "center",
-      top: 450,
+      top: 625,
+   },
+   background2: {
+      zIndex: -1,
+      transform: "rotate(3deg)",
+      background: "rgba(0,255,120,0.5)",
+      width: "150vw",
+      height: 950,
+      display: "flex",
+      position: "absolute",
+      justifyContent: "center",
+      top: 845,
+   },
+   section2: {
+      display: "flex",
+      flexDirection: "column",
+      paddingTop: 100,
    },
    grid3: {
       display: "grid",
@@ -26,22 +55,33 @@ export const landingPageStyles = style({
       gap: 10,
       marginTop: 80,
    },
-   game: {
+   grid2: {
+      width: 400,
+      display: "grid",
+      margin: "auto",
+      marginTop: 40,
+      gridTemplateRows: "auto auto",
+      gridTemplateColumns: "auto auto",
+   },
+   underscore: {
       textDecoration: "underline",
       textUnderlinePosition: "under",
       textDecorationColor: "#0078FF"
    },
    title: {
-      fontSize: 48,
+      fontSize: 60,
       marginBlock: 0,
       textAlign: "center",
+      fontWeight: "bold",
    },
    text: {
       width: "80%",
+      margin: "auto",
+      fontSize: 22,
    },
    button: {
-      width: 115,
-      height: 35,
-      fontSize: 15,
+      width: 180,
+      height: 50,
+      fontSize: 25,
    },
 })
