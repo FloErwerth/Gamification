@@ -4,7 +4,7 @@ import {modalStyle} from "./modalStyle";
 import {Button} from "../Button/Button";
 import {CloseCircle} from "../../../media/icons";
 
-interface ModalProps extends PropsWithChildren {
+export interface ModalProps extends PropsWithChildren {
    open: boolean;
    onClose?: () => void;
 }

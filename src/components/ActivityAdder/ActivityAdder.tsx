@@ -1,16 +1,23 @@
-import {useCallback, useState} from "react";
+import {useCallback, useEffect, useMemo, useState} from "react";
 import {Button} from "../basicComponents/Button/Button";
 import {Modal} from "../basicComponents/Modal/Modal";
 import {getClasses} from "../../utils/styleUtils";
 import {activityAdderClasses} from "./styles";
-import {Input} from "../basicComponents/Input/Input";
 import {Dropdown} from "../basicComponents/Dropdown/Dropdown";
 import {addActivity} from "../../store/activities/activitiesActions";
-import {ACTIVITY_INCREASE_TYPES, ACTIVITY_TYPE, ActivityIncrease, ActivityType,} from "../../store/activities/types";
-import {getInitialMaxValue} from "../../store/activities/util";
 import {useAppDispatch, useAppSelector} from "../../store/store";
 import {addActivityInDatabase} from "../../../firebase";
 import {getIsLoggedIn, getUserId,} from "../../store/authentication/authSelectors";
+import {
+   assambleFields,
+   PREDEFINED_STATS_SET,
+   PredefinedStatsSet,
+   Stat,
+} from "../../store/activities/predefinedActivities";
+import {FieldsSelector} from "../FieldsSelector/FieldsSelector";
+import {DisplayedField} from "../basicComponents/DisplayedField/DisplayedField";
+import {Input} from "../basicComponents/Input/Input";
+import {ActivityProps} from "../../store/activities/types";
 
 const cssClasses = getClasses(activityAdderClasses);
 
@@ -22,28 +29,25 @@ const AddActivityModalContent = ({
                                     onCreation,
                                  }: ActivityAdderModalContentProps) => {
    const [activityName, setActivityName] = useState("");
-   const [activityType, setActivityType] = useState<ActivityType>("UNDEFINED");
-   const [increasement, setIncreasement] =
-      useState<ActivityIncrease>("UNDEFINED");
+   const [predefinedActivity, setPredefinedActivity] = useState<PredefinedStatsSet>(PREDEFINED_STATS_SET.Enum.Custom);
+   const [stats, setStats] = useState<Stat[]>([])
+   const [addAdditionalActivity, setAddAdditionalAcitivity] = useState(false);
+   const isAddingActivityAllowed = useMemo(() => stats.length < 5, [stats]);
    const userId = useAppSelector(getUserId);
-   const [increasementFactor, setIncreasementFactor] = useState(2);
 
    const dispatch = useAppDispatch();
+
    const handleCreation = useCallback(() => {
       if (
-         activityType !== "UNDEFINED" &&
-         increasement !== "UNDEFINED" &&
          activityName &&
          userId
       ) {
          onCreation();
-         const generatedActivity = {
+         const generatedActivity: ActivityProps = {
             name: activityName,
-            type: activityType,
             calendarEntries: {},
-            increasement,
-            increasementFactor,
-            maxValue: getInitialMaxValue(increasement),
+            stats,
+            maxValue: 1,
             currentValue: 0,
             level: 0,
          };
@@ -51,53 +55,58 @@ const AddActivityModalContent = ({
             dispatch(addActivity(generatedActivity));
          });
       }
-   }, [getInitialMaxValue, increasementFactor, increasement, activityType, activityName]);
+   }, [userId, activityName]);
 
-   const handleSetIncreasementFactor = useCallback((value: string) => {
-      try {
-         const number = parseInt(value);
-         if (number < 2) {
-            setIncreasementFactor(2);
-            return;
-         }
-         setIncreasementFactor(number);
-      } catch {
-         setIncreasementFactor(2);
+   useEffect(() => {
+      if (predefinedActivity === "Custom") {
+         setActivityName("");
+      } else {
+         setActivityName(predefinedActivity);
       }
+      setStats(assambleFields(predefinedActivity))
+   }, [predefinedActivity])
 
+   const handleSetAdditionalFields = useCallback((fields: Stat[]) => {
+      setStats((previous) => [...previous, ...fields]);
+      setAddAdditionalAcitivity(false);
+   }, [])
+
+   const handleDeleteSelectedField = useCallback((deletedField: Stat) => {
+      setStats((previous) =>
+         previous.filter((field) => field.name !== deletedField.name))
    }, []);
 
    return (
       <div className={cssClasses.modalWrapper}>
          <div>Add an activity</div>
-         <div className={cssClasses.inputWrapper}><Input
-            customWrapperClasses={cssClasses.input}
-            placeholder={"Activity Name"}
-            onChange={(value) => setActivityName(value)}
-            value={activityName}
-         />
-            <Dropdown
-               options={ACTIVITY_TYPE.options.filter(
-                  (option) => option !== "UNDEFINED"
-               )}
-               label={"Activity Type"}
-               setValue={(value) => setActivityType(ACTIVITY_TYPE.parse(value))}
-            />
-            <Dropdown
-               options={ACTIVITY_INCREASE_TYPES.options.filter(
-                  (option) => option !== "UNDEFINED"
-               )}
-               label={"Activity Increase"}
-               setValue={(value) =>
-                  setIncreasement(ACTIVITY_INCREASE_TYPES.parse(value))
-               }
-            />
-            {increasement === "Factor" &&
-                <Input customWrapperClasses={cssClasses.input}
-                       onChange={handleSetIncreasementFactor}
-                       value={increasementFactor} type={"number"} placeholder={"Factor bigger or equal 2"}/>}
+         <div>
+            {predefinedActivity === PREDEFINED_STATS_SET.Enum.Custom &&
+                <Input customWrapperClasses={cssClasses.nameInput} placeholder={"Name for the activity"}
+                       onChange={(value) => setActivityName(value)}
+                       value={activityName}/>}
+            <Dropdown options={PREDEFINED_STATS_SET.options}
+                      label={predefinedActivity}
+                      setValue={(value) => setPredefinedActivity(value as PredefinedStatsSet)}/>
+            {predefinedActivity !== PREDEFINED_STATS_SET.Enum.Custom &&
+                <div className={cssClasses.statsTitle}>The following stats are available:</div>}
+            <div className={cssClasses.fieldsWrapper}>{stats.map((field) => <DisplayedField name={field.name}
+                                                                                            description={field.description}
+                                                                                            onDeletion={handleDeleteSelectedField}
+                                                                                            deletable={field.deletable}/>
+            )}</div>
+            {isAddingActivityAllowed &&
+                <Button onClick={() => setAddAdditionalAcitivity(true)} className={cssClasses.addButton}>+</Button>}
+            {addAdditionalActivity &&
+                <FieldsSelector onFieldSelectorClosed={handleSetAdditionalFields} open={addAdditionalActivity}
+                                alreadyChosenFields={stats}/>}
          </div>
-         <Button onClick={handleCreation}>Create Activity</Button>
+         <div>
+            {isAddingActivityAllowed && <div style={{marginBottom: 10, fontSize: "smaller"}}>Note: You can add up
+                to {5 - stats.length} more
+                activities
+            </div>}
+            <Button onClick={handleCreation}>Create Activity</Button>
+         </div>
       </div>
    );
 };
@@ -109,7 +118,6 @@ export const ActivityAdder = () => {
    if (!loggedIn) {
       return null;
    }
-
    return (
       <>
          <Button

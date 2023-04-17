@@ -11,7 +11,7 @@ interface Dropdown {
 }
 
 
-export const Dropdown = ({options, label, setValue}: Dropdown) => {
+export function Dropdown({options, label, setValue}: Dropdown) {
 
    const {value: showDropdown, toggleValue: toggleDropdown} = useToggle(false);
    const [chosenOption, setChosenOption] = useState("");
@@ -27,8 +27,11 @@ export const Dropdown = ({options, label, setValue}: Dropdown) => {
       <button className={cssClasses.toggle}
               onClick={() => toggleDropdown()}>{!chosenOption ? label : chosenOption}<ArrowFilled
          className={cssClasses.icon}/></button>
-      {showDropdown && <ul className={cssClasses.dropdownList} id={"dropdown"}>{options.map((option) => <li>
-         <button className={cssClasses.dropdownItem} onClick={() => handleOptionSelection(option)}>{option}</button>
-      </li>)}</ul>}
+      {showDropdown &&
+          <ul className={cssClasses.dropdownList} id={"dropdown"}>{(options).map((option) =>
+             <li>
+                <button className={cssClasses.dropdownItem}
+                        onClick={() => handleOptionSelection(option)}>{option}</button>
+             </li>)}</ul>}
    </div>
 }

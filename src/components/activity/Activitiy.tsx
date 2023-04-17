@@ -2,9 +2,9 @@ import {useMemo} from "react";
 import {getClasses} from "../../utils/styleUtils";
 import {styles} from "./styles";
 import {Star} from "../../media/icons";
-import {StatsProps} from "../../store/activities/types";
+import {ActivityProps} from "../../store/activities/types";
 
-type ActivityProps = Omit<StatsProps, "name" | "width" | "increasementFactor" | "calendarEntries">;
+type ActivityProps = Omit<ActivityProps, "name" | "width" | "increasementFactor" | "calendarEntries">;
 export const Activity = ({
                             currentValue,
                             maxValue,

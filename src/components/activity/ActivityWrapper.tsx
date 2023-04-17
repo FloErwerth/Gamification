@@ -5,7 +5,7 @@ import {useAppDispatch} from "../../store/store";
 import {useNavigate} from "react-router-dom";
 import {Pages} from "../../types/pages";
 import {Activity} from "./Activitiy";
-import {StatsProps} from "../../store/activities/types";
+import {ActivityProps} from "../../store/activities/types";
 import {setActiveActivity} from "../../store/activity/activityActions";
 import {Button} from "../basicComponents/Button/Button";
 
@@ -18,7 +18,7 @@ export const ActivityWrapper = ({
                                    index,
                                    level,
                                    type,
-                                }: StatsProps & { index: number }) => {
+                                }: ActivityProps & { index: number }) => {
    const dispatch = useAppDispatch();
    const navigate = useNavigate();
 

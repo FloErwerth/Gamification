@@ -5,10 +5,27 @@ export const activityAdderClasses = {
       padding: 20,
       gap: 20,
       minHeight: 500,
+      width: 300,
    },
    adder: {
       padding: 15,
       width: 150,
+   },
+   nameInput: {
+      marginBottom: 10,
+   },
+   statsTitle: {
+      paddingBlock: 15,
+   },
+   addButton: {
+      marginBlock: 10,
+      marginInline: "auto",
+   },
+   fieldsWrapper: {
+      marginTop: 10,
+      display: "flex",
+      flexDirection: "column",
+      gap: 5,
    },
    inputWrapper: {
       display: "flex",

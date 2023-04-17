@@ -21,6 +21,7 @@ const scrollbarStyles = {
 export const styles = (open: boolean, valueChosen: boolean) => style({
    dropdownWrapper: {
       position: "relative",
+      width: "100%",
    },
    toggle: {
       borderRadius: 6,

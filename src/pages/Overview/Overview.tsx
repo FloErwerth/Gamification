@@ -6,7 +6,7 @@ import {InputWithDelete} from "../../components/basicComponents/Input/InputWithD
 import {useAppSelector} from "../../store/store";
 import {getActivities} from "../../store/activities/activitiesSelectors";
 import {ActivityAdder} from "../../components/ActivityAdder/ActivityAdder";
-import {StatsProps} from "../../store/activities/types";
+import {ActivityProps} from "../../store/activities/types";
 
 const cssClasses = getClasses(overStyles);
 
@@ -14,7 +14,7 @@ export const Overview = () => {
    const stats = useAppSelector(getActivities).map((stats, index) => (
       <ActivityWrapper {...stats} index={index}/>
    ));
-   const {filteredArray, setFilter, filter} = useFilter<StatsProps>(stats);
+   const {filteredArray, setFilter, filter} = useFilter<ActivityProps>(stats);
 
    return (
       <div>

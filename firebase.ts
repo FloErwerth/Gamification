@@ -1,7 +1,7 @@
 import {createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, signOut} from "firebase/auth";
 import {initializeApp} from "firebase/app";
 import {arrayUnion, collection, doc, getDoc, getFirestore, setDoc, updateDoc} from "firebase/firestore";
-import {StatsProps} from "./src/store/activities/types";
+import {ActivityProps} from "./src/store/activities/types";
 
 const firebaseApp = initializeApp({
    apiKey: "AIzaSyDFK3fGAEFWRpdAhwC5FPE5beGcNDzAMXk",
@@ -28,19 +28,19 @@ export const addFirebaseUser = async (userId: string) => {
    await setDoc(doc(userCollection, userId), {activities: []}, {merge: true});
 }
 const getActivitiesRef = (uid: string) => doc(firebaseDB, "Nutzerdaten", uid);
-export const getStoredActivities = async (userId: string): Promise<StatsProps[]> => {
+export const getStoredActivities = async (userId: string): Promise<ActivityProps[]> => {
    const doc = await getDoc(getActivitiesRef(userId));
    if (doc.exists()) {
-      return doc.data().activities as StatsProps[];
+      return doc.data().activities as ActivityProps[];
    } else return []
 }
 
-export const addActivityInDatabase = async (uid: string, data: StatsProps) => {
+export const addActivityInDatabase = async (uid: string, data: ActivityProps) => {
    const activityRef = getActivitiesRef(uid);
    await updateDoc(activityRef, {activities: arrayUnion({...data})});
 }
 
-export const updateActivitiesInDatabase = async (uid: string, activities: StatsProps[]) => {
+export const updateActivitiesInDatabase = async (uid: string, activities: ActivityProps[]) => {
    const activityRef = getActivitiesRef(uid);
    console.log(activities);
    await updateDoc(activityRef, {activities})

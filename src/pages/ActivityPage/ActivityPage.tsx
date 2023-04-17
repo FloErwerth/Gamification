@@ -14,7 +14,7 @@ import {Pages} from "../../types/pages";
 import {updateActivitiesInDatabase} from "../../../firebase";
 import {getUserId} from "../../store/authentication/authSelectors";
 import {Calendar} from "../../components/calendar/Calendar";
-import {DateType, StatsProps} from "../../store/activities/types";
+import {ActivityProps, DateType} from "../../store/activities/types";
 import {Modal} from "../../components/basicComponents/Modal/Modal";
 import {CellInfo, OpenedActivity} from "../../components/OpenedActivity/OpenedActivity";
 import {ConfirmButton} from "../../components/basicComponents/ConfirmButton/ConfirmButton";
@@ -24,7 +24,7 @@ import {getActivities} from "../../store/activities/activitiesSelectors";
 
 const cssClasses = getClasses(styles);
 
-const getTitleByActivityType = (activityType: StatsProps["type"], currentValue: StatsProps["currentValue"], activityName: StatsProps["name"]) => {
+const getTitleByActivityType = (activityType: ActivityProps["type"], currentValue: ActivityProps["currentValue"], activityName: ActivityProps["name"]) => {
    switch (activityType) {
       case "Days":
          return `Already ${currentValue === 1 ? "a" : ""} ${currentValue > 1 ? currentValue : ""} ${currentValue > 1 ? "Days" : "Day"} on ${activityName}. Keep on going!`
@@ -52,7 +52,7 @@ export const ActivityPage = () => {
       return {...activeActivity.activity.calendarEntries}
    }, [activeActivity]);
 
-   const updateCell = useCallback((date: DateType, content: Partial<Omit<CellInfo, "date">>, hard?: boolean): StatsProps["calendarEntries"] => {
+   const updateCell = useCallback((date: DateType, content: Partial<Omit<CellInfo, "date">>, hard?: boolean): ActivityProps["calendarEntries"] => {
       return produce(getCalendarEntries(), newCells => {
          if (hard && hard) {
             {
@@ -63,7 +63,7 @@ export const ActivityPage = () => {
       });
    }, [activeActivity, getCalendarEntries])
 
-   const handleIncreaseProgress = useCallback(() => {
+   const handleProgressConfirm = useCallback(() => {
       if (cellInfo && cellInfo.date) {
          let currentValue = activeActivity.activity.currentValue;
          currentValue += cellInfo.progress ?? 0;
@@ -130,8 +130,8 @@ export const ActivityPage = () => {
 
    return (
       <div className={cssClasses.wrapper}>
-         <div
-            className={cssClasses.title}>{getTitleByActivityType(activeActivity.activity.type, activeActivity.activity.currentValue, activeActivity.activity.name)}</div>
+         {false && <div
+             className={cssClasses.title}>{getTitleByActivityType(activeActivity.activity.type, activeActivity.activity.currentValue, activeActivity.activity.name)}</div>}
          <Calendar onClick={handleCalendarClick}/>
          <ConfirmButton
             hoverColor={"rgba(255,50,50,0.8)"} backgroundColor={"rgba(255,150,150,0.8)"} barColor={"red"}
@@ -140,8 +140,8 @@ export const ActivityPage = () => {
             Activity</ConfirmButton>
          {editProgress && <Modal onClose={() => setEditProgress(false)} open={editProgress}>
              <OpenedActivity activity={activeActivity.activity} cellInfo={cellInfo}
-                             onProgressChange={handleProgressChange} onIncreaseProgress={handleIncreaseProgress}
-                             onDecreaseProgress={handleDeleteProgress} onInfoChange={handleInfoChange}/>
+                             onConfirmProgress={handleProgressConfirm}
+                             onDeleteProgress={handleDeleteProgress} onInfoChange={handleInfoChange}/>
          </Modal>}
       </div>
 

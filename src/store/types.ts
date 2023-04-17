@@ -1,9 +1,9 @@
 import {AuthenticationPayload} from "./authentication/types";
-import {StatsProps} from "./activities/types";
+import {ActivityProps} from "./activities/types";
 
 
 export type GamificationModel = {
-   activities: StatsProps[]
+   activities: ActivityProps[]
    activeActivityIndex: number,
    authentication: AuthenticationPayload
 }
