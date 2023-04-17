@@ -1,7 +1,5 @@
 import {useCallback, useEffect, useState} from "react";
 import {useAppDispatch, useAppSelector} from "../../store/store";
-import {getClasses} from "../../utils/styleUtils";
-import {styles} from "./styles";
 import {
    decreaseActivityProgress,
    increaseActivityProgress,
@@ -21,16 +19,10 @@ import {ConfirmButton} from "../../components/basicComponents/ConfirmButton/Conf
 import produce from "immer";
 import {getActiveActivity} from "../../store/activity/activitySelector";
 import {getActivities} from "../../store/activities/activitiesSelectors";
+import {getClasses} from "../../utils/styleUtils";
+import {styles} from "./styles";
 
 const cssClasses = getClasses(styles);
-
-const getTitleByActivityType = (activityType: ActivityProps["type"], currentValue: ActivityProps["currentValue"], activityName: ActivityProps["name"]) => {
-   switch (activityType) {
-      case "Days":
-         return `Already ${currentValue === 1 ? "a" : ""} ${currentValue > 1 ? currentValue : ""} ${currentValue > 1 ? "Days" : "Day"} on ${activityName}. Keep on going!`
-   }
-}
-
 export const ActivityPage = () => {
    const [editProgress, setEditProgress] = useState(false);
    const [cellInfo, setCellInfo] = useState<CellInfo>({date: "00-00-00"});
@@ -78,7 +70,7 @@ export const ActivityPage = () => {
    }, [activeActivity, cellInfo]);
 
    const handleDeleteProgress = useCallback(() => {
-      const currentValue = activeActivity.activity.type === "Days" ? activeActivity.activity.currentValue - 1 : activeActivity.activity.currentValue + (cellInfo?.progress ?? 0) * -1;
+      const currentValue = activeActivity.activity.currentValue + (cellInfo?.progress ?? 0) * -1;
       if (cellInfo?.date) {
          const calendarEntries = updateCell(cellInfo?.date, {marked: false}, true)
          const updatedActivity = {
@@ -130,8 +122,6 @@ export const ActivityPage = () => {
 
    return (
       <div className={cssClasses.wrapper}>
-         {false && <div
-             className={cssClasses.title}>{getTitleByActivityType(activeActivity.activity.type, activeActivity.activity.currentValue, activeActivity.activity.name)}</div>}
          <Calendar onClick={handleCalendarClick}/>
          <ConfirmButton
             hoverColor={"rgba(255,50,50,0.8)"} backgroundColor={"rgba(255,150,150,0.8)"} barColor={"red"}

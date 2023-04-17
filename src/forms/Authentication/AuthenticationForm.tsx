@@ -31,7 +31,7 @@ const createDateFromFirebaseDate = (firebaseDate: string | undefined) => {
 
 interface IAuthenticationForm {
    forcedMode?: AuthenticationMode;
-   onActionDone: () => void;
+   onActionDone?: () => void;
 }
 
 export const AuthenticationForm = ({forcedMode, onActionDone}: IAuthenticationForm) => {
@@ -44,11 +44,10 @@ export const AuthenticationForm = ({forcedMode, onActionDone}: IAuthenticationFo
    const dispatch = useAppDispatch();
 
    const handleLogin = useCallback(async () => {
-      console.log(email, password);
       const user = await Signin(email, password);
       const loggedIn = Boolean(user.user.email);
       if (loggedIn) {
-         onActionDone();
+         onActionDone?.();
          dispatch(setLoggedIn(loggedIn));
          dispatch(setUserId(user.user.uid));
          dispatch(setCreationTime(createDateFromFirebaseDate(user.user.metadata.creationTime)));
@@ -68,7 +67,7 @@ export const AuthenticationForm = ({forcedMode, onActionDone}: IAuthenticationFo
       if (password.length > 0) {
          const signupResult = await Signup(email, password);
          if (signupResult.user.email) {
-            onActionDone();
+            onActionDone?.();
             dispatch(setEmailAction(email));
             dispatch(setLoggedIn(true));
             dispatch(setUserId(signupResult.user.uid));

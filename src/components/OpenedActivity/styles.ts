@@ -15,6 +15,9 @@ export const styles = style({
       fontSize: 20,
       gap: 5,
    },
+   statsWrapper: {
+      padding: 5,
+   },
    buttons: {
       display: "grid",
       height: 30,
