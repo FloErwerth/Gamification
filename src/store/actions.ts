@@ -14,4 +14,5 @@ export enum GamificationActionTypes {
    UPDATE_CELL = "gamification/cells/update",
    DELETE_CELL = "gamification/cells/delte",
    UPDATE_STATS = "gamification/stats/update",
+   SET_DAYS_IN_MONTH = "gamification/calendar/date",
 }

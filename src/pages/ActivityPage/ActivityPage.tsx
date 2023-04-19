@@ -15,6 +15,7 @@ import {getClasses} from "../../utils/styleUtils";
 import {styles} from "./styles";
 import {StatWithValue} from "../../store/activities/predefinedActivities";
 import {ConfirmButton} from "../../components/ConfirmButton/ConfirmButton";
+import {ActivityChart} from "../../components/Charts/ActivityChart/ActivityChart";
 
 const cssClasses = getClasses(styles);
 export const ActivityPage = () => {
@@ -24,7 +25,7 @@ export const ActivityPage = () => {
    const uid = useAppSelector(getUserId);
    const activities = useAppSelector(getActivities);
    const dispatch = useAppDispatch();
-   const navigate = useNavigate()
+   const navigate = useNavigate();
 
    const handleProgressConfirm = useCallback((stats: StatWithValue[]) => {
       if (selectedDate) {
@@ -73,6 +74,7 @@ export const ActivityPage = () => {
 
    return (
       <div className={cssClasses.wrapper}>
+         <ActivityChart/>
          <Calendar onClick={handleCalendarClick}/>
          <ConfirmButton
             hoverColor={"rgba(255,50,50,0.8)"} backgroundColor={"rgba(255,150,150,0.8)"} barColor={"red"}

@@ -8,13 +8,14 @@ interface Dropdown {
    options: string[];
    label: string;
    setValue: (value: string) => void;
+   value?: string;
 }
 
 
-export function Dropdown({options, label, setValue}: Dropdown) {
+export function Dropdown({options, label, setValue, value}: Dropdown) {
 
    const {value: showDropdown, toggleValue: toggleDropdown} = useToggle(false);
-   const [chosenOption, setChosenOption] = useState("");
+   const [chosenOption, setChosenOption] = useState(value ?? "");
    const cssClasses = useMemo(() => getClasses(styles(showDropdown, !!chosenOption)), [showDropdown]);
 
    const handleOptionSelection = useCallback((value: string) => {

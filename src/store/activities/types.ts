@@ -1,7 +1,7 @@
 import {StatEnum, StatWithValue} from "./predefinedActivities";
 
 export type DateType = `${string}-${string}-${string}`;
-export type CalendarType = { [date: DateType]: Omit<CellInfo, "date"> };
+export type CalendarType = { [date: DateType]: CellInfo };
 export type CellInfo =
    { marked?: boolean, stats?: StatWithValue[], info?: string, interactable?: boolean };
 export type ActivityProps = {

@@ -1,11 +1,12 @@
 import {useCallback, useEffect, useState} from "react";
 import {Temporal} from "@js-temporal/polyfill";
-import {useAppSelector} from "../../store/store";
+import {useAppDispatch, useAppSelector} from "../../store/store";
 import {getCreationDate} from "../../store/authentication/authSelectors";
 import {getActiveActivity} from "../../store/activity/activitySelector";
 import {getCalendarEntries} from "../../store/activities/activitiesSelectors";
 import {generateISOString} from "./utils";
 import {CalendarType} from "../../store/activities/types";
+import {setDaysInMonth} from "../../store/calendar/calendarActions";
 
 
 const gregorian = Temporal.Calendar.from('gregory');
@@ -46,7 +47,7 @@ export const useCalendar = () => {
    const calendarEntries = useAppSelector(getCalendarEntries(activtiyIndex));
    const [showPreviousMonth, setShowPreviousMonth] = useState(getShowPreviousMonth(shownDate.month, creationDate));
    const [showJump, setShowJump] = useState(getShowJump(shownDate.month));
-
+   const dispatch = useAppDispatch();
    const constructCalendar = useCallback(() => {
       const calendar: CalendarType = {};
       const daysInCurrentMonth = gregorian.daysInMonth(shownDate);
@@ -81,6 +82,7 @@ export const useCalendar = () => {
    }, [calendarEntries])
 
    useEffect(() => {
+      dispatch(setDaysInMonth({daysInMonth: shownDate.daysInMonth}));
       setShowPreviousMonth(getShowPreviousMonth(shownDate.month, creationDate));
       setShowNextMonth(getShowNextMonth(shownDate.month));
       setShowJump(getShowJump(shownDate.month));
