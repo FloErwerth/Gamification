@@ -56,7 +56,7 @@ const AddActivityModalContent = ({
             dispatch(addActivity(generatedActivity));
          });
       }
-   }, [userId, activityName]);
+   }, [userId, activityName, stats]);
 
    useEffect(() => {
       if (predefinedActivity === "Custom") {

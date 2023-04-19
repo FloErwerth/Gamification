@@ -1,15 +1,16 @@
-import {Stat} from "../../store/activities/predefinedActivities";
+import {StatMap, StatWithValue} from "../../store/activities/predefinedActivities";
 import {getClasses} from "../../utils/styleUtils";
 import {styles} from "./styles";
 
 interface IDisplayedStat {
-   stat: Stat
+   stat: StatWithValue
 }
 
 const cssClasses = getClasses(styles);
 export const DisplayedStat = ({stat}: IDisplayedStat) => {
-   return <div className={cssClasses.statWrapper}>{stat.text}
+   const mappedStat = StatMap(stat.name);
+   return <div className={cssClasses.statWrapper}>{mappedStat.text}
       <div
          className={cssClasses.value}>{stat.value}</div>
-      {stat.preferedUnit}</div>
+      {mappedStat.preferedUnit}</div>
 }

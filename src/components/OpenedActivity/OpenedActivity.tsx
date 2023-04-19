@@ -6,17 +6,17 @@ import {getGeneratedDisplayDate} from "../calendar/utils";
 import {Input} from "../Input/Input";
 import {useCallback, useState} from "react";
 import produce from "immer";
-import {Stat, StatMap} from "../../store/activities/predefinedActivities";
+import {StatWithValue} from "../../store/activities/predefinedActivities";
 import {DisplayedStat} from "../DisplayedStat/DisplayedStat";
 import {Button} from "../Button/Button";
 import {ConfirmButton} from "../ConfirmButton/ConfirmButton";
 
 export type CellInfo =
-   { date: DateType, marked?: boolean, stats?: Stat[], info?: string, interactable?: boolean };
+   { date: DateType, marked?: boolean, stats?: StatWithValue[], info?: string, interactable?: boolean };
 
 interface OpenedActivityProps {
    activity: ActivityProps,
-   onConfirmProgress: (stats: Stat[]) => void;
+   onConfirmProgress: (stats: StatWithValue[]) => void;
    onDeleteProgress: () => void;
    onInfoChange?: (info: string) => void;
    cellInfo: CellInfo,
@@ -31,7 +31,9 @@ export const OpenedActivity = ({
                                   onConfirmProgress,
                                   onDeleteProgress
                                }: OpenedActivityProps) => {
-   const [stats, setStats] = useState(() => activity.stats.map((stat) => StatMap(stat)));
+   const [stats, setStats] = useState<StatWithValue[]>(activity.stats.map((stat) => {
+      return {name: stat, value: 0}
+   }));
 
    const handleStatsChange = useCallback((value: string, index: number) => {
       if (value && !cellInfo.marked) {
@@ -46,9 +48,11 @@ export const OpenedActivity = ({
       <div>
          {!cellInfo.marked &&
              <div className={cssClasses.statsWrapper}>
-                {stats.map((stat, index) => <Input placeholder={"0"} label={stat.name}
-                                                   onChange={(value) => handleStatsChange(value, index)}
-                                                   type={"number"}/>)}</div>
+                {stats.map((stat, index) =>
+                   <Input placeholder={"0"} label={stat.name}
+                          onChange={(value) => handleStatsChange(value, index)}
+                          type={"number"}/>
+                )}</div>
          }
          {cellInfo.marked && cellInfo.stats &&
              <>

@@ -5,11 +5,11 @@ import {useCalendar} from "./useCalendar";
 import {useMemo} from "react";
 import {CellInfo} from "../OpenedActivity/OpenedActivity";
 import {getDay, getDisplayMonth} from "./utils";
-import {Stat} from "../../store/activities/predefinedActivities";
+import {StatWithValue} from "../../store/activities/predefinedActivities";
 import {Button} from "../Button/Button";
 
 interface CalendarProps {
-   onClick: (date: DateType, marked: boolean, stats: Stat[], info?: string) => void;
+   onClick: (date: DateType, marked: boolean, stats: StatWithValue[], info?: string) => void;
 }
 
 interface CalendarCell extends CalendarProps {

@@ -14,7 +14,7 @@ import {getActiveActivity} from "../../store/activity/activitySelector";
 import {getActivities} from "../../store/activities/activitiesSelectors";
 import {getClasses} from "../../utils/styleUtils";
 import {styles} from "./styles";
-import {Stat} from "../../store/activities/predefinedActivities";
+import {StatWithValue} from "../../store/activities/predefinedActivities";
 import {ConfirmButton} from "../../components/ConfirmButton/ConfirmButton";
 
 const cssClasses = getClasses(styles);
@@ -50,7 +50,7 @@ export const ActivityPage = () => {
       });
    }, [activeActivity, getCalendarEntries])
 
-   const handleProgressConfirm = useCallback((stats: Stat[]) => {
+   const handleProgressConfirm = useCallback((stats: StatWithValue[]) => {
       if (cellInfo?.date) {
          const calendarEntries = updateCell(cellInfo?.date, {marked: true, stats}, true)
          const updatedActivity = {
@@ -87,7 +87,7 @@ export const ActivityPage = () => {
       }
    }, [uid, activeActivity, activities]);
 
-   const handleCalendarClick = useCallback((date: DateType, marked: boolean, stats: Stat[], info?: string) => {
+   const handleCalendarClick = useCallback((date: DateType, marked: boolean, stats: StatWithValue[], info?: string) => {
       setCellInfo({date, marked, stats, info});
       setEditProgress(true);
    }, [editProgress]);

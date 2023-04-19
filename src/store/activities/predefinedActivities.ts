@@ -5,6 +5,7 @@ export type PredefinedStatsSet = z.infer<typeof PREDEFINED_STATS_SET>;
 export type Stat = { name: StatEnum, text: string, preferedUnit: string, description: string, value?: number, deletable?: boolean };
 export const StatEnum = z.enum(["Distance", "Time", "Calories", "Steps", "Pages written", "Pages read", "Pictures drawn"]);
 export type StatEnum = z.infer<typeof StatEnum>;
+export type StatWithValue = { name: StatEnum, value: number };
 
 export const assambleFields = (statSet: PredefinedStatsSet): StatEnum[] => {
    switch (statSet) {
