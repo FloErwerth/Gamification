@@ -46,7 +46,7 @@ export const OpenedActivity = ({
    }, [stats]);
 
    return <div className={cssClasses.wrapper}>
-      <div className={cssClasses.title}>{activeActivity.activity.name} on {getGeneratedDisplayDate(date)}</div>
+      <div className={cssClasses.title}>{getGeneratedDisplayDate(date)}</div>
       <div>
          {cellMarked && cell.stats && <>
              <small>Here is the overview of your activity</small>

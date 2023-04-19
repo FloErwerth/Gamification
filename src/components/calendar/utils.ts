@@ -32,11 +32,7 @@ export const getDisplayMonth = (month: number) => {
 export const getGeneratedDisplayDate = (date: DateType) => {
    const split = date.split("-");
    const month = getDisplayMonth(parseInt(split[1]));
-   return `${month} ${split[1]}, ${split[2]}`
-}
-
-export const getDisplayDate = (date: DateType) => {
-   return date.split("-").join(".");
+   return `${month} ${split[1]}`
 }
 
 export const getDay = (date: DateType) => {

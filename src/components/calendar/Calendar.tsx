@@ -6,6 +6,8 @@ import {useMemo} from "react";
 import {getDay, getDisplayMonth} from "./utils";
 import {StatWithValue} from "../../store/activities/predefinedActivities";
 import {Button} from "../Button/Button";
+import {useAppSelector} from "../../store/store";
+import {getActiveActivity} from "../../store/activity/activitySelector";
 
 interface CalendarProps {
    onClick: (date: DateType, marked: boolean, stats: StatWithValue[], info?: string) => void;
@@ -31,8 +33,9 @@ const calendarClasses = getClasses(styles);
 
 export const Calendar = ({onClick}: CalendarProps) => {
    const [currentCalendar, showPreviousMonth, showNextMonth, showJump, decreaseMonth, increaseMonth, showCurrentMonth, shownDate] = useCalendar();
+   const activeActivity = useAppSelector(getActiveActivity);
    return <div className={calendarClasses.mainWrapper}>
-      <h2>{getDisplayMonth(shownDate.month)} {shownDate.year}</h2>
+      <h2>{activeActivity.activity.name}, {getDisplayMonth(shownDate.month)} {shownDate.year}</h2>
       <div className={calendarClasses.weekdaysWrapper}>{weekDays.map((weekday) => <div
          className={calendarClasses.weekday}>{weekday}</div>)}</div>
       <div className={calendarClasses.calendarWrapper}>
