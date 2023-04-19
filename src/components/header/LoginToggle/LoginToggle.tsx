@@ -1,10 +1,10 @@
 import {useCallback, useState} from "react";
-import {Button} from "../../basicComponents/Button/Button";
+import {Button} from "../../Button/Button";
 import {getClasses} from "../../../utils/styleUtils";
 import {styles} from "./styles";
 import {useAppDispatch, useAppSelector} from "../../../store/store";
 import {getIsLoggedIn} from "../../../store/authentication/authSelectors";
-import {Modal} from "../../basicComponents/Modal/Modal";
+import {Modal} from "../../Modal/Modal";
 import {AuthenticationForm} from "../../../forms/Authentication/AuthenticationForm";
 import {SignOut} from "../../../../firebase";
 import {setLoggedIn} from "../../../store/authentication/authActions";

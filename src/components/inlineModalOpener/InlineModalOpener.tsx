@@ -1,7 +1,7 @@
 import {PropsWithChildren, useState} from "react";
 import {getClasses} from "../../utils/styleUtils";
 import {inlineModalOpenerStyles} from "./inlineModalOpenerStyles";
-import {Modal} from "../basicComponents/Modal/Modal";
+import {Modal} from "../Modal/Modal";
 
 const cssClasses = getClasses(inlineModalOpenerStyles);
 

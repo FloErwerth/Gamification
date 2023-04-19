@@ -1,9 +1,9 @@
 import {useCallback, useState} from "react";
 import {Stat, StatEnum, StatMap} from "../../store/activities/predefinedActivities";
-import {Modal, ModalProps} from "../basicComponents/Modal/Modal";
+import {Modal, ModalProps} from "../Modal/Modal";
 import {getClasses} from "../../utils/styleUtils";
 import {styles} from "./styles";
-import {SelectableField} from "../basicComponents/SelectableField/SelectableField";
+import {SelectableField} from "../SelectableField/SelectableField";
 
 interface IFieldsSelector extends ModalProps {
    onFieldSelectorClosed: (fields: Stat[]) => void;

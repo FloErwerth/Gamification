@@ -40,39 +40,20 @@ export const activitiesReducer = (oldActivities = InitialGamificiationState.acti
    if (action.type === GamificationActionTypes.SET_ACTIVITIES) {
       return action.payload
    }
+   if (action.type === GamificationActionTypes.UPDATE_STATS) {
+      return produce(oldActivities, newActivities => {
+         const calendarCell = newActivities[action.payload.activityIndex].calendarEntries[action.payload.date];
+         if (!calendarCell) {
+
+         }
+      })
+   }
    if (action.type === GamificationActionTypes.CHANGE_ACTIVITY) {
       return produce<ActivityProps[]>(oldActivities, newActivities => {
          const calendarEntries = getCleanedCalendar(action.payload.activity.calendarEntries);
          newActivities[action.payload.activityIndex] = {
             ...action.payload.activity, calendarEntries
          }
-      })
-   }
-   if (action.type === GamificationActionTypes.INCREASE_PROGRESS) {
-      return produce<ActivityProps[]>(oldActivities, newActivities => {
-         const activity = newActivities[action.payload.activityIndex];
-         if (action.payload.currentValue >= activity.maxValue) {
-            const {
-               level,
-               maxValue
-            } = increaseLevels(action.payload.currentValue, activity.level, activity.maxValue);
-            newActivities[action.payload.activityIndex] = {...activity, level, maxValue};
-         }
-      })
-   }
-   if (action.type === GamificationActionTypes.DECREASE_PROGRESS) {
-      return produce<ActivityProps[]>(oldActivities, newActivities => {
-         const activity = newActivities[action.payload.activityIndex];
-         const {
-            level,
-            maxValue
-         } = decreaseLevels(action.payload.currentValue, activity.level, activity.maxValue);
-         newActivities[action.payload.activityIndex] = {
-            ...activity,
-            currentValue: action.payload.currentValue,
-            level,
-            maxValue
-         };
       })
    }
    if (action.type === GamificationActionTypes.UPDATE_ADDITIONAL_CELL_INFO) {

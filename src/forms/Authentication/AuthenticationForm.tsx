@@ -12,9 +12,9 @@ import {
 } from "../../store/authentication/authActions";
 import {setActivities} from "../../store/activities/activitiesActions";
 import {Pages} from "../../types/pages";
-import {Input} from "../../components/basicComponents/Input/Input";
-import {Checkmark} from "../../components/basicComponents/Checkmark/Checkmark";
-import {Button} from "../../components/basicComponents/Button/Button";
+import {Input} from "../../components/Input/Input";
+import {Checkmark} from "../../components/Checkmark/Checkmark";
+import {Button} from "../../components/Button/Button";
 import {getClasses} from "../../utils/styleUtils";
 import {styles} from "./styles";
 import {Temporal} from "@js-temporal/polyfill";

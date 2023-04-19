@@ -7,17 +7,15 @@ import {Pages} from "../../types/pages";
 import {Activity} from "./Activitiy";
 import {ActivityProps} from "../../store/activities/types";
 import {setActiveActivity} from "../../store/activity/activityActions";
-import {Button} from "../basicComponents/Button/Button";
+import {Button} from "../Button/Button";
 
 const wrapperClasses = getClasses(wrapperStyles);
 export const ActivityWrapper = ({
                                    currentValue,
                                    maxValue,
                                    name,
-                                   increasement,
                                    index,
                                    level,
-                                   type,
                                 }: ActivityProps & { index: number }) => {
    const dispatch = useAppDispatch();
    const navigate = useNavigate();
@@ -33,9 +31,7 @@ export const ActivityWrapper = ({
          <Activity
             currentValue={currentValue}
             maxValue={maxValue}
-            increasement={increasement}
             level={level}
-            type={type}
          />
       </Button>
    );

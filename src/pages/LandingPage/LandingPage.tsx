@@ -1,10 +1,10 @@
 import {getClasses} from "../../utils/styleUtils";
 import {landingPageStyles} from "./landingPageStyles";
-import {Button} from "../../components/basicComponents/Button/Button";
-import {ButtonThemeEnum} from "../../components/basicComponents/Button/types";
-import {Card} from "../../components/basicComponents/Card/Card";
+import {Button} from "../../components/Button/Button";
+import {ButtonThemeEnum} from "../../components/Button/types";
+import {Card} from "../../components/Card/Card";
 import {useState} from "react";
-import {Modal} from "../../components/basicComponents/Modal/Modal";
+import {Modal} from "../../components/Modal/Modal";
 import {AuthenticationForm} from "../../forms/Authentication/AuthenticationForm";
 
 const cssClasses = getClasses(landingPageStyles);

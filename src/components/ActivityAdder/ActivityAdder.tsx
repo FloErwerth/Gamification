@@ -1,9 +1,7 @@
 import {useCallback, useEffect, useMemo, useState} from "react";
-import {Button} from "../basicComponents/Button/Button";
-import {Modal} from "../basicComponents/Modal/Modal";
+import {Modal} from "../Modal/Modal";
 import {getClasses} from "../../utils/styleUtils";
 import {activityAdderClasses} from "./styles";
-import {Dropdown} from "../basicComponents/Dropdown/Dropdown";
 import {addActivity} from "../../store/activities/activitiesActions";
 import {useAppDispatch, useAppSelector} from "../../store/store";
 import {addActivityInDatabase} from "../../../firebase";
@@ -13,11 +11,15 @@ import {
    PREDEFINED_STATS_SET,
    PredefinedStatsSet,
    Stat,
+   StatEnum,
+   StatMap,
 } from "../../store/activities/predefinedActivities";
 import {FieldsSelector} from "../FieldsSelector/FieldsSelector";
-import {DisplayedField} from "../basicComponents/DisplayedField/DisplayedField";
-import {Input} from "../basicComponents/Input/Input";
+import {DisplayedField} from "../DisplayedField/DisplayedField";
+import {Input} from "../Input/Input";
 import {ActivityProps} from "../../store/activities/types";
+import {Dropdown} from "../Dropdown/Dropdown";
+import {Button} from "../Button/Button";
 
 const cssClasses = getClasses(activityAdderClasses);
 
@@ -67,11 +69,12 @@ const AddActivityModalContent = ({
    }, [predefinedActivity])
 
    const handleSetAdditionalFields = useCallback((fields: Stat[]) => {
-      setStats((previous) => [...previous, ...fields]);
+      const parsedFields = fields.map((field) => StatMap(field.name as StatEnum));
+      setStats((previous) => [...previous, ...parsedFields]);
       setAddAdditionalAcitivity(false);
    }, [])
 
-   const handleDeleteSelectedField = useCallback((deletedField: Stat) => {
+   const handleDeleteSelectedField = useCallback((deletedField: Omit<Stat, "text" | "preferedUnit">) => {
       setStats((previous) =>
          previous.filter((field) => field.name !== deletedField.name))
    }, []);
@@ -82,8 +85,7 @@ const AddActivityModalContent = ({
          <div>
             {predefinedActivity === PREDEFINED_STATS_SET.Enum.Custom &&
                 <Input customWrapperClasses={cssClasses.nameInput} placeholder={"Name for the activity"}
-                       onChange={(value) => setActivityName(value)}
-                       value={activityName}/>}
+                       onChange={(value) => setActivityName(value)}/>}
             <Dropdown options={PREDEFINED_STATS_SET.options}
                       label={predefinedActivity}
                       setValue={(value) => setPredefinedActivity(value as PredefinedStatsSet)}/>

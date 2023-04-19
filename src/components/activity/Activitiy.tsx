@@ -4,13 +4,12 @@ import {styles} from "./styles";
 import {Star} from "../../media/icons";
 import {ActivityProps} from "../../store/activities/types";
 
-type ActivityProps = Omit<ActivityProps, "name" | "width" | "increasementFactor" | "calendarEntries">;
+type TActivityProps = Omit<ActivityProps, "name" | "width" | "calendarEntries" | "stats">
 export const Activity = ({
                             currentValue,
                             maxValue,
-                            type,
                             level,
-                         }: ActivityProps) => {
+                         }: TActivityProps) => {
    const cssClasses = useMemo(
       () =>
          getClasses(
@@ -22,7 +21,7 @@ export const Activity = ({
       <div className={cssClasses.barWrapper}>
          <div className={cssClasses.bar}>
             <div className={cssClasses.xp}>
-               {currentValue}/{maxValue} {type}
+               {currentValue}/{maxValue}
             </div>
          </div>
          <div className={cssClasses.levelWrapper}>

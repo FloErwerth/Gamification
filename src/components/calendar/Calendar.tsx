@@ -3,12 +3,13 @@ import {cellStyles, styles} from "./styles";
 import {DateType} from "../../store/activities/types";
 import {useCalendar} from "./useCalendar";
 import {useMemo} from "react";
-import {Button} from "../basicComponents/Button/Button";
 import {CellInfo} from "../OpenedActivity/OpenedActivity";
 import {getDay, getDisplayMonth} from "./utils";
+import {Stat} from "../../store/activities/predefinedActivities";
+import {Button} from "../Button/Button";
 
 interface CalendarProps {
-   onClick: (date: DateType, marked: boolean, progress: number, info?: string) => void;
+   onClick: (date: DateType, marked: boolean, stats: Stat[], info?: string) => void;
 }
 
 interface CalendarCell extends CalendarProps {
@@ -20,7 +21,7 @@ interface CalendarCell extends CalendarProps {
 const CalendarCell = ({onClick, calendarObject, date}: CalendarCell) => {
    const cssClasses = useMemo(() => getClasses(cellStyles(calendarObject?.marked ?? false, calendarObject?.interactable ?? true)), [calendarObject, calendarObject?.marked]);
    return <button disabled={!calendarObject?.interactable && calendarObject?.interactable === false}
-                  onClick={() => onClick(date, calendarObject.marked ?? false, calendarObject.progress ?? 0, calendarObject.info)}
+                  onClick={() => onClick(date, calendarObject.marked ?? false, calendarObject?.stats ?? [], calendarObject.info)}
                   className={cssClasses.calendarCell}>
       <div>{getDay(date)}</div>
    </button>;

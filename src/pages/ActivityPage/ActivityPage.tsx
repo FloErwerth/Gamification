@@ -1,26 +1,21 @@
 import {useCallback, useEffect, useState} from "react";
 import {useAppDispatch, useAppSelector} from "../../store/store";
-import {
-   decreaseActivityProgress,
-   increaseActivityProgress,
-   setActivities,
-   updateActivity,
-   updateAdditionalCellInfo
-} from "../../store/activities/activitiesActions";
+import {setActivities, updateActivity, updateAdditionalCellInfo} from "../../store/activities/activitiesActions";
 import {useNavigate} from "react-router-dom";
 import {Pages} from "../../types/pages";
 import {updateActivitiesInDatabase} from "../../../firebase";
 import {getUserId} from "../../store/authentication/authSelectors";
 import {Calendar} from "../../components/calendar/Calendar";
 import {ActivityProps, DateType} from "../../store/activities/types";
-import {Modal} from "../../components/basicComponents/Modal/Modal";
+import {Modal} from "../../components/Modal/Modal";
 import {CellInfo, OpenedActivity} from "../../components/OpenedActivity/OpenedActivity";
-import {ConfirmButton} from "../../components/basicComponents/ConfirmButton/ConfirmButton";
 import produce from "immer";
 import {getActiveActivity} from "../../store/activity/activitySelector";
 import {getActivities} from "../../store/activities/activitiesSelectors";
 import {getClasses} from "../../utils/styleUtils";
 import {styles} from "./styles";
+import {Stat} from "../../store/activities/predefinedActivities";
+import {ConfirmButton} from "../../components/ConfirmButton/ConfirmButton";
 
 const cssClasses = getClasses(styles);
 export const ActivityPage = () => {
@@ -55,45 +50,32 @@ export const ActivityPage = () => {
       });
    }, [activeActivity, getCalendarEntries])
 
-   const handleProgressConfirm = useCallback(() => {
-      if (cellInfo && cellInfo.date) {
-         let currentValue = activeActivity.activity.currentValue;
-         currentValue += cellInfo.progress ?? 0;
-         const calendarEntries = updateCell(cellInfo.date, {...cellInfo, marked: !cellInfo.marked});
-         dispatch(updateActivity({
-            activityIndex: activeActivity.index,
-            activity: {...activeActivity.activity, currentValue, calendarEntries}
-         }));
-         dispatch(increaseActivityProgress({activityIndex: activeActivity.index, currentValue}));
-         setEditProgress(false);
+   const handleProgressConfirm = useCallback((stats: Stat[]) => {
+      if (cellInfo?.date) {
+         const calendarEntries = updateCell(cellInfo?.date, {marked: true, stats}, true)
+         const updatedActivity = {
+            ...activeActivity.activity,
+            currentValue: 0,
+            calendarEntries,
+         }
+         dispatch(updateActivity({activityIndex: activeActivity.index, activity: updatedActivity}))
       }
+      setEditProgress(false);
    }, [activeActivity, cellInfo]);
 
    const handleDeleteProgress = useCallback(() => {
-      const currentValue = activeActivity.activity.currentValue + (cellInfo?.progress ?? 0) * -1;
+      const currentValue = 0;
       if (cellInfo?.date) {
          const calendarEntries = updateCell(cellInfo?.date, {marked: false}, true)
          const updatedActivity = {
             ...activeActivity.activity,
             currentValue,
             calendarEntries,
-            progress: cellInfo?.progress,
          }
-         setCellInfo({date: "00-00-00"})
          dispatch(updateActivity({activityIndex: activeActivity.index, activity: updatedActivity}))
-         dispatch(decreaseActivityProgress({activityIndex: activeActivity.index, currentValue}))
       }
       setEditProgress(false);
    }, [updateCell, activeActivity, cellInfo]);
-
-   const handleProgressChange = useCallback((value: string) => {
-      const parsedNum = parseInt(value);
-      if (!isNaN(parsedNum) && parsedNum !== -1) {
-         setCellInfo(current => {
-            return {...current, progress: parsedNum}
-         });
-      }
-   }, [cellInfo]);
 
    const handleDeletion = useCallback((deleteConfirmed: boolean) => {
       if (deleteConfirmed) {
@@ -105,8 +87,8 @@ export const ActivityPage = () => {
       }
    }, [uid, activeActivity, activities]);
 
-   const handleCalendarClick = useCallback((date: DateType, marked: boolean, progress: number, info?: string) => {
-      setCellInfo({date, marked, progress, info});
+   const handleCalendarClick = useCallback((date: DateType, marked: boolean, stats: Stat[], info?: string) => {
+      setCellInfo({date, marked, stats, info});
       setEditProgress(true);
    }, [editProgress]);
 
