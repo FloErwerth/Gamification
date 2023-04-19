@@ -1,11 +1,11 @@
 import {CellInfo} from "../../components/OpenedActivity/OpenedActivity";
-import {Stat} from "./predefinedActivities";
+import {StatEnum} from "./predefinedActivities";
 
 export type DateType = `${string}-${string}-${string}`;
 export type CalendarType = { [date: DateType]: Omit<CellInfo, "date"> };
 
 export type ActivityProps = {
-   stats: Stat[];
+   stats: StatEnum[];
    currentValue: number;
    maxValue: number;
    name: string;

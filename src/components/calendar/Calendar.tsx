@@ -26,6 +26,7 @@ const CalendarCell = ({onClick, calendarObject, date}: CalendarCell) => {
       <div>{getDay(date)}</div>
    </button>;
 }
+
 const weekDays = ["Mo", "Tues", "Wed", "Thur", "Fr", "Sa", "So"];
 const calendarClasses = getClasses(styles);
 
