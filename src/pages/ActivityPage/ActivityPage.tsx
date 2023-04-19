@@ -1,15 +1,14 @@
-import {useCallback, useEffect, useState} from "react";
+import {useCallback, useState} from "react";
 import {useAppDispatch, useAppSelector} from "../../store/store";
-import {setActivities, updateActivity, updateAdditionalCellInfo} from "../../store/activities/activitiesActions";
+import {deleteActivity, deleteCell, updateCell} from "../../store/activities/activitiesActions";
 import {useNavigate} from "react-router-dom";
 import {Pages} from "../../types/pages";
 import {updateActivitiesInDatabase} from "../../../firebase";
 import {getUserId} from "../../store/authentication/authSelectors";
 import {Calendar} from "../../components/calendar/Calendar";
-import {ActivityProps, DateType} from "../../store/activities/types";
+import {DateType} from "../../store/activities/types";
 import {Modal} from "../../components/Modal/Modal";
-import {CellInfo, OpenedActivity} from "../../components/OpenedActivity/OpenedActivity";
-import produce from "immer";
+import {OpenedActivity} from "../../components/OpenedActivity/OpenedActivity";
 import {getActiveActivity} from "../../store/activity/activitySelector";
 import {getActivities} from "../../store/activities/activitiesSelectors";
 import {getClasses} from "../../utils/styleUtils";
@@ -20,87 +19,57 @@ import {ConfirmButton} from "../../components/ConfirmButton/ConfirmButton";
 const cssClasses = getClasses(styles);
 export const ActivityPage = () => {
    const [editProgress, setEditProgress] = useState(false);
-   const [cellInfo, setCellInfo] = useState<CellInfo>({date: "00-00-00"});
+   const [selectedDate, setSelectedDate] = useState<DateType>("00-00-00");
    const activeActivity = useAppSelector(getActiveActivity);
    const uid = useAppSelector(getUserId);
    const activities = useAppSelector(getActivities);
    const dispatch = useAppDispatch();
    const navigate = useNavigate()
 
-   useEffect(() => {
-      return () => {
-         if (document.location.href.split("//")[1].replace(document.location.host, "") === Pages.OVERVIEW) {
-            updateActivitiesInDatabase(uid, activities).then(() => console.log("updated activities!"))
-         }
-      }
-   }, [uid, activities])
-
-   const getCalendarEntries = useCallback(() => {
-      return {...activeActivity.activity.calendarEntries}
-   }, [activeActivity]);
-
-   const updateCell = useCallback((date: DateType, content: Partial<Omit<CellInfo, "date">>, hard?: boolean): ActivityProps["calendarEntries"] => {
-      return produce(getCalendarEntries(), newCells => {
-         if (hard && hard) {
-            {
-               newCells[date] = content;
-            }
-         }
-         newCells[date] = {...newCells[date], ...content} ?? {...content};
-      });
-   }, [activeActivity, getCalendarEntries])
-
    const handleProgressConfirm = useCallback((stats: StatWithValue[]) => {
-      if (cellInfo?.date) {
-         const calendarEntries = updateCell(cellInfo?.date, {marked: true, stats}, true)
-         const updatedActivity = {
-            ...activeActivity.activity,
-            currentValue: 0,
-            calendarEntries,
-         }
-         dispatch(updateActivity({activityIndex: activeActivity.index, activity: updatedActivity}))
+      if (selectedDate) {
+         dispatch(updateCell({
+            activityIndex: activeActivity.index,
+            date: selectedDate,
+            content: {marked: true, stats}
+         }))
       }
       setEditProgress(false);
-   }, [activeActivity, cellInfo]);
+   }, [activeActivity, selectedDate]);
 
    const handleDeleteProgress = useCallback(() => {
-      const currentValue = 0;
-      if (cellInfo?.date) {
-         const calendarEntries = updateCell(cellInfo?.date, {marked: false}, true)
-         const updatedActivity = {
-            ...activeActivity.activity,
-            currentValue,
-            calendarEntries,
-         }
-         dispatch(updateActivity({activityIndex: activeActivity.index, activity: updatedActivity}))
+      if (selectedDate) {
+         dispatch(deleteCell({
+            date: selectedDate,
+            activityIndex: activeActivity.index,
+         }))
       }
       setEditProgress(false);
-   }, [updateCell, activeActivity, cellInfo]);
+   }, [updateCell, activeActivity, selectedDate]);
 
    const handleDeletion = useCallback((deleteConfirmed: boolean) => {
       if (deleteConfirmed) {
-         const newActivitires = activities.filter((activity) => !Object.values(activity).every((val, index) => val === Object.values(activeActivity.activity)[index]))
-         updateActivitiesInDatabase(uid, newActivitires).then(() => {
+         const newActivities = activities.filter((activity) => !Object.values(activity).every((val, index) => val === Object.values(activeActivity.activity)[index]));
+         //todo make middleware
+         updateActivitiesInDatabase(uid, newActivities).then(() => {
+            dispatch(deleteActivity({activityIndex: activeActivity.index}));
             navigate(Pages.OVERVIEW);
-            dispatch(setActivities(newActivitires));
          });
       }
    }, [uid, activeActivity, activities]);
 
-   const handleCalendarClick = useCallback((date: DateType, marked: boolean, stats: StatWithValue[], info?: string) => {
-      setCellInfo({date, marked, stats, info});
+   const handleCalendarClick = useCallback((date: DateType) => {
+      setSelectedDate(date);
       setEditProgress(true);
    }, [editProgress]);
 
    if (!activeActivity || !activeActivity.activity) {
       return null;
    }
+
    const handleInfoChange = useCallback((info: string) => {
-      setCellInfo((current) => {
-         return {...current, info}
-      })
-      dispatch(updateAdditionalCellInfo({activityIndex: activeActivity.index, info, date: cellInfo.date}))
-   }, [cellInfo]);
+      dispatch(updateCell({activityIndex: activeActivity.index, date: selectedDate, content: {info}}))
+   }, [selectedDate]);
 
    return (
       <div className={cssClasses.wrapper}>
@@ -111,7 +80,7 @@ export const ActivityPage = () => {
             onClick={() => handleDeletion(true)}>Delete
             Activity</ConfirmButton>
          {editProgress && <Modal onClose={() => setEditProgress(false)} open={editProgress}>
-             <OpenedActivity activity={activeActivity.activity} cellInfo={cellInfo}
+             <OpenedActivity activeActivity={activeActivity} date={selectedDate}
                              onConfirmProgress={handleProgressConfirm}
                              onDeleteProgress={handleDeleteProgress} onInfoChange={handleInfoChange}/>
          </Modal>}

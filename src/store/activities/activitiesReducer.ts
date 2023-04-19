@@ -1,17 +1,7 @@
 import {InitialGamificiationState} from "../store";
 import {ActivitiesActions} from "./activitiesActions";
 import produce from "immer";
-import {ActivityProps, DateType} from "./types";
 import {GamificationActionTypes} from "../actions";
-
-const getCleanedCalendar = (calendar: ActivityProps["calendarEntries"]): ActivityProps["calendarEntries"] => {
-   const filteredValues = Object.keys(calendar).filter((entry) => {
-      return calendar[entry as DateType].marked;
-   })
-   return filteredValues.reduce((previousValue, currentValue) => {
-      return {...previousValue, [currentValue]: {...calendar[currentValue as DateType]}}
-   }, {});
-}
 
 const increaseLevels = (currentValue: number, level: number, maxValue: number): { level: number, maxValue: number } => {
    let currentLevel = level + 1;
@@ -40,29 +30,20 @@ export const activitiesReducer = (oldActivities = InitialGamificiationState.acti
    if (action.type === GamificationActionTypes.SET_ACTIVITIES) {
       return action.payload
    }
-   if (action.type === GamificationActionTypes.UPDATE_STATS) {
+   if (action.type === GamificationActionTypes.DELETE_ACTIVITY) {
+      return produce(oldActivities, activities => {
+         activities.splice(action.payload.activityIndex, 1);
+      })
+   }
+   if (action.type === GamificationActionTypes.DELETE_CELL) {
       return produce(oldActivities, newActivities => {
-         const calendarCell = newActivities[action.payload.activityIndex].calendarEntries[action.payload.date];
-         if (!calendarCell) {
-
-         }
+         delete newActivities[action.payload.activityIndex].calendarEntries[action.payload.date];
       })
    }
-   if (action.type === GamificationActionTypes.CHANGE_ACTIVITY) {
-      return produce<ActivityProps[]>(oldActivities, newActivities => {
-         const calendarEntries = getCleanedCalendar(action.payload.activity.calendarEntries);
-         newActivities[action.payload.activityIndex] = {
-            ...action.payload.activity, calendarEntries
-         }
-      })
-   }
-   if (action.type === GamificationActionTypes.UPDATE_ADDITIONAL_CELL_INFO) {
-      return produce<ActivityProps[]>(oldActivities, newActivities => {
+   if (action.type === GamificationActionTypes.UPDATE_CELL) {
+      return produce(oldActivities, newActivities => {
          const cell = newActivities[action.payload.activityIndex].calendarEntries[action.payload.date];
-         if (cell) {
-            cell.info = action.payload.info;
-            newActivities[action.payload.activityIndex].calendarEntries[action.payload.date] = cell;
-         }
+         newActivities[action.payload.activityIndex].calendarEntries[action.payload.date] = {...cell, ...action.payload.content};
       })
    }
    return oldActivities;

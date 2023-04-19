@@ -102,13 +102,11 @@ export const AuthenticationForm = ({forcedMode, onActionDone}: IAuthenticationFo
          <h4>{mode}</h4>
          <Input
             onChange={(value) => setEmail(value)}
-            value={email}
             placeholder={"Email"}
-            type={"email"}
+            type={"text"}
          />
          <Input
             onChange={(value) => setPassword(value)}
-            value={password}
             placeholder={"Password"}
             type={"password"}
          />

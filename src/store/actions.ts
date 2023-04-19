@@ -1,5 +1,6 @@
 export enum GamificationActionTypes {
    ADD_ACTIVITY = "gamification/activity/add",
+   DELETE_ACTIVITY = "gamification/activity/delete",
    SET_ACTIVITIES = "gamification/activity/set",
    REGISTER = "gamification/authentication/register",
    LOGIN = "gamification/authentication/login",
@@ -10,6 +11,7 @@ export enum GamificationActionTypes {
    SET_ACTIVE_ACTIVITY = "gamification/activities/set_active_activity",
    CHANGE_ACTIVITY = "gamification/change_activity",
    UPDATE_ADDITIONAL_CELL_INFO = "gamification/update_activity_calendar_cell",
-   UPDATE_ACTIVITY_CELLS = "gamification/update_cells",
-   UPDATE_STATS = "gamification/update_stats"
+   UPDATE_CELL = "gamification/cells/update",
+   DELETE_CELL = "gamification/cells/delte",
+   UPDATE_STATS = "gamification/stats/update",
 }

@@ -4,39 +4,41 @@ import {styles} from "./styles";
 import {TextArea} from "../TextArea/TextArea";
 import {getGeneratedDisplayDate} from "../calendar/utils";
 import {Input} from "../Input/Input";
-import {useCallback, useState} from "react";
+import {useCallback, useMemo, useState} from "react";
 import produce from "immer";
 import {StatWithValue} from "../../store/activities/predefinedActivities";
 import {DisplayedStat} from "../DisplayedStat/DisplayedStat";
 import {Button} from "../Button/Button";
 import {ConfirmButton} from "../ConfirmButton/ConfirmButton";
-
-export type CellInfo =
-   { date: DateType, marked?: boolean, stats?: StatWithValue[], info?: string, interactable?: boolean };
+import {useAppSelector} from "../../store/store";
+import {getCell} from "../../store/activities/activitiesSelectors";
 
 interface OpenedActivityProps {
-   activity: ActivityProps,
+   activeActivity: { index: number, activity: ActivityProps },
    onConfirmProgress: (stats: StatWithValue[]) => void;
    onDeleteProgress: () => void;
    onInfoChange?: (info: string) => void;
-   cellInfo: CellInfo,
+   date: DateType,
 }
 
 const cssClasses = getClasses(styles);
 
 export const OpenedActivity = ({
-                                  activity,
-                                  cellInfo,
+                                  activeActivity,
+                                  date,
                                   onInfoChange,
                                   onConfirmProgress,
                                   onDeleteProgress
                                }: OpenedActivityProps) => {
-   const [stats, setStats] = useState<StatWithValue[]>(activity.stats.map((stat) => {
+
+   const cell = useAppSelector(getCell(activeActivity.index, date));
+   const cellMarked = useMemo(() => cell && cell.marked, [cell]);
+   const [stats, setStats] = useState<StatWithValue[]>(activeActivity.activity.stats.map((stat) => {
       return {name: stat, value: 0}
    }));
 
    const handleStatsChange = useCallback((value: string, index: number) => {
-      if (value && !cellInfo.marked) {
+      if (value && !cellMarked) {
          setStats((old) => produce(old, newStats => {
             newStats[index].value = parseFloat(value);
          }));
@@ -44,26 +46,25 @@ export const OpenedActivity = ({
    }, [stats]);
 
    return <div className={cssClasses.wrapper}>
-      <div className={cssClasses.title}>{activity.name} on {getGeneratedDisplayDate(cellInfo?.date)}</div>
+      <div className={cssClasses.title}>{activeActivity.activity.name} on {getGeneratedDisplayDate(date)}</div>
       <div>
-         {!cellInfo.marked &&
-             <div className={cssClasses.statsWrapper}>
-                {stats.map((stat, index) =>
-                   <Input placeholder={"0"} label={stat.name}
-                          onChange={(value) => handleStatsChange(value, index)}
-                          type={"number"}/>
-                )}</div>
+         {cellMarked && cell.stats && <>
+             <small>Here is the overview of your activity</small>
+             <div className={cssClasses.statsWrapper}>{cell.stats.map((stat) => <DisplayedStat
+                stat={stat}/>)}</div>
+         </>
          }
-         {cellInfo.marked && cellInfo.stats &&
-             <>
-                 <small>Here is the overview of your activity</small>
-                 <div className={cssClasses.statsWrapper}>{cellInfo.stats.map((stat) => <DisplayedStat
-                    stat={stat}/>)}</div>
-             </>}
-         <TextArea label={"Notes"} initialValue={cellInfo?.info} onChange={onInfoChange}/>
+         {!cellMarked && <div className={cssClasses.statsWrapper}>
+            {stats.map((stat, index) =>
+               <Input placeholder={"0"} label={stat.name}
+                      onChange={(value) => handleStatsChange(value, index)}
+                      type={"number"}/>
+            )}</div>
+         }
+         <TextArea label={"Notes"} initialValue={cell?.info} onChange={onInfoChange}/>
       </div>
       <div className={cssClasses.buttons}>
-         {!cellInfo.marked && <Button
+         {!cellMarked && <Button
              onClick={() => onConfirmProgress(stats)}>Confirm progress</Button>}
          <ConfirmButton barColor={"rgb(255, 100, 100)"} confirmTime={500} onClick={onDeleteProgress}>Delete
             progress</ConfirmButton></div>
