@@ -6,10 +6,10 @@ export type Stat = { name: StatEnum, text: string, preferedUnit: string, descrip
 export const StatEnum = z.enum(["Distance", "Time", "Calories", "Steps", "Pages written", "Pages read", "Pictures drawn"]);
 export type StatEnum = z.infer<typeof StatEnum>;
 
-export const assambleFields = (statSet: PredefinedStatsSet) => {
+export const assambleFields = (statSet: PredefinedStatsSet): StatEnum[] => {
    switch (statSet) {
       case "Jogging":
-         return [StatMap("Distance"), StatMap("Time")];
+         return ["Distance", "Time"];
       case "Custom":
          return [];
    }

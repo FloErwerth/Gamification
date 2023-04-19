@@ -10,7 +10,6 @@ import {
    assambleFields,
    PREDEFINED_STATS_SET,
    PredefinedStatsSet,
-   Stat,
    StatEnum,
    StatMap,
 } from "../../store/activities/predefinedActivities";
@@ -32,7 +31,7 @@ const AddActivityModalContent = ({
                                  }: ActivityAdderModalContentProps) => {
    const [activityName, setActivityName] = useState("");
    const [predefinedActivity, setPredefinedActivity] = useState<PredefinedStatsSet>(PREDEFINED_STATS_SET.Enum.Custom);
-   const [stats, setStats] = useState<Stat[]>([])
+   const [stats, setStats] = useState<StatEnum[]>([])
    const [addAdditionalActivity, setAddAdditionalAcitivity] = useState(false);
    const isAddingActivityAllowed = useMemo(() => stats.length < 5, [stats]);
    const userId = useAppSelector(getUserId);
@@ -68,15 +67,14 @@ const AddActivityModalContent = ({
       setStats(assambleFields(predefinedActivity))
    }, [predefinedActivity])
 
-   const handleSetAdditionalFields = useCallback((fields: Stat[]) => {
-      const parsedFields = fields.map((field) => StatMap(field.name as StatEnum));
-      setStats((previous) => [...previous, ...parsedFields]);
+   const handleSetAdditionalFields = useCallback((statEnums: StatEnum[]) => {
+      setStats((previous) => [...previous, ...statEnums]);
       setAddAdditionalAcitivity(false);
    }, [])
 
-   const handleDeleteSelectedField = useCallback((deletedField: Omit<Stat, "text" | "preferedUnit">) => {
+   const handleDeleteSelectedField = useCallback((deletedField: StatEnum) => {
       setStats((previous) =>
-         previous.filter((field) => field.name !== deletedField.name))
+         previous.filter((field) => field !== deletedField))
    }, []);
 
    return (
@@ -91,10 +89,13 @@ const AddActivityModalContent = ({
                       setValue={(value) => setPredefinedActivity(value as PredefinedStatsSet)}/>
             {predefinedActivity !== PREDEFINED_STATS_SET.Enum.Custom &&
                 <div className={cssClasses.statsTitle}>The following stats are available:</div>}
-            <div className={cssClasses.fieldsWrapper}>{stats.map((field) => <DisplayedField name={field.name}
-                                                                                            description={field.description}
-                                                                                            onDeletion={handleDeleteSelectedField}
-                                                                                            deletable={field.deletable}/>
+            <div className={cssClasses.fieldsWrapper}>{stats.map((field) => {
+                  const mappedField = StatMap(field);
+                  return <DisplayedField name={mappedField.name}
+                                         description={mappedField.description}
+                                         onDeletion={handleDeleteSelectedField}
+                                         deletable={mappedField.deletable}/>
+               }
             )}</div>
             {isAddingActivityAllowed &&
                 <Button onClick={() => setAddAdditionalAcitivity(true)} className={cssClasses.addButton}>+</Button>}

@@ -2,13 +2,13 @@ import {styles} from "./styles";
 import {useMemo} from "react";
 import {cx} from "@emotion/css";
 import {getClasses} from "../../utils/styleUtils";
-import {Stat} from "../../store/activities/predefinedActivities";
+import {Stat, StatEnum} from "../../store/activities/predefinedActivities";
 import {DeleteIcon} from "../../media/icons";
 import {Button} from "../Button/Button";
 
 interface IField extends Omit<Stat, "text" | "preferedUnit"> {
    wrapperClasses?: string;
-   onDeletion?: (field: Omit<Stat, "text" | "preferedUnit">) => void;
+   onDeletion?: (field: StatEnum) => void;
 }
 
 const cssClasses = getClasses(styles);
@@ -19,7 +19,7 @@ export const DisplayedField = ({name, description, wrapperClasses, deletable, on
          <div className={cssClasses.fieldName}>{name}</div>
          <small>{description}</small></div>
       {deletable &&
-          <Button className={cssClasses.deleteButton} onClick={() => onDeletion?.({name, description})}><DeleteIcon
+          <Button className={cssClasses.deleteButton} onClick={() => onDeletion?.(name)}><DeleteIcon
               className={cssClasses.icon}/>
           </Button>}
    </div>
