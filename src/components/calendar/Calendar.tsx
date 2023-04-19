@@ -1,9 +1,8 @@
 import {getClasses} from "../../utils/styleUtils";
 import {cellStyles, styles} from "./styles";
-import {DateType} from "../../store/activities/types";
+import {CellInfo, DateType} from "../../store/activities/types";
 import {useCalendar} from "./useCalendar";
 import {useMemo} from "react";
-import {CellInfo} from "../OpenedActivity/OpenedActivity";
 import {getDay, getDisplayMonth} from "./utils";
 import {StatWithValue} from "../../store/activities/predefinedActivities";
 import {Button} from "../Button/Button";
@@ -14,7 +13,7 @@ interface CalendarProps {
 
 interface CalendarCell extends CalendarProps {
    date: DateType,
-   calendarObject: Omit<CellInfo, "date">
+   calendarObject: CellInfo
 }
 
 
