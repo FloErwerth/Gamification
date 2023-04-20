@@ -23,7 +23,7 @@ const commonOptions: ChartOptions<"line"> = {
    }
 }
 
-const stepCount = 7;
+const stepCount = 6;
 
 export const ActivityChart = () => {
    const chartData = useAppSelector(getChartData);
@@ -43,9 +43,9 @@ export const ActivityChart = () => {
          max = value > max ? value : max;
       }));
       const step = (max - min) / stepCount;
-      const maybeMin = Math.ceil(min - step);
+      const maybeMin = min - step;
       min = maybeMin < 0 ? 0 : maybeMin;
-      setMinMax({min, max: Math.floor(max + step)});
+      setMinMax({min, max: max + step});
    }, [datasets]);
 
    useEffect(() => {
@@ -62,7 +62,9 @@ export const ActivityChart = () => {
                }
             },
             y: {
-
+               ticks: {
+                  count: stepCount,
+               },
                suggestedMin: minMax?.min,
                suggestedMax: minMax?.max,
             }
