@@ -4,7 +4,9 @@ import {DateType} from "./types";
 
 export const getActivities = ({activities}: GamificationModel) => activities;
 export const getCalendarEntries = (index: number) => createSelector([getActivities], (activities) => {
-   return activities[index].calendarEntries
+   if (activities.length > 0) {
+      return activities[index].calendarEntries
+   } else return {}
 })
 export const getCell = (index: number, date: DateType) => createSelector([getCalendarEntries(index)], (calendarEntries) => {
    return calendarEntries[date];

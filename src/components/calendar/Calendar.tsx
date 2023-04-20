@@ -35,7 +35,7 @@ export const Calendar = ({onClick}: CalendarProps) => {
    const [currentCalendar, showPreviousMonth, showNextMonth, showJump, decreaseMonth, increaseMonth, showCurrentMonth, shownDate] = useCalendar();
    const activeActivity = useAppSelector(getActiveActivity);
    return <div className={calendarClasses.mainWrapper}>
-      <h2>{activeActivity.activity.name}, {getDisplayMonth(shownDate.month)} {shownDate.year}</h2>
+      <h2>{activeActivity?.activity?.name}, {getDisplayMonth(shownDate.month)} {shownDate.year}</h2>
       <div className={calendarClasses.weekdaysWrapper}>{weekDays.map((weekday) => <div key={weekday}
                                                                                        className={calendarClasses.weekday}>{weekday}</div>)}</div>
       <div className={calendarClasses.calendarWrapper}>
@@ -45,6 +45,7 @@ export const Calendar = ({onClick}: CalendarProps) => {
                                  date={typedDate} calendarObject={currentCalendar[typedDate]} onClick={onClick}/>
          })}
       </div>
+
       <div className={calendarClasses.calendarButtons}><Button
          disabled={!showPreviousMonth} onClick={decreaseMonth}>Previous
          Month</Button>

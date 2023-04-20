@@ -27,12 +27,13 @@ const stepCount = 7;
 
 export const ActivityChart = () => {
    const chartData = useAppSelector(getChartData);
-   const [showChart, setShowChart] = useState(false);
+   const [showChart, setShowChart] = useState(true);
    const [filter, setFilter] = useState<StatEnum>(chartData.datasets[0].label);
    const [datasets, setDatasets] = useState<ChartData["datasets"]>(chartData.datasets.filter((data) => data.label === filter));
    const [minMax, setMinMax] = useState<{ min: number, max: number }>();
    const chartRef = useRef<Chart<"line">>(null);
    const unit = useMemo(() => StatMap(filter).preferedUnit, [filter]);
+   const showChartSheet = useMemo(() => chartData.dateLabels.length > 1, [chartData.dateLabels]);
 
    useEffect(() => {
       let min = Infinity;
@@ -91,22 +92,16 @@ export const ActivityChart = () => {
       }
    }, [filter, chartData, datasets]);
 
-   if (!showChart) {
-      return <Button onClick={() => setShowChart(true)}>Show Chart</Button>
-   }
 
-   if (chartData.dateLabels.length <= 1) {
-      return <div>Please add more data.</div>
-   }
-
-   if (!chartData) return null;
-
-   return <div style={{width: "50%", margin: "auto", position: "relative"}}>
-      <div>Show Stat:
-         <div style={{display: "flex", gap: 10,}}>{chartData.datasets.map((data) => <Button key={data.label}
-                                                                                            theme={filter === data.label ? "SELECTED" : "DEFAULT"}
-                                                                                            onClick={() => setFilter(data.label)}>{data.label}</Button>)}</div>
-      </div>
-      <Line ref={chartRef} options={options} data={formatedData}/>
-      <Button onClick={() => setShowChart(false)}>Hide Chart</Button></div>
+   return <>{chartData && <div style={{width: "50%", margin: "auto", position: "relative"}}>
+       <div>Show Stat:
+           <div style={{display: "flex", gap: 10,}}>{chartData.datasets.map((data) => <Button key={data.label}
+                                                                                              theme={filter === data.label ? "SELECTED" : "DEFAULT"}
+                                                                                              onClick={() => setFilter(data.label)}>{data.label}</Button>)}</div>
+       </div>
+      {showChartSheet && showChart ? <Line ref={chartRef} options={options} data={formatedData}/> :
+         <div>Please add more data.</div>}
+      {showChartSheet &&
+          <Button onClick={() => setShowChart(!showChart)}>{!showChart ? "Show Chart" : "Hide Chart"}</Button>}
+   </div>}</>
 }

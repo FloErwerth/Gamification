@@ -50,8 +50,8 @@ export const OpenedActivity = ({
       <div>
          {cellMarked && cell.stats && <>
              <small>Here is the overview of your activity</small>
-             <div className={cssClasses.statsWrapper}>{cell.stats.map((stat) => <DisplayedStat
-                stat={stat}/>)}</div>
+             <div className={cssClasses.statsWrapper}>{cell.stats.map((stat) => <DisplayedStat key={stat.name}
+                                                                                               stat={stat}/>)}</div>
          </>
          }
          {!cellMarked && <div className={cssClasses.statsWrapper}>

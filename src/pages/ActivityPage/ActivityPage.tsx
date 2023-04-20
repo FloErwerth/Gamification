@@ -64,29 +64,22 @@ export const ActivityPage = () => {
       setEditProgress(true);
    }, [editProgress]);
 
-   if (!activeActivity || !activeActivity.activity) {
-      return null;
-   }
-
    const handleInfoChange = useCallback((info: string) => {
       dispatch(updateCell({activityIndex: activeActivity.index, date: selectedDate, content: {info}}))
    }, [selectedDate]);
 
-   return (
-      <div className={cssClasses.wrapper}>
-         <Calendar onClick={handleCalendarClick}/>
-         <ActivityChart/>
-         <ConfirmButton
-            hoverColor={"rgba(255,50,50,0.8)"} backgroundColor={"rgba(255,150,150,0.8)"} barColor={"red"}
-            textColor={"black"}
-            onClick={() => handleDeletion(true)}>Delete
-            Activity</ConfirmButton>
-         {editProgress && <Modal onClose={() => setEditProgress(false)} open={editProgress}>
-             <OpenedActivity activeActivity={activeActivity} date={selectedDate}
-                             onConfirmProgress={handleProgressConfirm}
-                             onDeleteProgress={handleDeleteProgress} onInfoChange={handleInfoChange}/>
-         </Modal>}
-      </div>
-
-   );
+   return <div className={cssClasses.wrapper}>
+      <Calendar onClick={handleCalendarClick}/>
+      <ActivityChart/>
+      <ConfirmButton
+         hoverColor={"rgba(255,50,50,0.8)"} backgroundColor={"rgba(255,150,150,0.8)"} barColor={"red"}
+         textColor={"black"}
+         onClick={() => handleDeletion(true)}>Delete
+         Activity</ConfirmButton>
+      {editProgress && <Modal onClose={() => setEditProgress(false)} open={editProgress}>
+          <OpenedActivity activeActivity={activeActivity} date={selectedDate}
+                          onConfirmProgress={handleProgressConfirm}
+                          onDeleteProgress={handleDeleteProgress} onInfoChange={handleInfoChange}/>
+      </Modal>}
+   </div>
 };
