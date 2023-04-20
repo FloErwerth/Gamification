@@ -36,13 +36,13 @@ export const Calendar = ({onClick}: CalendarProps) => {
    const activeActivity = useAppSelector(getActiveActivity);
    return <div className={calendarClasses.mainWrapper}>
       <h2>{activeActivity.activity.name}, {getDisplayMonth(shownDate.month)} {shownDate.year}</h2>
-      <div className={calendarClasses.weekdaysWrapper}>{weekDays.map((weekday) => <div
-         className={calendarClasses.weekday}>{weekday}</div>)}</div>
+      <div className={calendarClasses.weekdaysWrapper}>{weekDays.map((weekday) => <div key={weekday}
+                                                                                       className={calendarClasses.weekday}>{weekday}</div>)}</div>
       <div className={calendarClasses.calendarWrapper}>
-         {Object.keys(currentCalendar).map((date, index) => {
+         {Object.keys(currentCalendar).map((date) => {
             const typedDate = date as DateType;
-            return <CalendarCell
-               date={typedDate} calendarObject={currentCalendar[typedDate]} onClick={onClick}/>
+            return <CalendarCell key={date}
+                                 date={typedDate} calendarObject={currentCalendar[typedDate]} onClick={onClick}/>
          })}
       </div>
       <div className={calendarClasses.calendarButtons}><Button

@@ -12,9 +12,9 @@ const cssClasses = getClasses(overStyles);
 
 export const Overview = () => {
    const stats = useAppSelector(getActivities).map((stats, index) => (
-      <ActivityWrapper {...stats} index={index}/>
+      <ActivityWrapper key={index} {...stats} index={index}/>
    ));
-   const {filteredArray, setFilter, filter} = useFilter<ActivityProps>(stats);
+   const {filteredArray, setFilter} = useFilter<ActivityProps>(stats);
 
    return (
       <div>

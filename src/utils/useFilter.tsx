@@ -12,7 +12,7 @@ export function useFilter<P extends { name: string }>(arrayToFilter: ReactElemen
    const hideStyle = useMemo(() => css({display: "none"}), []);
 
    const filteredArray = useMemo(() => arrayToFilter.map((element) => element.props.name.toLowerCase().includes(filter.toLowerCase()) ?
-      element : <div className={hideStyle}>{element}</div>), [filter, arrayToFilter])
+      element : <div key={element.key} className={hideStyle}>{element}</div>), [filter, arrayToFilter])
 
    return {filteredArray, filter, setFilter};
 }

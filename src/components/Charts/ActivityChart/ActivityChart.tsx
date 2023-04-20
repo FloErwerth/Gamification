@@ -50,7 +50,7 @@ export const ActivityChart = () => {
    useEffect(() => {
       const filteredDataset = chartData.datasets.filter((data) => data.label === filter);
       setDatasets(filteredDataset);
-   }, [filter, chartData])
+   }, [filter, chartData]);
 
    const options: ChartOptions<"line"> = useMemo(() => {
       return {
@@ -61,6 +61,7 @@ export const ActivityChart = () => {
                }
             },
             y: {
+
                suggestedMin: minMax?.min,
                suggestedMax: minMax?.max,
             }
@@ -83,8 +84,6 @@ export const ActivityChart = () => {
       }
    }, [minMax]);
 
-   console.log(options);
-
    const formatedData = useMemo(() => {
       return {
          labels: chartData.dateLabels,
@@ -96,16 +95,17 @@ export const ActivityChart = () => {
       return <Button onClick={() => setShowChart(true)}>Show Chart</Button>
    }
 
-   if (chartData.dateLabels.length === 1) {
-      return <div>Please add another progress step to display the chart.</div>
+   if (chartData.dateLabels.length <= 1) {
+      return <div>Please add more data.</div>
    }
 
    if (!chartData) return null;
+
    return <div style={{width: "50%", margin: "auto", position: "relative"}}>
       <div>Show Stat:
-         <div style={{display: "flex", gap: 10,}}>{chartData.datasets.map((data) => <Button
-            theme={filter === data.label ? "SELECTED" : "DEFAULT"}
-            onClick={() => setFilter(data.label)}>{data.label}</Button>)}</div>
+         <div style={{display: "flex", gap: 10,}}>{chartData.datasets.map((data) => <Button key={data.label}
+                                                                                            theme={filter === data.label ? "SELECTED" : "DEFAULT"}
+                                                                                            onClick={() => setFilter(data.label)}>{data.label}</Button>)}</div>
       </div>
       <Line ref={chartRef} options={options} data={formatedData}/>
       <Button onClick={() => setShowChart(false)}>Hide Chart</Button></div>

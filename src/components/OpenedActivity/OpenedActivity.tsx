@@ -56,7 +56,7 @@ export const OpenedActivity = ({
          }
          {!cellMarked && <div className={cssClasses.statsWrapper}>
             {stats.map((stat, index) =>
-               <Input placeholder={"0"} label={stat.name}
+               <Input key={stat.name} placeholder={"0"} label={stat.name}
                       onChange={(value) => handleStatsChange(value, index)}
                       type={"number"}/>
             )}</div>
