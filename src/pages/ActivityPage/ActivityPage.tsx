@@ -33,7 +33,7 @@ export const ActivityPage = () => {
             activityIndex: activeActivity.index,
             date: selectedDate,
             content: {marked: true, stats}
-         }))
+         }));
       }
       setEditProgress(false);
    }, [activeActivity, selectedDate]);

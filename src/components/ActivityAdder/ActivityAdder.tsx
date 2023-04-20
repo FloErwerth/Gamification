@@ -19,6 +19,7 @@ import {Input} from "../Input/Input";
 import {ActivityProps} from "../../store/activities/types";
 import {Dropdown} from "../Dropdown/Dropdown";
 import {Button} from "../Button/Button";
+import {getActivities} from "../../store/activities/activitiesSelectors";
 
 const cssClasses = getClasses(activityAdderClasses);
 
@@ -35,6 +36,7 @@ const AddActivityModalContent = ({
    const [addAdditionalActivity, setAddAdditionalAcitivity] = useState(false);
    const isAddingActivityAllowed = useMemo(() => stats.length < 5, [stats]);
    const userId = useAppSelector(getUserId);
+   const currentActivites = useAppSelector(getActivities);
 
    const dispatch = useAppDispatch();
 
@@ -52,7 +54,7 @@ const AddActivityModalContent = ({
             currentValue: 0,
             level: 0,
          };
-         addActivityInDatabase(userId, generatedActivity).then(() => {
+         addActivityInDatabase(userId, currentActivites, generatedActivity).then(() => {
             dispatch(addActivity(generatedActivity));
          });
       }

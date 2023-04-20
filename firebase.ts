@@ -1,6 +1,6 @@
 import {createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, signOut} from "firebase/auth";
 import {initializeApp} from "firebase/app";
-import {arrayUnion, collection, doc, getDoc, getFirestore, setDoc, updateDoc} from "firebase/firestore";
+import {collection, doc, getDoc, getFirestore, setDoc, updateDoc} from "firebase/firestore";
 import {ActivityProps} from "./src/store/activities/types";
 
 const firebaseApp = initializeApp({
@@ -21,28 +21,36 @@ export default firebaseApp;
 
 const firebaseDB = getFirestore(firebaseApp);
 const getUserCollection = () => collection(firebaseDB, "Nutzerdaten");
-const getSpecificUserCollection = (uid: string) => collection(firebaseDB, "Nutzerdaten", `${uid}/activities`);
 
 export const addFirebaseUser = async (userId: string) => {
    const userCollection = getUserCollection();
-   await setDoc(doc(userCollection, userId), {activities: []}, {merge: true});
+   await setDoc(doc(userCollection, userId), {activities: {}}, {merge: true});
 }
-const getActivitiesRef = (uid: string) => doc(firebaseDB, "Nutzerdaten", uid);
+const getUserRef = (uid: string) => doc(firebaseDB, "Nutzerdaten", uid);
+
 export const getStoredActivities = async (userId: string): Promise<ActivityProps[]> => {
-   const doc = await getDoc(getActivitiesRef(userId));
-   if (doc.exists()) {
-      return doc.data().activities as ActivityProps[];
+   const userDoc = await getDoc(getUserRef(userId));
+   if (userDoc.exists()) {
+      return userDoc.data().activities as ActivityProps[];
    } else return []
 }
 
-export const addActivityInDatabase = async (uid: string, data: ActivityProps) => {
-   const activityRef = getActivitiesRef(uid);
-   await updateDoc(activityRef, {activities: arrayUnion({...data})});
+type GeneratedObject<T> = { [index: number]: T };
+
+function createObjectFromArray<T>(activities: T[]) {
+   return activities.reduce<GeneratedObject<T>>((previousValue, currentValue, currentIndex) => {
+      return {
+         [currentIndex]: {...previousValue, ...currentValue}
+      }
+   }, {} as GeneratedObject<T>)
+}
+
+export const addActivityInDatabase = async (uid: string, currentActivites: ActivityProps[], activity: ActivityProps) => {
+   const userRef = getUserRef(uid);
+   await updateDoc(userRef, {activities: createObjectFromArray([...currentActivites, activity])});
 }
 
 export const updateActivitiesInDatabase = async (uid: string, activities: ActivityProps[]) => {
-   const activityRef = getActivitiesRef(uid);
-   console.log(activities);
-   await updateDoc(activityRef, {activities})
+   const userRef = getUserRef(uid);
+   await updateDoc(userRef, {activities: createObjectFromArray(activities)})
 }
-
