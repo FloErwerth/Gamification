@@ -8,6 +8,9 @@ import {Modal} from "../../Modal/Modal";
 import {AuthenticationForm} from "../../../forms/Authentication/AuthenticationForm";
 import {SignOut} from "../../../../firebase";
 import {setLoggedIn} from "../../../store/authentication/authActions";
+import {useNavigate} from "react-router-dom";
+import {Pages} from "../../../types/pages";
+import {deleteState} from "../../../browserStorage/localStorage";
 
 interface LoginButtonProps {
    handleClick: () => void;
@@ -19,13 +22,18 @@ export const LoginToggle = ({handleClick}: LoginButtonProps) => {
    const loggedIn = useAppSelector(getIsLoggedIn);
    const [loginOpened, setLoginOpened] = useState(false);
    const dispatch = useAppDispatch();
+   const navigate = useNavigate();
 
    const handleOpenLogin = useCallback(() => {
       setLoginOpened(true);
    }, [loginOpened])
 
    const handleLogout = useCallback(() => {
-      SignOut().then(() => dispatch(setLoggedIn(false)));
+      SignOut().then(() => {
+         deleteState()
+         navigate(Pages.HOME);
+         dispatch(setLoggedIn(false))
+      });
    }, []);
 
    if (loggedIn) {

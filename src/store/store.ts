@@ -32,7 +32,9 @@ export const store = configureStore<GamificationModel, GamificationActions>({
 })
 
 store.subscribe(() => {
-   saveState(store.getState());
+   if (store.getState().authentication.loggedIn) {
+      saveState(store.getState());
+   }
 })
 
 
