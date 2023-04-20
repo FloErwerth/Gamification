@@ -9,7 +9,6 @@ import {activityReducer} from "./activity/activityReducer";
 import {ActivityActions} from "./activity/activityActions";
 import {AuthenticationActions} from "./authentication/authActions";
 import {calendarReducer} from "./calendar/calendarReducer";
-import {middleware} from "./middleware";
 
 const defaultState: GamificationModel = {
    activities: [],
@@ -30,7 +29,6 @@ export const store = configureStore<GamificationModel, GamificationActions>({
       activeActivityIndex: activityReducer,
       calendar: calendarReducer,
    }),
-   middleware: getDefaultMiddleware => getDefaultMiddleware().concat(middleware)
 })
 
 store.subscribe(() => {
