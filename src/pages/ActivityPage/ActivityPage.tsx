@@ -3,13 +3,13 @@ import {useAppDispatch, useAppSelector} from "../../store/store";
 import {deleteActivity, deleteCell, updateCell} from "../../store/activities/activitiesActions";
 import {useNavigate} from "react-router-dom";
 import {Pages} from "../../types/pages";
-import {updateActivitiesInDatabase} from "../../../firebase";
+import {deleteActivityCell, updateActivitiesInDatabase, updateActivityCell} from "../../../firebase";
 import {getUserId} from "../../store/authentication/authSelectors";
 import {Calendar} from "../../components/calendar/Calendar";
 import {DateType} from "../../store/activities/types";
 import {Modal} from "../../components/Modal/Modal";
 import {OpenedActivity} from "../../components/OpenedActivity/OpenedActivity";
-import {getActiveActivity} from "../../store/activity/activitySelector";
+import {getActiveActivity, getChartData} from "../../store/activity/activitySelector";
 import {getActivities} from "../../store/activities/activitiesSelectors";
 import {getClasses} from "../../utils/styleUtils";
 import {styles} from "./styles";
@@ -21,8 +21,9 @@ const cssClasses = getClasses(styles);
 export const ActivityPage = () => {
    const [editProgress, setEditProgress] = useState(false);
    const [selectedDate, setSelectedDate] = useState<DateType>("00-00-00");
-   const activeActivity = useAppSelector(getActiveActivity);
+   const chartData = useAppSelector(getChartData);
    const uid = useAppSelector(getUserId);
+   const activeActivity = useAppSelector(getActiveActivity);
    const activities = useAppSelector(getActivities);
    const dispatch = useAppDispatch();
    const navigate = useNavigate();
@@ -34,6 +35,7 @@ export const ActivityPage = () => {
             date: selectedDate,
             content: {marked: true, stats}
          }));
+         updateActivityCell(uid, activeActivity.index, selectedDate, {marked: true, stats})
       }
       setEditProgress(false);
    }, [activeActivity, selectedDate]);
@@ -44,6 +46,7 @@ export const ActivityPage = () => {
             date: selectedDate,
             activityIndex: activeActivity.index,
          }))
+         deleteActivityCell(uid, activeActivity.index, selectedDate);
       }
       setEditProgress(false);
    }, [updateCell, activeActivity, selectedDate]);
@@ -69,8 +72,8 @@ export const ActivityPage = () => {
    }, [selectedDate]);
 
    return <div className={cssClasses.wrapper}>
-      <Calendar onClick={handleCalendarClick}/>
-      <ActivityChart/>
+      {activeActivity.activity && <Calendar activity={activeActivity.activity} onClick={handleCalendarClick}/>}
+      {chartData && <ActivityChart chartData={chartData}/>}
       <ConfirmButton
          hoverColor={"rgba(255,50,50,0.8)"} backgroundColor={"rgba(255,150,150,0.8)"} barColor={"red"}
          textColor={"black"}

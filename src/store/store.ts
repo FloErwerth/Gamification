@@ -9,17 +9,18 @@ import {activityReducer} from "./activity/activityReducer";
 import {ActivityActions} from "./activity/activityActions";
 import {AuthenticationActions} from "./authentication/authActions";
 import {calendarReducer} from "./calendar/calendarReducer";
+import {middleware} from "./middleware";
 
 const defaultState: GamificationModel = {
    activities: [],
    activeActivityIndex: -1,
-   authentication: {email: "", loggedIn: false, userId: "", creationDate: ""},
+   authentication: {email: "", loggedIn: false, userId: "", creationDate: " - -"},
    calendar: {daysInMonth: -1, currentlySelectedMonth: -1},
 };
 
 export const InitialGamificiationState: GamificationModel = {...defaultState, ...getState()}
 
-type GamificationActions = ActivitiesActions | ActivityActions | AuthenticationActions;
+export type GamificationActions = ActivitiesActions | ActivityActions | AuthenticationActions;
 
 export const store = configureStore<GamificationModel, GamificationActions>({
    preloadedState: InitialGamificiationState,
@@ -28,7 +29,8 @@ export const store = configureStore<GamificationModel, GamificationActions>({
       authentication: authReducer,
       activeActivityIndex: activityReducer,
       calendar: calendarReducer,
-   })
+   }),
+   middleware: getDefaultMiddleware => getDefaultMiddleware().concat(middleware)
 })
 
 store.subscribe(() => {

@@ -1,6 +1,7 @@
 import {SignOut, Signup} from "../../../firebase";
 import {GamificationActionTypes} from "../actions";
 import {GamificationModel} from "../types";
+import {DateType} from "../activities/types";
 
 export type AuthenticationActions =
    { type: GamificationActionTypes.LOGIN, payload: boolean }
@@ -24,7 +25,7 @@ export const setUserId = (payload: string) => {
    }
 }
 
-export const setCreationTime = (payload: string) => {
+export const setCreationTime = (payload: DateType) => {
    return {
       type: GamificationActionTypes.SET_CREATION_DATE,
       payload

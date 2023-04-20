@@ -38,31 +38,33 @@ const sortObject = (chartData: ChartData): ChartData => {
    })
 }
 
-export const getChartData = createSelector([getActiveActivity, getCurrentlySelectedMonth], (activity, month): ChartData => {
-   const chartData: ChartData = {
-      dateLabels: [], datasets: activity.activity.stats.map((stat) => {
-         return {
-            label: stat,
-            dates: [],
-            data: [],
-            cubicInterpolationMode: "monotone",
-            pointStyle: "circle",
-            pointRadius: 5
-         };
-      })
-   };
+export const getChartData = createSelector([getActiveActivity, getCurrentlySelectedMonth], (activteActivity, month): ChartData | undefined => {
+   if (activteActivity.activity && activteActivity.activity.stats && activteActivity.activity.calendarEntries) {
+      const chartData: ChartData = {
+         dateLabels: [], datasets: activteActivity.activity.stats.map((stat) => {
+            return {
+               label: stat,
+               dates: [],
+               data: [],
+               cubicInterpolationMode: "monotone",
+               pointStyle: "circle",
+               pointRadius: 5
+            };
+         })
+      };
 
-   Object.entries<CellInfo>(activity.activity.calendarEntries).forEach(([date, cellInfo]) => cellInfo.stats?.forEach((stat) => {
-      const dataset = chartData.datasets[chartData.datasets.findIndex((data) => data.label === stat.name)];
-      if (month === parseInt(date.split("-")[1])) {
-         if (!chartData.dateLabels.includes(date as DateType)) {
-            chartData.dateLabels.push(date as DateType);
+      Object.entries<CellInfo>(activteActivity.activity.calendarEntries).forEach(([date, cellInfo]) => cellInfo.stats?.forEach((stat) => {
+         const dataset = chartData.datasets[chartData.datasets.findIndex((data) => data.label === stat.name)];
+         if (month === parseInt(date.split("-")[1])) {
+            if (!chartData.dateLabels.includes(date as DateType)) {
+               chartData.dateLabels.push(date as DateType);
+            }
+            chartData.datasets[chartData.datasets.findIndex((data) => data.label === stat.name)] = produce(dataset, newDataSet => {
+               newDataSet.data = [...dataset.data, stat.value];
+               return newDataSet;
+            });
          }
-         chartData.datasets[chartData.datasets.findIndex((data) => data.label === stat.name)] = produce(dataset, newDataSet => {
-            newDataSet.data = [...dataset.data, stat.value];
-            return newDataSet;
-         });
-      }
-   }));
-   return sortObject(chartData);
+      }));
+      return sortObject(chartData);
+   } else return undefined;
 })

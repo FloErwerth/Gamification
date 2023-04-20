@@ -1,10 +1,13 @@
 import {useEffect, useMemo, useRef, useState} from "react";
 import {Line} from "react-chartjs-2";
 import {CategoryScale, Chart, ChartOptions, LinearScale, LineElement, PointElement, Title, Tooltip} from "chart.js";
-import {ChartData, getChartData} from "../../../store/activity/activitySelector";
+import {ChartData} from "../../../store/activity/activitySelector";
 import {StatEnum, StatMap} from "../../../store/activities/predefinedActivities";
-import {useAppSelector} from "../../../store/store";
 import {Button} from "../../Button/Button";
+
+interface IActivityChart {
+   chartData: ChartData,
+}
 
 Chart.register(
    CategoryScale,
@@ -25,8 +28,7 @@ const commonOptions: ChartOptions<"line"> = {
 
 const stepCount = 6;
 
-export const ActivityChart = () => {
-   const chartData = useAppSelector(getChartData);
+export const ActivityChart = ({chartData}: IActivityChart) => {
    const [showChart, setShowChart] = useState(true);
    const [filter, setFilter] = useState<StatEnum>(chartData.datasets[0].label);
    const [datasets, setDatasets] = useState<ChartData["datasets"]>(chartData.datasets.filter((data) => data.label === filter));
@@ -106,4 +108,5 @@ export const ActivityChart = () => {
       {showChartSheet &&
           <Button onClick={() => setShowChart(!showChart)}>{!showChart ? "Show Chart" : "Hide Chart"}</Button>}
    </div>}</>
+
 }

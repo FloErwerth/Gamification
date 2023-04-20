@@ -18,15 +18,22 @@ import {Button} from "../../components/Button/Button";
 import {getClasses} from "../../utils/styleUtils";
 import {styles} from "./styles";
 import {Temporal} from "@js-temporal/polyfill";
+import {DateType} from "../../store/activities/types";
 
 
 const cssClasses = getClasses(styles);
 
-const createDateFromFirebaseDate = (firebaseDate: string | undefined) => {
+const createDateFromFirebaseDate = (firebaseDate: string | undefined): DateType => {
    if (!firebaseDate) {
-      return "";
+      const now = Temporal.Now.plainDateTimeISO().toPlainDate();
+      return `${now.year}-${now.month < 10 ? `0${now.month}` : now.month}-${now.day < 10 ? `0${now.day}` : now.day}`;
    }
-   return Temporal.Instant.fromEpochMilliseconds(Date.parse(firebaseDate)).toLocaleString().split(", ")[0];
+
+   const normalDate = Temporal.Instant.fromEpochMilliseconds(Date.parse(firebaseDate)).toZonedDateTime({
+      timeZone: Temporal.Now.timeZone(),
+      calendar: Temporal.Now.zonedDateTimeISO()
+   });
+   return `${normalDate.year}-${normalDate.month < 10 ? `0${normalDate.month}` : normalDate.month}-${normalDate.day < 10 ? `0${normalDate.day}` : normalDate.day}`;
 }
 
 interface IAuthenticationForm {
@@ -44,19 +51,19 @@ export const AuthenticationForm = ({forcedMode, onActionDone}: IAuthenticationFo
    const dispatch = useAppDispatch();
 
    const handleLogin = useCallback(async () => {
-      const user = await Signin(email, password);
-      const loggedIn = Boolean(user.user.email);
+      const result = await Signin(email, password);
+      const loggedIn = Boolean(result.user.email);
       if (loggedIn) {
          onActionDone?.();
          dispatch(setLoggedIn(loggedIn));
-         dispatch(setUserId(user.user.uid));
-         dispatch(setCreationTime(createDateFromFirebaseDate(user.user.metadata.creationTime)));
-         const storedActivities = await getStoredActivities(user.user.uid);
+         dispatch(setUserId(result.user.uid));
+         dispatch(setCreationTime(createDateFromFirebaseDate(result.user.metadata.creationTime)));
+         const storedActivities = await getStoredActivities(result.user.uid);
          if (storedActivities) {
             dispatch(setActivities(storedActivities));
          }
-         if (Boolean(user.user.email) && user.user.email) {
-            dispatch(setEmailAction(user.user.email));
+         if (Boolean(result.user.email) && result.user.email) {
+            dispatch(setEmailAction(result.user.email));
             navigate(Pages.OVERVIEW);
          }
       }
@@ -68,6 +75,7 @@ export const AuthenticationForm = ({forcedMode, onActionDone}: IAuthenticationFo
          const signupResult = await Signup(email, password);
          if (signupResult.user.email) {
             onActionDone?.();
+            dispatch(setCreationTime(createDateFromFirebaseDate(signupResult.user.metadata.creationTime)));
             dispatch(setEmailAction(email));
             dispatch(setLoggedIn(true));
             dispatch(setUserId(signupResult.user.uid));

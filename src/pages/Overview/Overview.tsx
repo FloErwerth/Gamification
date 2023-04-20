@@ -14,6 +14,7 @@ export const Overview = () => {
    const stats = useAppSelector(getActivities).map((stats, index) => (
       <ActivityWrapper key={index} {...stats} index={index}/>
    ));
+
    const {filteredArray, setFilter} = useFilter<ActivityProps>(stats);
 
    return (

@@ -5,7 +5,7 @@ import {getCreationDate} from "../../store/authentication/authSelectors";
 import {getActiveActivity} from "../../store/activity/activitySelector";
 import {getCalendarEntries} from "../../store/activities/activitiesSelectors";
 import {generateISOString} from "./utils";
-import {CalendarType} from "../../store/activities/types";
+import {CalendarType, DateType} from "../../store/activities/types";
 import {setCurrentlySelectedMonth, setDaysInMonth} from "../../store/calendar/calendarActions";
 
 
@@ -15,7 +15,7 @@ const getShowNextMonth = (month: number) => {
    return month !== Temporal.Now.plainDateISO().month
 }
 
-const getShowPreviousMonth = (month: number, creationDate: string) => {
+const getShowPreviousMonth = (month: number, creationDate: DateType) => {
    return month >= Temporal.Instant.fromEpochMilliseconds(Date.parse(creationDate)).toZonedDateTimeISO("UTC").month;
 }
 
@@ -48,6 +48,7 @@ export const useCalendar = () => {
    const [showPreviousMonth, setShowPreviousMonth] = useState(getShowPreviousMonth(shownDate.month, creationDate));
    const [showJump, setShowJump] = useState(getShowJump(shownDate.month));
    const dispatch = useAppDispatch();
+
    const constructCalendar = useCallback(() => {
       const calendar: CalendarType = {};
       const daysInCurrentMonth = gregorian.daysInMonth(shownDate);

@@ -1,7 +1,7 @@
 import {createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, signOut} from "firebase/auth";
 import {initializeApp} from "firebase/app";
-import {collection, doc, getDoc, getFirestore, setDoc, updateDoc} from "firebase/firestore";
-import {ActivityProps} from "./src/store/activities/types";
+import {collection, deleteField, doc, getDoc, getFirestore, setDoc} from "firebase/firestore";
+import {ActivityProps, CellInfo, DateType} from "./src/store/activities/types";
 
 const firebaseApp = initializeApp({
    apiKey: "AIzaSyDFK3fGAEFWRpdAhwC5FPE5beGcNDzAMXk",
@@ -12,6 +12,7 @@ const firebaseApp = initializeApp({
    appId: "1:420514286189:web:744622c8e5308431afcd64",
    measurementId: "G-3J89V7TW0M",
 })
+
 
 export const Auth = getAuth(firebaseApp);
 export const Signup = (email: string, password: string) => createUserWithEmailAndPassword(Auth, email, password);
@@ -26,31 +27,48 @@ export const addFirebaseUser = async (userId: string) => {
    const userCollection = getUserCollection();
    await setDoc(doc(userCollection, userId), {activities: {}}, {merge: true});
 }
-const getUserRef = (uid: string) => doc(firebaseDB, "Nutzerdaten", uid);
+const getActivitiesRef = (uid: string) => doc(firebaseDB, `Nutzerdaten/${uid}/activities/activities`);
 
 export const getStoredActivities = async (userId: string): Promise<ActivityProps[]> => {
-   const userDoc = await getDoc(getUserRef(userId));
+   const userDoc = await getDoc(getActivitiesRef(userId));
    if (userDoc.exists()) {
-      return userDoc.data().activities as ActivityProps[];
+      return Object.values(userDoc.data()) as ActivityProps[];
    } else return []
 }
 
 type GeneratedObject<T> = { [index: number]: T };
 
-function createObjectFromArray<T>(activities: T[]) {
-   return activities.reduce<GeneratedObject<T>>((previousValue, currentValue, currentIndex) => {
-      return {
-         [currentIndex]: {...previousValue, ...currentValue}
-      }
-   }, {} as GeneratedObject<T>)
+function createObjectFromArray<T>(array: T[]) {
+   let newObject: GeneratedObject<T> = {};
+   array.forEach((arrayEntry, index) => newObject[index] = arrayEntry);
+   return newObject;
 }
 
 export const addActivityInDatabase = async (uid: string, currentActivites: ActivityProps[], activity: ActivityProps) => {
-   const userRef = getUserRef(uid);
-   await updateDoc(userRef, {activities: createObjectFromArray([...currentActivites, activity])});
+   const activtiesRef = getActivitiesRef(uid);
+   await setDoc(activtiesRef, createObjectFromArray([...currentActivites, activity]));
 }
 
 export const updateActivitiesInDatabase = async (uid: string, activities: ActivityProps[]) => {
-   const userRef = getUserRef(uid);
-   await updateDoc(userRef, {activities: createObjectFromArray(activities)})
+   const activtiesRef = getActivitiesRef(uid);
+   await setDoc(activtiesRef, createObjectFromArray(activities));
+}
+
+export const updateActivityCell = (uid: string, activityIndex: number, date: DateType, content: CellInfo) => {
+   const ref = getActivitiesRef(uid);
+   getDoc(ref).then((res) => console.log(res.data()));
+   setDoc(ref, {
+      [activityIndex]: {
+         calendarEntries: {[date]: content}
+      },
+   }, {merge: true}).then(() => console.log("entry updated"));
+}
+export const deleteActivityCell = (uid: string, activityIndex: number, date: DateType) => {
+   const ref = getActivitiesRef(uid);
+   getDoc(ref).then((res) => console.log(res.data()));
+   setDoc(ref, {
+      [activityIndex]: {
+         calendarEntries: {[date]: deleteField()}
+      },
+   }, {merge: true}).then(() => console.log("entry deleted"));
 }

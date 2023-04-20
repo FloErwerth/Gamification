@@ -1,19 +1,18 @@
 import {getClasses} from "../../utils/styleUtils";
 import {cellStyles, styles} from "./styles";
-import {CellInfo, DateType} from "../../store/activities/types";
+import {ActivityProps, CellInfo, DateType} from "../../store/activities/types";
 import {useCalendar} from "./useCalendar";
 import {useMemo} from "react";
 import {getDay, getDisplayMonth} from "./utils";
 import {StatWithValue} from "../../store/activities/predefinedActivities";
 import {Button} from "../Button/Button";
-import {useAppSelector} from "../../store/store";
-import {getActiveActivity} from "../../store/activity/activitySelector";
 
 interface CalendarProps {
+   activity: ActivityProps,
    onClick: (date: DateType, marked: boolean, stats: StatWithValue[], info?: string) => void;
 }
 
-interface CalendarCell extends CalendarProps {
+interface CalendarCell extends Omit<CalendarProps, "activity"> {
    date: DateType,
    calendarObject: CellInfo
 }
@@ -31,11 +30,10 @@ const CalendarCell = ({onClick, calendarObject, date}: CalendarCell) => {
 const weekDays = ["Mo", "Tues", "Wed", "Thur", "Fr", "Sa", "So"];
 const calendarClasses = getClasses(styles);
 
-export const Calendar = ({onClick}: CalendarProps) => {
+export const Calendar = ({onClick, activity}: CalendarProps) => {
    const [currentCalendar, showPreviousMonth, showNextMonth, showJump, decreaseMonth, increaseMonth, showCurrentMonth, shownDate] = useCalendar();
-   const activeActivity = useAppSelector(getActiveActivity);
    return <div className={calendarClasses.mainWrapper}>
-      <h2>{activeActivity?.activity?.name}, {getDisplayMonth(shownDate.month)} {shownDate.year}</h2>
+      <h2>{activity?.name}, {getDisplayMonth(shownDate.month)} {shownDate.year}</h2>
       <div className={calendarClasses.weekdaysWrapper}>{weekDays.map((weekday) => <div key={weekday}
                                                                                        className={calendarClasses.weekday}>{weekday}</div>)}</div>
       <div className={calendarClasses.calendarWrapper}>

@@ -28,7 +28,7 @@ export const activitiesReducer = (oldActivities = InitialGamificiationState.acti
       return [...oldActivities, action.payload]
    }
    if (action.type === GamificationActionTypes.SET_ACTIVITIES) {
-      return action.payload
+      return Object.values(action.payload)
    }
    if (action.type === GamificationActionTypes.DELETE_ACTIVITY) {
       return produce(oldActivities, activities => {

@@ -9,11 +9,8 @@ export enum GamificationActionTypes {
    SET_EMAIL = "gamification/authentication/set_email",
    SET_STAY_LOGGED_IN = "gamification/authentication/set_logged_in",
    SET_ACTIVE_ACTIVITY = "gamification/activities/set_active_activity",
-   CHANGE_ACTIVITY = "gamification/change_activity",
-   UPDATE_ADDITIONAL_CELL_INFO = "gamification/update_activity_calendar_cell",
    UPDATE_CELL = "gamification/cells/update",
    DELETE_CELL = "gamification/cells/delte",
-   UPDATE_STATS = "gamification/stats/update",
    SET_DAYS_IN_MONTH = "gamification/calendar/date",
    SET_CURRENTLY_SELECTED_MONTH = "gamification/calendar/selected_month",
 }
