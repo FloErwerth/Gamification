@@ -4,8 +4,9 @@ import {GamificationModel} from "../types";
 import {CellInfo, DateType} from "../activities/types";
 import {StatEnum} from "../activities/predefinedActivities";
 import produce from "immer";
+import {getCurrentlySelectedMonth} from "../calendar/calendarSelectors";
 
-export type ChartData = { dateLabels: DateType[], datasets: { label: StatEnum, data: number[], cubicInterpolationMode: "monotone" }[] };
+export type ChartData = { dateLabels: DateType[], datasets: { label: StatEnum, data: number[], cubicInterpolationMode: "monotone", pointStyle: "circle", pointRadius: 5, }[] };
 const getActivityIndex = ({activeActivityIndex}: GamificationModel) => activeActivityIndex;
 
 export const getActiveActivity = createSelector([getActivities, getActivityIndex], (activities, index) => {
@@ -15,6 +16,7 @@ export const getActiveActivity = createSelector([getActivities, getActivityIndex
 const getDay = (day: DateType) => {
    return parseInt(day.split("-")[0]);
 }
+
 const sortObject = (chartData: ChartData): ChartData => {
    return produce(chartData, newChartData => {
       newChartData.dateLabels.sort((a, b) => getDay(a) - getDay(b));
@@ -24,28 +26,43 @@ const sortObject = (chartData: ChartData): ChartData => {
          newChartData.dateLabels.forEach((date) => {
             newData.push(dataset.data[chartData.dateLabels.indexOf(date)])
          })
-         datasets.push({label: dataset.label, data: newData, cubicInterpolationMode: "monotone"})
+         datasets.push({
+            label: dataset.label,
+            data: newData,
+            cubicInterpolationMode: "monotone",
+            pointStyle: "circle",
+            pointRadius: 5
+         })
       })
       newChartData.datasets = datasets;
    })
 }
 
-export const getChartData = createSelector([getActiveActivity], (activity): ChartData => {
+export const getChartData = createSelector([getActiveActivity, getCurrentlySelectedMonth], (activity, month): ChartData => {
    const chartData: ChartData = {
       dateLabels: [], datasets: activity.activity.stats.map((stat) => {
-         return {label: stat, dates: [], data: [], cubicInterpolationMode: "monotone"};
+         return {
+            label: stat,
+            dates: [],
+            data: [],
+            cubicInterpolationMode: "monotone",
+            pointStyle: "circle",
+            pointRadius: 5
+         };
       })
    };
 
    Object.entries<CellInfo>(activity.activity.calendarEntries).forEach(([date, cellInfo]) => cellInfo.stats?.forEach((stat) => {
       const dataset = chartData.datasets[chartData.datasets.findIndex((data) => data.label === stat.name)];
-      if (!chartData.dateLabels.includes(date as DateType)) {
-         chartData.dateLabels.push(date as DateType);
+      if (month === parseInt(date.split("-")[1])) {
+         if (!chartData.dateLabels.includes(date as DateType)) {
+            chartData.dateLabels.push(date as DateType);
+         }
+         chartData.datasets[chartData.datasets.findIndex((data) => data.label === stat.name)] = produce(dataset, newDataSet => {
+            newDataSet.data = [...dataset.data, stat.value];
+            return newDataSet;
+         });
       }
-      chartData.datasets[chartData.datasets.findIndex((data) => data.label === stat.name)] = produce(dataset, newDataSet => {
-         newDataSet.data = [...dataset.data, stat.value];
-         return newDataSet;
-      });
    }));
    return sortObject(chartData);
 })

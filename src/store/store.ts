@@ -14,7 +14,7 @@ const defaultState: GamificationModel = {
    activities: [],
    activeActivityIndex: -1,
    authentication: {email: "", loggedIn: false, userId: "", creationDate: ""},
-   calendar: {daysInMonth: -1},
+   calendar: {daysInMonth: -1, currentlySelectedMonth: -1},
 };
 
 export const InitialGamificiationState: GamificationModel = {...defaultState, ...getState()}

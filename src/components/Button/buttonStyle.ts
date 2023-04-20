@@ -1,16 +1,13 @@
 import {style, Styles} from "../../utils/styleUtils";
 import {ButtonThemeEnum, ButtonThemeType} from "./types";
 
-const commonButtonStyle: Styles = {
-   all: "unset",
-   display: "block",
-   borderRadius: 3,
-   cursor: "pointer",
-   textAlign: "center",
-}
-
-const defaultButtonTheme = (disabled?: boolean): Styles => {
+const commonButtonStyle = (disabled?: boolean): Styles => {
    return {
+      all: "unset",
+      display: "block",
+      borderRadius: 3,
+      cursor: "pointer",
+      textAlign: "center",
       outline: "0.5px solid black",
       padding: "5px 10px",
       backgroundColor: disabled ? "rgb(120,120,120)" : "",
@@ -18,6 +15,12 @@ const defaultButtonTheme = (disabled?: boolean): Styles => {
       ":hover": {
          filter: "contrast(0.6)",
       }
+   }
+}
+
+const selectedButtonTheme = () => {
+   return {
+      backgroundColor: "green",
    }
 }
 
@@ -36,17 +39,17 @@ const CTAButtonTheme = (): Styles => {
    }
 }
 
-const getButtonStyleByTheme = (theme: ButtonThemeType, disabled?: boolean) => {
+const getButtonStyleByTheme = (theme: ButtonThemeType) => {
    switch (theme) {
       case ButtonThemeEnum.CTA:
          return CTAButtonTheme();
-      default:
-         return defaultButtonTheme(disabled);
+      case ButtonThemeEnum.SELECTED:
+         return selectedButtonTheme();
    }
 }
 
 export const buttonStyle = (theme: ButtonThemeType, disabled?: boolean) => style({
    button: {
-      ...commonButtonStyle, ...getButtonStyleByTheme(theme, disabled),
+      ...commonButtonStyle(disabled), ...getButtonStyleByTheme(theme),
    }
 })

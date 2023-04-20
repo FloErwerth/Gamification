@@ -6,5 +6,5 @@ export type GamificationModel = {
    activities: ActivityProps[]
    activeActivityIndex: number,
    authentication: AuthenticationPayload,
-   calendar: { daysInMonth: number }
+   calendar: { daysInMonth: number, currentlySelectedMonth: number }
 }

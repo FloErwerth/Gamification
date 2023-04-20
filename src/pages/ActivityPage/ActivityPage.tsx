@@ -74,8 +74,8 @@ export const ActivityPage = () => {
 
    return (
       <div className={cssClasses.wrapper}>
-         <ActivityChart/>
          <Calendar onClick={handleCalendarClick}/>
+         <ActivityChart/>
          <ConfirmButton
             hoverColor={"rgba(255,50,50,0.8)"} backgroundColor={"rgba(255,150,150,0.8)"} barColor={"red"}
             textColor={"black"}

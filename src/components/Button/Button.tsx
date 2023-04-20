@@ -12,7 +12,7 @@ export interface ButtonProps extends PropsWithChildren {
 }
 
 export const Button = ({theme = ButtonThemeEnum.DEFAULT, disabled, className, onClick, children}: ButtonProps) => {
-   const cssClasses = useMemo(() => getClasses(buttonStyle(theme, disabled)), [disabled]);
+   const cssClasses = useMemo(() => getClasses(buttonStyle(theme, disabled)), [disabled, theme]);
    const buttonClasses = useMemo(() => cx(cssClasses.button, className), [cssClasses.button, className]);
    return <button disabled={disabled} onClick={onClick} className={buttonClasses}>{children}</button>
 }

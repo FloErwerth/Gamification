@@ -6,7 +6,7 @@ import {getActiveActivity} from "../../store/activity/activitySelector";
 import {getCalendarEntries} from "../../store/activities/activitiesSelectors";
 import {generateISOString} from "./utils";
 import {CalendarType} from "../../store/activities/types";
-import {setDaysInMonth} from "../../store/calendar/calendarActions";
+import {setCurrentlySelectedMonth, setDaysInMonth} from "../../store/calendar/calendarActions";
 
 
 const gregorian = Temporal.Calendar.from('gregory');
@@ -83,6 +83,7 @@ export const useCalendar = () => {
 
    useEffect(() => {
       dispatch(setDaysInMonth({daysInMonth: shownDate.daysInMonth}));
+      dispatch(setCurrentlySelectedMonth({month: shownDate.month}))
       setShowPreviousMonth(getShowPreviousMonth(shownDate.month, creationDate));
       setShowNextMonth(getShowNextMonth(shownDate.month));
       setShowJump(getShowJump(shownDate.month));

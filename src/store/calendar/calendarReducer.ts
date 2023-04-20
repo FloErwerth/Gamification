@@ -9,5 +9,10 @@ export const calendarReducer = (oldCalendar = InitialGamificiationState.calendar
          newCalendar.daysInMonth = action.payload.daysInMonth;
       })
    }
+   if (action.type === GamificationActionTypes.SET_CURRENTLY_SELECTED_MONTH) {
+      return produce(oldCalendar, newCalendar => {
+         newCalendar.currentlySelectedMonth = action.payload.month;
+      })
+   }
    return oldCalendar;
 }
