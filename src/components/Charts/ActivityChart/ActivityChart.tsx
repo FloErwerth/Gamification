@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useMemo, useRef, useState} from "react";
+import {useEffect, useMemo, useRef, useState} from "react";
 import {Line} from "react-chartjs-2";
 import {CategoryScale, Chart, ChartOptions, LinearScale, LineElement, PointElement, Title, Tooltip} from "chart.js";
 import {ChartData, getChartData} from "../../../store/activity/activitySelector";
@@ -33,10 +33,6 @@ export const ActivityChart = () => {
    const [minMax, setMinMax] = useState<{ min: number, max: number }>();
    const chartRef = useRef<Chart<"line">>(null);
    const unit = useMemo(() => StatMap(filter).preferedUnit, [filter]);
-
-   const handleFilter = useCallback((value: string) => {
-      setFilter(value as StatEnum)
-   }, []);
 
    useEffect(() => {
       let min = Infinity;
