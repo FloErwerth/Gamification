@@ -11,16 +11,16 @@ import {ActivityProps} from "../../store/activities/types";
 const cssClasses = getClasses(overStyles);
 
 export const Overview = () => {
-   const stats = useAppSelector(getActivities).map((stats, index) => (
-      <ActivityWrapper key={index} {...stats} index={index}/>
+   const activities = useAppSelector(getActivities).map((activities, index) => (
+      <ActivityWrapper key={index} {...activities} index={index}/>
    ));
 
-   const {filteredArray, setFilter} = useFilter<ActivityProps>(stats);
+   const {filteredArray, setFilter} = useFilter<ActivityProps>(activities);
 
    return (
-      <div>
+      <>
          <div className={cssClasses.headerWrapper}><h3>Activity overview</h3>
-            {stats.length > 0 && <InputWithDelete
+            {activities.length > 0 && <InputWithDelete
                 placeholder={"Filter activities"}
                 type="text"
                 onChange={(value) => setFilter(value)}
@@ -32,6 +32,6 @@ export const Overview = () => {
          <div className={cssClasses.activityAdderWrapper}>
             <ActivityAdder/>
          </div>
-      </div>
+      </>
    );
 };

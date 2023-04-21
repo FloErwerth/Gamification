@@ -11,11 +11,9 @@ import {Button} from "../Button/Button";
 
 const wrapperClasses = getClasses(wrapperStyles);
 export const ActivityWrapper = ({
-                                   currentValue,
-                                   maxValue,
                                    name,
                                    index,
-                                   level,
+                                   stats,
                                 }: ActivityProps & { index: number }) => {
    const dispatch = useAppDispatch();
    const navigate = useNavigate();
@@ -29,9 +27,7 @@ export const ActivityWrapper = ({
       <Button className={wrapperClasses.activityWrapper} onClick={openActivity}>
          <div className={wrapperClasses.text}>{name}</div>
          <Activity
-            currentValue={currentValue}
-            maxValue={maxValue}
-            level={level}
+            stats={stats}
          />
       </Button>
    );
