@@ -1,31 +1,30 @@
-import {AuthenticationActions} from "./authActions";
+import {AuthenticationActions, AuthenticationActionType} from "./authActions";
 import {InitialGamificiationState} from "../store";
 import produce from "immer";
-import {GamificationActionTypes} from "../actions";
 
 export const authReducer = (oldAuthentication = InitialGamificiationState.authentication, action: AuthenticationActions) => {
    switch (action.type) {
-      case GamificationActionTypes.REGISTER:
+      case AuthenticationActionType.REGISTER:
          return produce(oldAuthentication, () => {
             action.payload;
          })
-      case GamificationActionTypes.LOGIN:
+      case AuthenticationActionType.LOGIN:
          return produce(oldAuthentication, newAuth => {
             newAuth.loggedIn = action.payload
          })
-      case GamificationActionTypes.SET_EMAIL:
+      case AuthenticationActionType.SET_EMAIL:
          return produce(oldAuthentication, newAuth => {
             newAuth.email = action.payload;
          })
-      case GamificationActionTypes.SET_USER_ID:
+      case AuthenticationActionType.SET_USER_ID:
          return produce(oldAuthentication, newAuth => {
             newAuth.userId = action.payload;
          })
-      case GamificationActionTypes.SET_STAY_LOGGED_IN:
+      case AuthenticationActionType.SET_STAY_LOGGED_IN:
          return produce(oldAuthentication, newAuth => {
             newAuth.stayLoggedIn = action.payload;
          })
-      case GamificationActionTypes.SET_CREATION_DATE:
+      case AuthenticationActionType.SET_CREATION_DATE:
          return produce(oldAuthentication, newAuth => {
             newAuth.creationDate = action.payload;
          })

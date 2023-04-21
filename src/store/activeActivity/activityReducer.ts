@@ -1,9 +1,8 @@
 import {InitialGamificiationState} from "../store"
-import {ActivityActions} from "./activityActions"
-import {GamificationActionTypes} from "../actions";
+import {ActiveActivityActionType, ActivityActions} from "./activityActions"
 
 export const activityReducer = (oldActivityIndex = InitialGamificiationState.activeActivityIndex, action: ActivityActions) => {
-   if (action.type === GamificationActionTypes.SET_ACTIVE_ACTIVITY) {
+   if (action.type === ActiveActivityActionType.SET_ACTIVE_ACTIVITY) {
       return action.payload
    }
 

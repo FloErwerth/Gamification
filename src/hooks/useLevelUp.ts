@@ -1,5 +1,5 @@
 import {useCallback, useState} from "react";
-import {getActiveActivity} from "../store/activity/activitySelector"
+import {getActiveActivity} from "../store/activeActivity/activitySelector"
 import {useAppSelector} from "../store/store"
 
 export const useLevelUp = () => {

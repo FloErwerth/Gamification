@@ -9,7 +9,7 @@ import {Calendar} from "../../components/calendar/Calendar";
 import {DateType} from "../../store/activities/types";
 import {Modal} from "../../components/Modal/Modal";
 import {OpenedActivity} from "../../components/OpenedActivity/OpenedActivity";
-import {getActiveActivity, getChartData} from "../../store/activity/activitySelector";
+import {getActiveActivity, getChartData} from "../../store/activeActivity/activitySelector";
 import {getActivities} from "../../store/activities/activitiesSelectors";
 import {getClasses} from "../../utils/styleUtils";
 import {styles} from "./styles";

@@ -5,8 +5,8 @@ import {activitiesReducer} from "./activities/activitiesReducer";
 import {ActivitiesActions} from "./activities/activitiesActions";
 import {authReducer} from "./authentication/authReducer";
 import {getState, saveState} from "../browserStorage/localStorage";
-import {activityReducer} from "./activity/activityReducer";
-import {ActivityActions} from "./activity/activityActions";
+import {activityReducer} from "./activeActivity/activityReducer";
+import {ActivityActions} from "./activeActivity/activityActions";
 import {AuthenticationActions} from "./authentication/authActions";
 import {calendarReducer} from "./calendar/calendarReducer";
 

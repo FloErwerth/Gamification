@@ -1,7 +1,7 @@
 import {useEffect, useMemo, useRef, useState} from "react";
 import {Line} from "react-chartjs-2";
 import {CategoryScale, Chart, ChartOptions, LinearScale, LineElement, PointElement, Title, Tooltip} from "chart.js";
-import {ChartData} from "../../../store/activity/activitySelector";
+import {ChartData} from "../../../store/activeActivity/activitySelector";
 import {StatEnum, StatMap} from "../../../store/activities/predefinedActivities";
 import {Button} from "../../Button/Button";
 

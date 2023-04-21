@@ -2,7 +2,7 @@ import {useCallback, useEffect, useState} from "react";
 import {Temporal} from "@js-temporal/polyfill";
 import {useAppDispatch, useAppSelector} from "../../store/store";
 import {getCreationDate} from "../../store/authentication/authSelectors";
-import {getActiveActivity} from "../../store/activity/activitySelector";
+import {getActiveActivity} from "../../store/activeActivity/activitySelector";
 import {getCalendarEntries} from "../../store/activities/activitiesSelectors";
 import {generateISOString} from "./utils";
 import {CalendarType, DateType} from "../../store/activities/types";

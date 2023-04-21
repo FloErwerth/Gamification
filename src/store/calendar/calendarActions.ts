@@ -1,16 +1,21 @@
 import {generateAction} from "../utils";
-import {GamificationActionTypes} from "../actions";
 
+export enum CalendarActionType {
+
+
+   SET_DAYS_IN_MONTH = "gamification/calendar/date",
+   SET_CURRENTLY_SELECTED_MONTH = "gamification/calendar/selected_month",
+}
 
 type SetDaysInMonth = { daysInMonth: number }
 type CurrentlySelectedMonth = { month: number }
 export type CalendarActions =
-   { type: GamificationActionTypes.SET_DAYS_IN_MONTH, payload: SetDaysInMonth }
-   | { type: GamificationActionTypes.SET_CURRENTLY_SELECTED_MONTH, payload: CurrentlySelectedMonth }
+   { type: CalendarActionType.SET_DAYS_IN_MONTH, payload: SetDaysInMonth }
+   | { type: CalendarActionType.SET_CURRENTLY_SELECTED_MONTH, payload: CurrentlySelectedMonth }
 
 export const setDaysInMonth = (payload: SetDaysInMonth) => {
-   return generateAction(GamificationActionTypes.SET_DAYS_IN_MONTH, payload)
+   return generateAction(CalendarActionType.SET_DAYS_IN_MONTH, payload)
 }
 export const setCurrentlySelectedMonth = (payload: CurrentlySelectedMonth) => {
-   return generateAction(GamificationActionTypes.SET_CURRENTLY_SELECTED_MONTH, payload);
+   return generateAction(CalendarActionType.SET_CURRENTLY_SELECTED_MONTH, payload);
 }

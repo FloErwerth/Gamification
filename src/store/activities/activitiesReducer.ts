@@ -1,7 +1,6 @@
 import {InitialGamificiationState} from "../store";
-import {ActivitiesActions} from "./activitiesActions";
+import {ActivitiesActions, ActivitiesActionType} from "./activitiesActions";
 import produce from "immer";
-import {GamificationActionTypes} from "../actions";
 
 const increaseLevels = (currentValue: number, level: number, maxValue: number): { level: number, maxValue: number } => {
    let currentLevel = level + 1;
@@ -24,23 +23,23 @@ const decreaseLevels = (currentValue: number, level: number, maxValue: number): 
 }
 
 export const activitiesReducer = (oldActivities = InitialGamificiationState.activities, action: ActivitiesActions) => {
-   if (action.type === GamificationActionTypes.ADD_ACTIVITY) {
+   if (action.type === ActivitiesActionType.ADD_ACTIVITY) {
       return [...oldActivities, action.payload]
    }
-   if (action.type === GamificationActionTypes.SET_ACTIVITIES) {
+   if (action.type === ActivitiesActionType.SET_ACTIVITIES) {
       return Object.values(action.payload)
    }
-   if (action.type === GamificationActionTypes.DELETE_ACTIVITY) {
+   if (action.type === ActivitiesActionType.DELETE_ACTIVITY) {
       return produce(oldActivities, activities => {
          activities.splice(action.payload.activityIndex, 1);
       })
    }
-   if (action.type === GamificationActionTypes.DELETE_CELL) {
+   if (action.type === ActivitiesActionType.DELETE_CELL) {
       return produce(oldActivities, newActivities => {
          delete newActivities[action.payload.activityIndex].calendarEntries[action.payload.date];
       })
    }
-   if (action.type === GamificationActionTypes.UPDATE_CELL) {
+   if (action.type === ActivitiesActionType.UPDATE_CELL) {
       return produce(oldActivities, newActivities => {
          const cell = newActivities[action.payload.activityIndex].calendarEntries[action.payload.date];
          newActivities[action.payload.activityIndex].calendarEntries[action.payload.date] = {...cell, ...action.payload.content};

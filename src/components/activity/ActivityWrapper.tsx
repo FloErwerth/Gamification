@@ -6,7 +6,7 @@ import {useNavigate} from "react-router-dom";
 import {Pages} from "../../types/pages";
 import {Activity} from "./Activitiy";
 import {ActivityProps} from "../../store/activities/types";
-import {setActiveActivity} from "../../store/activity/activityActions";
+import {setActiveActivity} from "../../store/activeActivity/activityActions";
 import {Button} from "../Button/Button";
 
 const wrapperClasses = getClasses(wrapperStyles);

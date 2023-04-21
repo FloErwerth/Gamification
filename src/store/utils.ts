@@ -1,5 +1,5 @@
-import {GamificationActionTypes} from "./actions";
+import {StoreActions} from "./store";
 
-export function generateAction<P, A extends GamificationActionTypes>(type: A, payload: P) {
+export function generateAction<P, A extends StoreActions>(type: A, payload: P) {
    return {type, payload};
 }
