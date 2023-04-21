@@ -34,7 +34,7 @@ export const store = configureStore<GamificationModel, GamificationActions>({
       calendar: calendarReducer,
       badges: badgeReducer,
    }),
-   middleware: getDefaultMiddleware => getDefaultMiddleware().concat(badgeMiddleware)
+   middleware: [badgeMiddleware]
 })
 
 store.subscribe(() => {
