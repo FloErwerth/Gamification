@@ -20,6 +20,7 @@ import {ActivityProps} from "../../store/activities/types";
 import {Dropdown} from "../Dropdown/Dropdown";
 import {Button} from "../Button/Button";
 import {getActivities} from "../../store/activities/activitiesSelectors";
+import {toast} from "react-toastify";
 
 const cssClasses = getClasses(activityAdderClasses);
 
@@ -42,7 +43,7 @@ const AddActivityModalContent = ({
 
    const handleCreation = useCallback(() => {
       if (
-         activityName &&
+         activityName.length > 3 && stats.length !== 0 &&
          userId
       ) {
          onCreation();
@@ -120,9 +121,15 @@ export const ActivityAdder = () => {
    const [showAdderModal, setShowAdderModal] = useState(false);
    const loggedIn = useAppSelector(getIsLoggedIn);
 
+   const handleCreation = useCallback(() => {
+      setShowAdderModal(false);
+      toast("Activity Added", {type: "success"})
+   }, [toast])
+
    if (!loggedIn) {
       return null;
    }
+
    return (
       <>
          <Button
@@ -134,7 +141,7 @@ export const ActivityAdder = () => {
          {showAdderModal && (
             <Modal open={showAdderModal} onClose={() => setShowAdderModal(false)}>
                <AddActivityModalContent
-                  onCreation={() => setShowAdderModal(false)}
+                  onCreation={handleCreation}
                />
             </Modal>
          )}

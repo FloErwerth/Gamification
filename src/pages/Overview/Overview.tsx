@@ -28,7 +28,6 @@ export const Overview = () => {
          </div>
 
          <div className={cssClasses.statsWrapper}>{filteredArray}</div>
-
          <div className={cssClasses.activityAdderWrapper}>
             <ActivityAdder/>
          </div>

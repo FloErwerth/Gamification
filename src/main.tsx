@@ -12,26 +12,31 @@ import {store, useAppSelector} from "./store/store";
 import {Dashboard} from "./pages/Dashboard/Dashboard";
 import {getIsLoggedIn} from "./store/authentication/authSelectors";
 import {ActivityPage} from "./pages/ActivityPage/ActivityPage";
+import {ToastContainer} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const cssClasses = getClasses(mainStyles);
 
 const App = () => {
    const isLoggedIn = useAppSelector(getIsLoggedIn);
    return (
-      <BrowserRouter>
-         <Body>
-            <Header/>
-            <Routes>
-               <Route element={isLoggedIn ? <Navigate to={Pages.OVERVIEW}/> : <LandingPage/>} path={Pages.HOME}/>
-               <Route
-                  element={isLoggedIn ? <Overview/> : <Navigate to={Pages.HOME}/>}
-                  path={Pages.OVERVIEW}
-               />
-               <Route element={<Dashboard/>} path={Pages.DASHBOARD}/>
-               <Route element={<ActivityPage/>} path={Pages.ACTIVITY}/>
-            </Routes>
-         </Body>
-      </BrowserRouter>
+      <>
+         <BrowserRouter>
+            <Body>
+               <Header/>
+               <Routes>
+                  <Route element={isLoggedIn ? <Navigate to={Pages.OVERVIEW}/> : <LandingPage/>} path={Pages.HOME}/>
+                  <Route
+                     element={isLoggedIn ? <Overview/> : <Navigate to={Pages.HOME}/>}
+                     path={Pages.OVERVIEW}
+                  />
+                  <Route element={<Dashboard/>} path={Pages.DASHBOARD}/>
+                  <Route element={<ActivityPage/>} path={Pages.ACTIVITY}/>
+               </Routes>
+            </Body>
+         </BrowserRouter>
+         <ToastContainer autoClose={2000} hideProgressBar={true}/>
+      </>
    );
 };
 

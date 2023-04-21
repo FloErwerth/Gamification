@@ -1,6 +1,6 @@
 import {createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, signOut} from "firebase/auth";
 import {initializeApp} from "firebase/app";
-import {collection, deleteField, doc, getDoc, getFirestore, setDoc} from "firebase/firestore";
+import {deleteField, doc, getDoc, getFirestore, setDoc} from "firebase/firestore";
 import {ActivityProps, CellInfo, DateType} from "./src/store/activities/types";
 
 const firebaseApp = initializeApp({
@@ -21,7 +21,6 @@ export const SignOut = () => signOut(Auth);
 export default firebaseApp;
 
 const firebaseDB = getFirestore(firebaseApp);
-const getUserCollection = () => collection(firebaseDB, "Nutzerdaten");
 
 export const addFirebaseUser = async (userId: string) => {
    const activtiesRef = getActivitiesRef(userId);
@@ -56,19 +55,17 @@ export const updateActivitiesInDatabase = async (uid: string, activities: Activi
 
 export const updateActivityCell = (uid: string, activityIndex: number, date: DateType, content: CellInfo) => {
    const ref = getActivitiesRef(uid);
-   getDoc(ref).then((res) => console.log(res.data()));
-   setDoc(ref, {
+   Promise.resolve(setDoc(ref, {
       [activityIndex]: {
          calendarEntries: {[date]: content}
       },
-   }, {merge: true}).then(() => console.log("entry updated"));
+   }, {merge: true}));
 }
 export const deleteActivityCell = (uid: string, activityIndex: number, date: DateType) => {
    const ref = getActivitiesRef(uid);
-   getDoc(ref).then((res) => console.log(res.data()));
-   setDoc(ref, {
+   Promise.resolve(setDoc(ref, {
       [activityIndex]: {
          calendarEntries: {[date]: deleteField()}
       },
-   }, {merge: true}).then(() => console.log("entry deleted"));
+   }, {merge: true}));
 }

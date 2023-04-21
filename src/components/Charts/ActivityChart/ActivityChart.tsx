@@ -29,12 +29,13 @@ const commonOptions: ChartOptions<"line"> = {
 const stepCount = 6;
 
 export const ActivityChart = ({chartData}: IActivityChart) => {
+
    const [showChart, setShowChart] = useState(true);
-   const [filter, setFilter] = useState<StatEnum>(chartData.datasets[0].label);
+   const [filter, setFilter] = useState<StatEnum | undefined>(chartData?.datasets?.[0]?.label ?? undefined);
    const [datasets, setDatasets] = useState<ChartData["datasets"]>(chartData.datasets.filter((data) => data.label === filter));
    const [minMax, setMinMax] = useState<{ min: number, max: number }>();
    const chartRef = useRef<Chart<"line">>(null);
-   const unit = useMemo(() => StatMap(filter).preferedUnit, [filter]);
+   const unit = useMemo(() => filter ? StatMap(filter).preferedUnit : "", [filter]);
    const showChartSheet = useMemo(() => chartData.dateLabels.length > 1, [chartData.dateLabels]);
 
    useEffect(() => {
@@ -103,8 +104,8 @@ export const ActivityChart = ({chartData}: IActivityChart) => {
                                                                                               theme={filter === data.label ? "SELECTED" : "DEFAULT"}
                                                                                               onClick={() => setFilter(data.label)}>{data.label}</Button>)}</div>
        </div>
-      {showChartSheet && showChart ? <Line ref={chartRef} options={options} data={formatedData}/> :
-         <div>Please add more data.</div>}
+      {filter ? showChartSheet && showChart ? <Line ref={chartRef} options={options} data={formatedData}/> :
+         <div>Please add more data.</div> : <div>Please select data to show</div>}
       {showChartSheet &&
           <Button onClick={() => setShowChart(!showChart)}>{!showChart ? "Show Chart" : "Hide Chart"}</Button>}
    </div>}</>

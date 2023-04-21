@@ -16,6 +16,7 @@ import {styles} from "./styles";
 import {StatWithValue} from "../../store/activities/predefinedActivities";
 import {ConfirmButton} from "../../components/ConfirmButton/ConfirmButton";
 import {ActivityChart} from "../../components/Charts/ActivityChart/ActivityChart";
+import {toast} from "react-toastify";
 
 const cssClasses = getClasses(styles);
 export const ActivityPage = () => {
@@ -35,7 +36,8 @@ export const ActivityPage = () => {
             date: selectedDate,
             content: {marked: true, stats}
          }));
-         updateActivityCell(uid, activeActivity.index, selectedDate, {marked: true, stats})
+         updateActivityCell(uid, activeActivity.index, selectedDate, {marked: true, stats});
+         toast("Updated Progress!", {type: "success"})
       }
       setEditProgress(false);
    }, [activeActivity, selectedDate]);
@@ -47,6 +49,7 @@ export const ActivityPage = () => {
             activityIndex: activeActivity.index,
          }))
          deleteActivityCell(uid, activeActivity.index, selectedDate);
+         toast("Deleted progress", {type: "info"})
       }
       setEditProgress(false);
    }, [updateCell, activeActivity, selectedDate]);
@@ -54,11 +57,11 @@ export const ActivityPage = () => {
    const handleDeletion = useCallback((deleteConfirmed: boolean) => {
       if (deleteConfirmed) {
          const newActivities = activities.filter((activity) => !Object.values(activity).every((val, index) => val === Object.values(activeActivity.activity)[index]));
-         //todo make middleware
          updateActivitiesInDatabase(uid, newActivities).then(() => {
             dispatch(deleteActivity({activityIndex: activeActivity.index}));
             navigate(Pages.OVERVIEW);
          });
+         toast("Deleted activity", {type: "info"})
       }
    }, [uid, activeActivity, activities]);
 
