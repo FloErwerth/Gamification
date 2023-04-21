@@ -24,8 +24,8 @@ const firebaseDB = getFirestore(firebaseApp);
 const getUserCollection = () => collection(firebaseDB, "Nutzerdaten");
 
 export const addFirebaseUser = async (userId: string) => {
-   const userCollection = getUserCollection();
-   await setDoc(doc(userCollection, userId), {activities: {}}, {merge: true});
+   const activtiesRef = getActivitiesRef(userId);
+   await setDoc(activtiesRef, {});
 }
 const getActivitiesRef = (uid: string) => doc(firebaseDB, `Nutzerdaten/${uid}/activities/activities`);
 
