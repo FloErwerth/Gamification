@@ -1,6 +1,6 @@
 import {z} from "zod";
 
-export const SportStat = z.enum(["Time",
+export const SportStat = z.enum(["Duration",
    "Distance",
    "Speed",
    "Heart rate",

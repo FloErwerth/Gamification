@@ -8,12 +8,14 @@ export const StatEnum = z.enum([...CreativityStat.options, ...SportStat.options]
 export const PredefinedActivities = z.enum([...SportActivities.options, ...CreativityActivitiy.options, "CUSTOM"]);
 export type PredefinedActivities = z.infer<typeof PredefinedActivities>;
 export type StatEnumType = z.infer<typeof StatEnum>;
-export const ActivityAssembly = (statEnum: PredefinedActivities): StatEnumType[] => {
+
+export function ActivityAssembly<T extends StatEnumType>(statEnum: T): StatEnumType[] {
    return [
       ...CreativityActivityAssembly(statEnum),
       ...SportsActivityAssembly(statEnum),
    ]
-};
+}
+
 export type StatWithValue = { name: StatEnumType, value: number };
 export type Stat = { name: StatEnumType, preferedUnit: string, text: string, description: string };
 
@@ -21,7 +23,7 @@ export const StatMap = (field: StatEnumType) => StatEnum.transform((field): Stat
    switch (field) {
       case "Distance":
          return {name: field, preferedUnit: "km", text: "You covered a distance of", description: "Example: 12km"};
-      case "Time":
+      case "Duration":
          return {
             name: field,
             preferedUnit: "Minutes",
