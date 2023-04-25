@@ -1,4 +1,4 @@
-import {PREDEFINED_STATS_SET, PredefinedStatsSet} from "../activities/predefinedActivities";
+import {PREDEFINED_STATS_SET, PredefinedStatsSet} from "../../types/predefinedActivities";
 
 type BadgeTypeEnum = "OVERALL" | "ACTIVITY";
 

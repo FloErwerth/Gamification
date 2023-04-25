@@ -6,7 +6,7 @@ import {getGeneratedDisplayDate} from "../calendar/utils";
 import {Input} from "../Input/Input";
 import {useCallback, useMemo, useState} from "react";
 import produce from "immer";
-import {StatWithValue} from "../../store/activities/predefinedActivities";
+import {StatWithValue} from "../../types/predefinedActivities";
 import {DisplayedStat} from "../DisplayedStat/DisplayedStat";
 import {Button} from "../Button/Button";
 import {ConfirmButton} from "../ConfirmButton/ConfirmButton";

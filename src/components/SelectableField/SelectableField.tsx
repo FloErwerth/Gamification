@@ -3,12 +3,12 @@ import {Button} from "../Button/Button";
 import {getClasses} from "../../utils/styleUtils";
 import {styles} from "./styles";
 import {DisplayedField} from "../DisplayedField/DisplayedField";
-import {StatEnum, StatMap} from "../../store/activities/predefinedActivities";
+import {BookStat, StatMap} from "../../types/predefinedActivities";
 import {css} from "@emotion/css";
 
 interface ISelectableButton {
-   onClick: (value: StatEnum, selected: boolean) => void
-   selectableStat: StatEnum;
+   onClick: (value: BookStat, selected: boolean) => void
+   selectableStat: BookStat;
 }
 
 export const SelectableField = ({onClick, selectableStat}: ISelectableButton) => {

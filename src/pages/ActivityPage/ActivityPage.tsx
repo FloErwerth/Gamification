@@ -13,7 +13,7 @@ import {getActiveActivity, getChartData} from "../../store/activeActivity/activi
 import {getActivities} from "../../store/activities/activitiesSelectors";
 import {getClasses} from "../../utils/styleUtils";
 import {styles} from "./styles";
-import {StatWithValue} from "../../store/activities/predefinedActivities";
+import {StatWithValue} from "../../types/predefinedActivities";
 import {ConfirmButton} from "../../components/ConfirmButton/ConfirmButton";
 import {ActivityChart} from "../../components/Charts/ActivityChart/ActivityChart";
 import {toast} from "react-toastify";

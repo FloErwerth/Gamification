@@ -8,11 +8,11 @@ import {addActivityInDatabase} from "../../../firebase";
 import {getIsLoggedIn, getUserId,} from "../../store/authentication/authSelectors";
 import {
    assambleFields,
+   BookStat,
    PREDEFINED_STATS_SET,
    PredefinedStatsSet,
-   StatEnum,
    StatMap,
-} from "../../store/activities/predefinedActivities";
+} from "../../types/predefinedActivities";
 import {FieldsSelector} from "../FieldsSelector/FieldsSelector";
 import {DisplayedField} from "../DisplayedField/DisplayedField";
 import {Input} from "../Input/Input";
@@ -33,7 +33,7 @@ const AddActivityModalContent = ({
                                  }: ActivityAdderModalContentProps) => {
    const [activityName, setActivityName] = useState("");
    const [predefinedActivity, setPredefinedActivity] = useState<PredefinedStatsSet>(PREDEFINED_STATS_SET.Enum.Custom);
-   const [stats, setStats] = useState<StatEnum[]>([])
+   const [stats, setStats] = useState<BookStat[]>([])
    const [addAdditionalActivity, setAddAdditionalAcitivity] = useState(false);
    const isAddingActivityAllowed = useMemo(() => stats.length < 5, [stats]);
    const userId = useAppSelector(getUserId);
@@ -70,12 +70,12 @@ const AddActivityModalContent = ({
       setStats(assambleFields(predefinedActivity))
    }, [predefinedActivity])
 
-   const handleSetAdditionalFields = useCallback((statEnums: StatEnum[]) => {
+   const handleSetAdditionalFields = useCallback((statEnums: BookStat[]) => {
       setStats((previous) => [...previous, ...statEnums]);
       setAddAdditionalAcitivity(false);
    }, [])
 
-   const handleDeleteSelectedField = useCallback((deletedField: StatEnum) => {
+   const handleDeleteSelectedField = useCallback((deletedField: BookStat) => {
       setStats((previous) =>
          previous.filter((field) => field !== deletedField))
    }, []);

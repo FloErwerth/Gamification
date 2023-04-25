@@ -1,0 +1,26 @@
+import {z} from "zod";
+
+export const SportEnum = z.enum(["Time",
+   "Distance",
+   "Duration",
+   "Exercises per set",
+   "Best time",
+   "Speed",
+   "Heart rate",
+   "Repetitions",
+   "Sets",
+   "Weight lifted",
+   "Calories burned",
+   "Steps",
+   "Strokes",
+   "Laps",
+   "Jump height",
+   "Vertical jump",
+   "Broad jump",
+   "Shot put distance",
+   "Discus throw distance",
+   "Hammer throw distance",
+   "Javelin throw distance",
+   "Accuracy",
+   "Balance"]);
+export type SportEnumType = z.infer<typeof SportEnum>;

@@ -1,4 +1,4 @@
-import {StatMap, StatWithValue} from "../../store/activities/predefinedActivities";
+import {StatMap, StatWithValue} from "../../types/predefinedActivities";
 import {getClasses} from "../../utils/styleUtils";
 import {styles} from "./styles";
 

@@ -2,11 +2,11 @@ import {createSelector} from "@reduxjs/toolkit";
 import {getActivities} from "../activities/activitiesSelectors";
 import {GamificationModel} from "../types";
 import {CellInfo, DateType} from "../activities/types";
-import {StatEnum} from "../activities/predefinedActivities";
+import {BookStat} from "../../types/predefinedActivities";
 import produce from "immer";
 import {getCurrentlySelectedMonth} from "../calendar/calendarSelectors";
 
-export type ChartData = { dateLabels: DateType[], datasets: { label: StatEnum, data: number[], cubicInterpolationMode: "monotone", pointStyle: "circle", pointRadius: 5, }[] };
+export type ChartData = { dateLabels: DateType[], datasets: { label: BookStat, data: number[], cubicInterpolationMode: "monotone", pointStyle: "circle", pointRadius: 5, }[] };
 const getActivityIndex = ({activeActivityIndex}: GamificationModel) => activeActivityIndex;
 
 export const getActiveActivity = createSelector([getActivities, getActivityIndex], (activities, index) => {

@@ -1,22 +1,15 @@
 import {z} from "zod";
+import {SportEnum} from "./predefinedActivities/sports/sportEnum";
 
-export const PREDEFINED_STATS_SET = z.enum(["Custom", "Jogging"]);
-export type PredefinedStatsSet = z.infer<typeof PREDEFINED_STATS_SET>;
-export type Stat = { name: StatEnum, text: string, preferedUnit: string, description: string, value?: number, deletable?: boolean };
-export const StatEnum = z.enum(["Distance", "Time", "Calories", "Steps", "Pages written", "Pages read", "Pictures drawn"]);
-export type StatEnum = z.infer<typeof StatEnum>;
-export type StatWithValue = { name: StatEnum, value: number };
+export type BookEnumType = z.infer<typeof BookStat>;
+export const BookStat = z.enum(["Pages written", "Pages read"]);
+export const StatEnum = z.union([BookStat, SportEnum]);
+type StatEnumType = z.infer<typeof StatEnum>;
+export type StatWithValue = { name: BookEnumType, value: number };
 
-export const assambleFields = (statSet: PredefinedStatsSet): StatEnum[] => {
-   switch (statSet) {
-      case "Jogging":
-         return ["Distance", "Time"];
-      case "Custom":
-         return [];
-   }
-}
+export type Stat = { name: StatEnumType, preferedUnit: string, text: string, description: string };
 
-export const StatMap = (field: StatEnum) => StatEnum.transform((field): Stat => {
+export const StatMap = (field: StatEnumType) => StatEnum.transform((field): Stat => {
    switch (field) {
       case "Distance":
          return {name: field, preferedUnit: "km", text: "You covered a distance of", description: "Example: 12km"};
@@ -27,13 +20,15 @@ export const StatMap = (field: StatEnum) => StatEnum.transform((field): Stat => 
             text: "It took",
             description: "Example: 38 minutes"
          };
-      case "Calories":
+      case "Calories burned":
          return {
             name: field,
-            preferedUnit: "kcal",
+            preferedUnit: "kCal",
             text: "You burned",
             description: "Example: 365 calories burnt"
          };
+      case "Heart rate":
+         return {name: field, preferedUnit: "bpm", text: "Your", description: "Example: Your Heart rate was 180 bpm"}
       case "Steps": {
          return {
             name: field,
