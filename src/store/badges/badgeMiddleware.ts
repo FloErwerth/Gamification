@@ -12,7 +12,7 @@ export const badgeMiddleware: Middleware<{}, GamificationModel, Dispatch<Gamific
       if (api.getState().activities.length === 0 || api.getState().badges.find((badge) => badge.id === "OVERALL/FIRST_ACTIVITY") === undefined) {
          const badge = generateBadge(`OVERALL/FIRST_ACTIVITY`, "First activity added", "The user has added its first activity");
          api.dispatch(generateAction(BadgeActionType.ADD_BADGE, badge));
-         addOverallBadgeInDatabase(api.getState().authentication.userId, badge);
+         addOverallBadgeInDatabase(api.getState().authentication.userId, badge.id);
       }
    }
 

@@ -2,7 +2,7 @@ import {createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, sig
 import {initializeApp} from "firebase/app";
 import {deleteField, doc, getDoc, getFirestore, setDoc} from "firebase/firestore";
 import {ActivityProps, CellInfo, DateType} from "./src/store/activities/types";
-import {Badge} from "./src/store/badges/types";
+import {Badge, BadgeId} from "./src/store/badges/types";
 
 const firebaseApp = initializeApp({
    apiKey: "AIzaSyDFK3fGAEFWRpdAhwC5FPE5beGcNDzAMXk",
@@ -72,10 +72,10 @@ export const deleteActivityCell = (uid: string, activityIndex: number, date: Dat
    }, {merge: true}));
 }
 
-export const addOverallBadgeInDatabase = (uid: string, badge: Badge) => {
+export const addOverallBadgeInDatabase = (uid: string, badgeId: BadgeId) => {
    const overallBadgesRef = getOverallBadgesRef(uid);
    Promise.resolve(setDoc(overallBadgesRef, {
-      [badge.id]: {title: badge.title, description: badge.description}
+      badgeId
    }, {merge: true}));
 }
 
