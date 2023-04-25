@@ -74,9 +74,7 @@ export const deleteActivityCell = (uid: string, activityIndex: number, date: Dat
 
 export const addOverallBadgeInDatabase = (uid: string, badgeId: BadgeId) => {
    const overallBadgesRef = getOverallBadgesRef(uid);
-   Promise.resolve(setDoc(overallBadgesRef, {
-      badgeId
-   }, {merge: true}));
+   Promise.resolve(setDoc(overallBadgesRef, {badges: {[badgeId]: badgeId}}, {merge: true, mergeFields: ["/badges"]}));
 }
 
 export const removeOverallBadgeInDatabase = (uid: string, badgeId: Badge["id"]) => {
