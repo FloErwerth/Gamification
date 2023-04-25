@@ -1,26 +1,26 @@
 import {useCallback, useState} from "react";
-import {BookStat} from "../../types/predefinedActivities";
+import {StatEnum, StatEnumType} from "../../types/predefinedActivities";
 import {Modal, ModalProps} from "../Modal/Modal";
 import {getClasses} from "../../utils/styleUtils";
 import {styles} from "./styles";
 import {SelectableField} from "../SelectableField/SelectableField";
 
 interface IFieldsSelector extends ModalProps {
-   onFieldSelectorClosed: (fields: BookStat[]) => void;
-   alreadyChosenFields?: BookStat[];
+   onFieldSelectorClosed: (fields: StatEnumType[]) => void;
+   alreadyChosenFields?: StatEnumType[];
 }
 
-const getAvailableFields = (alreadyAdded: BookStat[] | undefined) => {
+const getAvailableFields = (alreadyAdded: StatEnumType[] | undefined) => {
    if (!alreadyAdded || alreadyAdded.length === 0) {
-      return BookStat.options;
+      return StatEnum.options;
    }
-   return BookStat.options.filter((option) => !alreadyAdded.find((addedOption) => option === addedOption))
+   return StatEnum.options.filter((option) => !alreadyAdded.find((addedOption) => option === addedOption))
 }
 const cssClasses = getClasses(styles);
 
 export const FieldsSelector = ({onFieldSelectorClosed, open, alreadyChosenFields}: IFieldsSelector) => {
-   const [selectedFields, setSelectedFields] = useState<BookStat[]>([]);
-   const handleSelection = useCallback((value: BookStat, selected: boolean) => {
+   const [selectedFields, setSelectedFields] = useState<StatEnumType[]>([]);
+   const handleSelection = useCallback((value: StatEnumType, selected: boolean) => {
       if (selected) {
          setSelectedFields((fields) => {
             fields.splice(selectedFields.findIndex((field) => field === value))

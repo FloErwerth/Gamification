@@ -6,13 +6,7 @@ import {addActivity} from "../../store/activities/activitiesActions";
 import {useAppDispatch, useAppSelector} from "../../store/store";
 import {addActivityInDatabase} from "../../../firebase";
 import {getIsLoggedIn, getUserId,} from "../../store/authentication/authSelectors";
-import {
-   assambleFields,
-   BookStat,
-   PREDEFINED_STATS_SET,
-   PredefinedStatsSet,
-   StatMap,
-} from "../../types/predefinedActivities";
+import {ActivityAssembly, PredefinedActivities, StatEnumType, StatMap,} from "../../types/predefinedActivities";
 import {FieldsSelector} from "../FieldsSelector/FieldsSelector";
 import {DisplayedField} from "../DisplayedField/DisplayedField";
 import {Input} from "../Input/Input";
@@ -32,8 +26,8 @@ const AddActivityModalContent = ({
                                     onCreation,
                                  }: ActivityAdderModalContentProps) => {
    const [activityName, setActivityName] = useState("");
-   const [predefinedActivity, setPredefinedActivity] = useState<PredefinedStatsSet>(PREDEFINED_STATS_SET.Enum.Custom);
-   const [stats, setStats] = useState<BookStat[]>([])
+   const [predefinedActivity, setPredefinedActivity] = useState<PredefinedActivities>(PredefinedActivities.Enum.Aerobic);
+   const [stats, setStats] = useState<StatEnumType[]>([])
    const [addAdditionalActivity, setAddAdditionalAcitivity] = useState(false);
    const isAddingActivityAllowed = useMemo(() => stats.length < 5, [stats]);
    const userId = useAppSelector(getUserId);
@@ -62,20 +56,20 @@ const AddActivityModalContent = ({
    }, [userId, activityName, stats]);
 
    useEffect(() => {
-      if (predefinedActivity === "Custom") {
+      if (predefinedActivity === "CUSTOM") {
          setActivityName("");
       } else {
          setActivityName(predefinedActivity);
       }
-      setStats(assambleFields(predefinedActivity))
+      setStats(ActivityAssembly(predefinedActivity))
    }, [predefinedActivity])
 
-   const handleSetAdditionalFields = useCallback((statEnums: BookStat[]) => {
+   const handleSetAdditionalFields = useCallback((statEnums: StatEnumType[]) => {
       setStats((previous) => [...previous, ...statEnums]);
       setAddAdditionalAcitivity(false);
    }, [])
 
-   const handleDeleteSelectedField = useCallback((deletedField: BookStat) => {
+   const handleDeleteSelectedField = useCallback((deletedField: StatEnumType) => {
       setStats((previous) =>
          previous.filter((field) => field !== deletedField))
    }, []);
@@ -84,20 +78,19 @@ const AddActivityModalContent = ({
       <div className={cssClasses.modalWrapper}>
          <div>Add an activity</div>
          <div>
-            {predefinedActivity === PREDEFINED_STATS_SET.Enum.Custom &&
+            {predefinedActivity === PredefinedActivities.Enum.CUSTOM &&
                 <Input customWrapperClasses={cssClasses.nameInput} placeholder={"Name for the activity"}
                        onChange={(value) => setActivityName(value)}/>}
-            <Dropdown options={PREDEFINED_STATS_SET.options}
+            <Dropdown options={PredefinedActivities.options}
                       label={predefinedActivity}
-                      setValue={(value) => setPredefinedActivity(value as PredefinedStatsSet)}/>
-            {predefinedActivity !== PREDEFINED_STATS_SET.Enum.Custom &&
+                      setValue={(value) => setPredefinedActivity(value as PredefinedActivities)}/>
+            {predefinedActivity !== PredefinedActivities.Enum.CUSTOM &&
                 <div className={cssClasses.statsTitle}>The following stats are available:</div>}
-            <div className={cssClasses.fieldsWrapper}>{stats.map((field) => {
-                  const mappedField = StatMap(field);
+            <div className={cssClasses.fieldsWrapper}>{stats.map((stat) => {
+                  const mappedField = StatMap(stat);
                   return <DisplayedField name={mappedField.name}
                                          description={mappedField.description}
-                                         onDeletion={handleDeleteSelectedField}
-                                         deletable={mappedField.deletable}/>
+                                         onDeletion={handleDeleteSelectedField}/>
                }
             )}</div>
             {isAddingActivityAllowed &&

@@ -1,12 +1,20 @@
 import {z} from "zod";
-import {SportEnum} from "./predefinedActivities/sports/sportEnum";
+import {SportStat} from "./predefinedActivities/sports/sportEnum";
+import {CreativityStat} from "./predefinedActivities/creativity/creativityStat";
+import {SportActivities, SportsActivityAssembly} from "./predefinedActivities/sports/sportActivities";
+import {CreativityActivitiy, CreativityActivityAssembly} from "./predefinedActivities/creativity/creativityActivities";
 
-export type BookEnumType = z.infer<typeof BookStat>;
-export const BookStat = z.enum(["Pages written", "Pages read"]);
-export const StatEnum = z.union([BookStat, SportEnum]);
-type StatEnumType = z.infer<typeof StatEnum>;
-export type StatWithValue = { name: BookEnumType, value: number };
-
+export const StatEnum = z.enum([...CreativityStat.options, ...SportStat.options]);
+export const PredefinedActivities = z.enum([...SportActivities.options, ...CreativityActivitiy.options, "CUSTOM"]);
+export type PredefinedActivities = z.infer<typeof PredefinedActivities>;
+export type StatEnumType = z.infer<typeof StatEnum>;
+export const ActivityAssembly = (statEnum: PredefinedActivities): StatEnumType[] => {
+   return [
+      ...CreativityActivityAssembly(statEnum),
+      ...SportsActivityAssembly(statEnum),
+   ]
+};
+export type StatWithValue = { name: StatEnumType, value: number };
 export type Stat = { name: StatEnumType, preferedUnit: string, text: string, description: string };
 
 export const StatMap = (field: StatEnumType) => StatEnum.transform((field): Stat => {
@@ -43,6 +51,17 @@ export const StatMap = (field: StatEnumType) => StatEnum.transform((field): Stat
          return {name: field, preferedUnit: "pages", text: "You wrote", description: "Example: 12 pages written"}
       case "Pictures drawn":
          return {name: field, preferedUnit: "pictures", text: "You drew", description: "Example: 12 pictures drawn"}
+      case "Laps":
+         return {name: field, preferedUnit: field, text: "You have made", description: "Example: You have made 4 Laps"}
+      case "Speed":
+         return {
+            name: field,
+            preferedUnit: "min/km",
+            text: "Your speed was",
+            description: "Example: Your speed was 6:43 min/km"
+         }
+      default:
+         return {name: field, description: "", text: "", preferedUnit: ""}
    }
 }).parse(field);
 
