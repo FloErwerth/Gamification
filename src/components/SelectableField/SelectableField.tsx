@@ -22,5 +22,5 @@ export const SelectableField = ({onClick, selectableStat}: ISelectableButton) =>
    return <Button onClick={handleClick} className={cssClasses.button}><DisplayedField
       wrapperClasses={css({outline: "none"})}
       name={mappedSelectableStat.name}
-      description={mappedSelectableStat.description}/></Button>
+      description={mappedSelectableStat.description} showDeleteButton={false}/></Button>
 }
