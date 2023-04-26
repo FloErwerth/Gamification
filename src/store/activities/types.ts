@@ -1,4 +1,4 @@
-import {StatEnumType, StatWithValue} from "../../types/predefinedActivities";
+import {StatEnumType, StatWithValue} from "../../activitiesAssembly/stats";
 
 export type DateType = `${string}-${string}-${string}`;
 export type CalendarType = { [date: DateType]: CellInfo };

@@ -1,6 +1,6 @@
-import {StatMap, StatWithValue} from "../../types/predefinedActivities";
 import {getClasses} from "../../utils/styleUtils";
 import {styles} from "./styles";
+import {StatMap, StatWithValue} from "../../activitiesAssembly/stats";
 
 interface IDisplayedStat {
    stat: StatWithValue

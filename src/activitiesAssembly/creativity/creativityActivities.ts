@@ -1,6 +1,6 @@
 import {z} from "zod";
 import {CreativityStatType} from "./creativityStat";
-import {PredefinedActivities} from "../../predefinedActivities";
+import {PredefinedActivities} from "../predefinedActivities";
 
 export const CreativityActivitiy = z.enum(["Writing", "Reading"]);
 

@@ -1,20 +1,9 @@
 import {z} from "zod";
-import {SportStat} from "./predefinedActivities/sports/sportEnum";
-import {CreativityStat} from "./predefinedActivities/creativity/creativityStat";
-import {SportActivities, SportsActivityAssembly} from "./predefinedActivities/sports/sportActivities";
-import {CreativityActivitiy, CreativityActivityAssembly} from "./predefinedActivities/creativity/creativityActivities";
+import {CreativityStat} from "./creativity/creativityStat";
+import {SportStat} from "./sports/sportEnum";
 
 export const StatEnum = z.enum([...CreativityStat.options, ...SportStat.options]);
-export const PredefinedActivities = z.enum([...SportActivities.options, ...CreativityActivitiy.options, "CUSTOM"]);
-export type PredefinedActivities = z.infer<typeof PredefinedActivities>;
 export type StatEnumType = z.infer<typeof StatEnum>;
-
-export function ActivityAssembly<T extends StatEnumType>(statEnum: T): StatEnumType[] {
-   return [
-      ...CreativityActivityAssembly(statEnum),
-      ...SportsActivityAssembly(statEnum),
-   ]
-}
 
 export type StatWithValue = { name: StatEnumType, value: number };
 export type Stat = { name: StatEnumType, preferedUnit: string, text: string, description: string };
@@ -66,4 +55,3 @@ export const StatMap = (field: StatEnumType) => StatEnum.transform((field): Stat
          return {name: field, description: "", text: "", preferedUnit: ""}
    }
 }).parse(field);
-

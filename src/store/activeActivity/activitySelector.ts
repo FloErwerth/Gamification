@@ -2,11 +2,11 @@ import {createSelector} from "@reduxjs/toolkit";
 import {getActivities} from "../activities/activitiesSelectors";
 import {GamificationModel} from "../types";
 import {CellInfo, DateType} from "../activities/types";
-import {BookStat} from "../../types/predefinedActivities";
 import produce from "immer";
 import {getCurrentlySelectedMonth} from "../calendar/calendarSelectors";
+import {StatEnumType} from "../../activitiesAssembly/stats";
 
-export type ChartData = { dateLabels: DateType[], datasets: { label: BookStat, data: number[], cubicInterpolationMode: "monotone", pointStyle: "circle", pointRadius: 5, }[] };
+export type ChartData = { dateLabels: DateType[], datasets: { label: StatEnumType, data: number[], cubicInterpolationMode: "monotone", pointStyle: "circle", pointRadius: 5, }[] };
 const getActivityIndex = ({activeActivityIndex}: GamificationModel) => activeActivityIndex;
 
 export const getActiveActivity = createSelector([getActivities, getActivityIndex], (activities, index) => {
@@ -41,7 +41,7 @@ const sortObject = (chartData: ChartData): ChartData => {
 export const getChartData = createSelector([getActiveActivity, getCurrentlySelectedMonth], (activteActivity, month): ChartData | undefined => {
    if (activteActivity.activity && activteActivity.activity.stats && activteActivity.activity.calendarEntries) {
       const chartData: ChartData = {
-         dateLabels: [], datasets: activteActivity.activity.stats.map((stat) => {
+         dateLabels: [], datasets: activteActivity.activity.stats.map((stat: StatEnumType) => {
             return {
                label: stat,
                dates: [],

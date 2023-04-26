@@ -1,7 +1,6 @@
 import {Dispatch, Middleware, MiddlewareAPI} from "@reduxjs/toolkit";
-import {GamificationActions} from "../store";
 import {ActivitiesActionType} from "../activities/activitiesActions";
-import {GamificationModel} from "../types";
+import {GamificationActions, GamificationModel} from "../types";
 import {BadgeActionType} from "./badgesActions";
 import {generateAction} from "../utils";
 import {generateBadge} from "./types";

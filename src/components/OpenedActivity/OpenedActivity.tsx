@@ -6,12 +6,12 @@ import {getGeneratedDisplayDate} from "../calendar/utils";
 import {Input} from "../Input/Input";
 import {useCallback, useMemo, useState} from "react";
 import produce from "immer";
-import {StatWithValue} from "../../types/predefinedActivities";
 import {DisplayedStat} from "../DisplayedStat/DisplayedStat";
 import {Button} from "../Button/Button";
 import {ConfirmButton} from "../ConfirmButton/ConfirmButton";
 import {useAppSelector} from "../../store/store";
 import {getCell} from "../../store/activities/activitiesSelectors";
+import {StatWithValue} from "../../activitiesAssembly/stats";
 
 interface OpenedActivityProps {
    activeActivity: { index: number, activity: ActivityProps },

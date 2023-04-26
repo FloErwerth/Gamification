@@ -1,6 +1,6 @@
 import {PropsWithChildren} from "react";
-import {getClasses} from "../../../utils/styleUtils";
 import {formWrapperStyles} from "./formWrapperStyles";
+import {getClasses} from "../../utils/styleUtils";
 
 const cssClasses = getClasses(formWrapperStyles);
 export const FormWrapper = ({children}: PropsWithChildren) => {

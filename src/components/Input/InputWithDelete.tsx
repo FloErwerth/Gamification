@@ -8,18 +8,17 @@ const cssClasses = getClasses(inputStyles);
 
 export const InputWithDelete = ({
                                    onChange,
-                                   value,
-                                   validationResult,
                                    label,
                                    placeholder,
                                    type,
                                    required,
                                    customWrapperClasses,
                                    children,
+                                   value,
                                 }: InputProps) => {
    return <div className={cssClasses.inputWithDeleteWrapper}>
       <Input onChange={onChange} value={value}
-             validationResult={validationResult} label={label}
+             label={label}
              placeholder={placeholder} type={type}
              required={required}
              customWrapperClasses={customWrapperClasses}>{children}</Input>

@@ -2,8 +2,8 @@ import {useEffect, useMemo, useRef, useState} from "react";
 import {Line} from "react-chartjs-2";
 import {CategoryScale, Chart, ChartOptions, LinearScale, LineElement, PointElement, Title, Tooltip} from "chart.js";
 import {ChartData} from "../../../store/activeActivity/activitySelector";
-import {BookStat, StatMap} from "../../../types/predefinedActivities";
 import {Button} from "../../Button/Button";
+import {StatEnumType, StatMap} from "../../../activitiesAssembly/stats";
 
 interface IActivityChart {
    chartData: ChartData,
@@ -31,7 +31,7 @@ const stepCount = 6;
 export const ActivityChart = ({chartData}: IActivityChart) => {
 
    const [showChart, setShowChart] = useState(true);
-   const [filter, setFilter] = useState<BookStat | undefined>(chartData?.datasets?.[0]?.label ?? undefined);
+   const [filter, setFilter] = useState<StatEnumType | undefined>(chartData?.datasets?.[0]?.label ?? undefined);
    const [datasets, setDatasets] = useState<ChartData["datasets"]>(chartData.datasets.filter((data) => data.label === filter));
    const [minMax, setMinMax] = useState<{ min: number, max: number }>();
    const chartRef = useRef<Chart<"line">>(null);

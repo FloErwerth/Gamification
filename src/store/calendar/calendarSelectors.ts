@@ -1,5 +1,5 @@
-import {GamificationModel} from "../types";
 import {createSelector} from "@reduxjs/toolkit";
+import {GamificationModel} from "../types";
 
 export const getDaysInMonth = ({calendar}: GamificationModel) => calendar.daysInMonth;
 export const getCurrentlySelectedMonth = ({calendar}: GamificationModel) => calendar.currentlySelectedMonth;

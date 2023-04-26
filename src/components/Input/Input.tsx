@@ -14,6 +14,7 @@ export interface InputProps
    type?: InputType;
    required?: boolean;
    placeholder?: string;
+   value?: string;
 }
 
 const cssClasses = getClasses(inputStyles);
@@ -39,7 +40,7 @@ export const Input = ({
                          customWrapperClasses,
                          type = "text",
                          required = false,
-                         placeholder,
+                         placeholder, value,
                       }: InputProps) => {
    const wrapperClasses = useMemo(
       () => cx(cssClasses.inputWrapper, customWrapperClasses, {}),
@@ -63,6 +64,7 @@ export const Input = ({
             <div className={wrapperClasses}>
                <input
                   step={0.01}
+                  value={value}
                   placeholder={placeholder ? placeholder : ""}
                   ref={inputRef}
                   onChange={(e) => onChange(e.target.value)}

@@ -6,8 +6,7 @@ import {addActivity} from "../../store/activities/activitiesActions";
 import {useAppDispatch, useAppSelector} from "../../store/store";
 import {addActivityInDatabase} from "../../../firebase";
 import {getIsLoggedIn, getUserId,} from "../../store/authentication/authSelectors";
-import {ActivityAssembly, PredefinedActivities, StatEnumType, StatMap,} from "../../types/predefinedActivities";
-import {FieldsSelector} from "../FieldsSelector/FieldsSelector";
+import {PredefinedActivities,} from "../../activitiesAssembly/predefinedActivities";
 import {DisplayedField} from "../DisplayedField/DisplayedField";
 import {Input} from "../Input/Input";
 import {ActivityProps} from "../../store/activities/types";
@@ -15,6 +14,9 @@ import {Dropdown} from "../Dropdown/Dropdown";
 import {Button} from "../Button/Button";
 import {getActivities} from "../../store/activities/activitiesSelectors";
 import {toast} from "react-toastify";
+import {StatSelector} from "../StatSelector/StatSelector";
+import {StatEnumType, StatMap} from "../../activitiesAssembly/stats";
+import {ActivityAssembly} from "../../activitiesAssembly/activityAssembly";
 
 const cssClasses = getClasses(activityAdderClasses);
 
@@ -96,8 +98,8 @@ const AddActivityModalContent = ({
             {isAddingActivityAllowed &&
                 <Button onClick={() => setAddAdditionalAcitivity(true)} className={cssClasses.addButton}>+</Button>}
             {addAdditionalActivity &&
-                <FieldsSelector onFieldSelectorClosed={handleSetAdditionalFields} open={addAdditionalActivity}
-                                alreadyChosenFields={stats}/>}
+                <StatSelector onFieldSelectorClosed={handleSetAdditionalFields} open={addAdditionalActivity}
+                              alreadyChosenFields={stats}/>}
          </div>
          <div>
             {isAddingActivityAllowed && <div style={{marginBottom: 10, fontSize: "smaller"}}>Note: You can add up
