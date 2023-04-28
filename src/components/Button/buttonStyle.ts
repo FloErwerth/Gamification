@@ -5,6 +5,7 @@ const commonButtonStyle = (disabled?: boolean): Styles => {
    return {
       all: "unset",
       display: "block",
+      minHeight: 20,
       borderRadius: 3,
       cursor: "pointer",
       textAlign: "center",

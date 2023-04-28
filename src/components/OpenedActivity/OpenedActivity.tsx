@@ -1,9 +1,8 @@
 import {ActivityProps, DateType} from "../../store/activities/types";
 import {getClasses} from "../../utils/styleUtils";
 import {styles} from "./styles";
-import {TextArea} from "../TextArea/TextArea";
 import {getGeneratedDisplayDate} from "../calendar/utils";
-import {Input} from "../Input/Input";
+import {Input, LabelMode} from "../Input/Input";
 import {useCallback, useMemo, useState} from "react";
 import produce from "immer";
 import {DisplayedStat} from "../DisplayedStat/DisplayedStat";
@@ -33,7 +32,7 @@ export const OpenedActivity = ({
 
    const cell = useAppSelector(getCell(activeActivity.index, date));
    const cellMarked = useMemo(() => cell && cell.marked, [cell]);
-   const [stats, setStats] = useState<StatWithValue[]>(activeActivity.activity.stats.map((stat) => {
+   const [stats, setStats] = useState<(StatWithValue)[]>(activeActivity.activity.stats.map((stat) => {
       return {name: stat, value: 0}
    }));
 
@@ -45,7 +44,7 @@ export const OpenedActivity = ({
       }
    }, [stats]);
 
-   return <div className={cssClasses.wrapper}>
+   return <div className={cssClasses.mainWrapper}>
       <div className={cssClasses.title}>{getGeneratedDisplayDate(date)}</div>
       <div>
          {cellMarked && cell.stats && <>
@@ -54,19 +53,21 @@ export const OpenedActivity = ({
                                                                                                stat={stat}/>)}</div>
          </>
          }
-         {!cellMarked && <div className={cssClasses.statsWrapper}>
+         {!cellMarked && <div className={cssClasses.inputWrapper}>
             {stats.map((stat, index) =>
-               <Input key={stat.name} placeholder={"0"} label={stat.name}
+               <Input labelMode={LabelMode.TOP}
+                      key={stat.name} label={stat.name}
                       onChange={(value) => handleStatsChange(value, index)}
                       type={"number"}/>
             )}</div>
          }
-         <TextArea label={"Notes"} initialValue={cell?.info} onChange={onInfoChange}/>
       </div>
       <div className={cssClasses.buttons}>
-         {!cellMarked && <Button
-             onClick={() => onConfirmProgress(stats)}>Confirm progress</Button>}
-         <ConfirmButton barColor={"rgb(255, 100, 100)"} confirmTime={500} onClick={onDeleteProgress}>Delete
-            progress</ConfirmButton></div>
+         {!cellMarked ? <Button
+               onClick={() => onConfirmProgress(stats)}>Confirm progress</Button> :
+            <ConfirmButton className={cssClasses.button} barColor={"rgb(255, 100, 100)"} confirmTime={500}
+                           onClick={onDeleteProgress}>Delete
+               progress</ConfirmButton>}</div>
+
    </div>
 }

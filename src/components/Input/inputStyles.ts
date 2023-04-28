@@ -1,5 +1,6 @@
-import {style} from "../../utils/styleUtils";
+import {style, Styles} from "../../utils/styleUtils";
 import {keyframes} from "@emotion/css";
+import {LabelMode} from "./Input";
 
 const errorMessageAnimation = keyframes({
       from: {
@@ -12,20 +13,65 @@ const errorMessageAnimation = keyframes({
    }
 )
 
-export const inputStyles = style({
+const getLabelStyles = (labelMode: LabelMode): Styles => {
+   if (labelMode === LabelMode.TOP) {
+      return {
+         top: "50%",
+         transform: "translateY(-50%)",
+         marginLeft: 5,
+      }
+   }
+
+   return {
+      top: "50%",
+      transform: "translateY(-50%)",
+      fontSize: "0.8em",
+      marginLeft: 15,
+   }
+}
+
+const moveLabelUp = (labelMode: LabelMode): Styles => {
+   return {
+      transform: labelMode === LabelMode.TOP ? "translateY(0)" : "",
+      top: labelMode === LabelMode.TOP ? 0 : "",
+      fontSize: 12,
+      color: "black",
+
+   }
+}
+
+export const inputStyles = (labelMode: LabelMode) => style({
    wrapper: {
+      position: "relative",
+      display: "flex",
+      flexDirection: "column",
       cursor: "text",
+
    },
    input: {
       all: "unset",
       height: 30,
-      width: "100%",
-      padding: 5,
+
+      padding: labelMode === LabelMode.TOP ? "10px 5px 0px 5px" : 5,
       paddingInline: 15,
-      "::placeholder": {
-         fontSize: 13,
-         color: "rgb(50,50,50)"
+      display: "flex",
+      outline: "3px solid black",
+      ":focus-within": {
+         outlineColor: "#0078FF",
+         "& + label": {
+            ...moveLabelUp(labelMode),
+
+         }
       },
+      ":not(:placeholder-shown)": {
+         "& + label": {
+            ...moveLabelUp(labelMode)
+         }
+      },
+      borderRadius: 5,
+      transition: "outline-color 200ms",
+      alignItems: "center",
+      justifyContent: "space-between",
       ":-webkit-autofill, :-webkit-autofill:hover, :-webkit-autofill:focus": {
          "-webkit-box-shadow": " 0 0 0px 1000px white inset",
       },
@@ -36,7 +82,8 @@ export const inputStyles = style({
          "-webkit-appearance": "none"
       }, "input[type=number]": {
          "-moz-appearance": "textfield",
-      }
+      },
+
    },
    inputWithDeleteWrapper: {
       position: "relative",
@@ -56,18 +103,14 @@ export const inputStyles = style({
       width: 12,
       height: 12,
    },
-   inputWrapper: {
-      display: "flex",
-      outline: "3px solid black",
-      ":focus-within": {
-         outlineColor: "#0078FF"
-      },
-      borderRadius: 5,
-      transition: "outline-color 200ms",
-      alignItems: "center",
-      justifyContent: "space-between",
+   label: {
+      color: "rgb(150,150,150)",
+      position: "absolute",
+      ...getLabelStyles(labelMode),
+      transition: "100ms",
+      cursor: "text",
+
    },
-   label: {},
    error: {
       outlineColor: "red",
    },

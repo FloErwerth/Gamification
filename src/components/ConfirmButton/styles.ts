@@ -4,9 +4,9 @@ export const styles = (progress: number, barColor: string, textColor: string, ba
    button: {
       all: "unset",
       width: 200,
-      height: 50,
       position: "relative",
       borderRadius: 5,
+      height: "auto",
       backgroundColor,
       transition: "all 100ms",
       ":hover": {
@@ -18,9 +18,9 @@ export const styles = (progress: number, barColor: string, textColor: string, ba
          display: "block",
          position: "absolute",
          borderRadius: 5,
+         height: "100%",
          top: 0,
          left: 0,
-         height: 50,
          backgroundColor: barColor,
          mixBlendMode: "multiply",
          width: `${progress}%`,

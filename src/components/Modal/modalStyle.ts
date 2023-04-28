@@ -5,6 +5,7 @@ export const modalStyle = style({
       border: "none",
       position: "relative",
       borderRadius: 10,
+      padding: 0,
       "::backdrop": {
          background: "linear-gradient(160deg, #444444aa, #666666aa 41.07%, #444444aa 76.96%)",
       }

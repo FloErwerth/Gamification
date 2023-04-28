@@ -2,6 +2,7 @@ import {ButtonProps} from "../Button/Button";
 import {useEffect, useMemo, useRef, useState} from "react";
 import {getClasses} from "../../utils/styleUtils";
 import {styles} from "./styles";
+import {cx} from "@emotion/css";
 
 const intervalTime = 10;
 
@@ -11,6 +12,7 @@ interface ConfirmButtonProps extends ButtonProps {
    backgroundColor?: string;
    hoverColor?: string;
    confirmTime?: number;
+   className?: string;
 }
 
 export const ConfirmButton = ({
@@ -21,12 +23,14 @@ export const ConfirmButton = ({
                                  backgroundColor = "white",
                                  hoverColor = "lightgray",
                                  confirmTime = 1000,
+                                 className
                               }: ConfirmButtonProps) => {
 
    const [timeProgess, setTimeProgress] = useState(0);
    const buttonRef = useRef<HTMLButtonElement>(null);
    const [counterStarted, setStartCounter] = useState(false);
    const cssClasses = useMemo(() => getClasses(styles((timeProgess / confirmTime) * 100, barColor, textColor, backgroundColor, hoverColor)), [timeProgess]);
+   const buttonClasses = useMemo(() => cx(cssClasses.button, className), [cssClasses, className]);
    const [interval, setIntervalFunction] = useState<NodeJS.Timer | undefined>(undefined);
 
    useEffect(() => {
@@ -61,7 +65,7 @@ export const ConfirmButton = ({
       }
    }, []);
 
-   return <button className={cssClasses.button} ref={buttonRef}>
+   return <button className={buttonClasses} ref={buttonRef}>
       <div className={cssClasses.buttonContent}>{children}</div>
    </button>
 }

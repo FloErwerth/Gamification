@@ -2,16 +2,19 @@ import {style} from "../../utils/styleUtils";
 
 export const styles = style({
    statWrapper: {
-      margin: 10,
       display: "flex",
       flexDirection: "row",
-      alignItems: "center",
+      alignItems: "baseline",
       fontSize: 18,
       gap: 5,
    },
+   name: {
+      fontSize: 18,
+   },
+   unit: {
+      fontSize: 12,
+   },
    value: {
       fontSize: 18,
-      fontWeight: "bold",
-      fontStyle: "italic",
    }
 })

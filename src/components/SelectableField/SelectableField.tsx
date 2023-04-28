@@ -19,8 +19,10 @@ export const SelectableField = ({onClick, selectableStat}: ISelectableButton) =>
       onClick?.(selectableStat, selected)
       setSelected((currentlySelected) => !currentlySelected);
    }, [selected])
-   return <Button onClick={handleClick} className={cssClasses.button}><DisplayedField
-      wrapperClasses={css({outline: "none"})}
-      name={mappedSelectableStat.name}
-      description={mappedSelectableStat.description} showDeleteButton={false}/></Button>
+   return <Button onClick={handleClick} className={cssClasses.button}>
+      <DisplayedField
+         wrapperClasses={css({outline: "none"})}
+         name={mappedSelectableStat.name}
+         showDeleteButton={false}/>
+   </Button>
 }

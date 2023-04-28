@@ -1,13 +1,16 @@
 import {style} from "../../utils/styleUtils";
 
 export const styles = style({
-   wrapper: {
+   mainWrapper: {
       display: "grid",
-      gridTemplateRows: "30px 300px 30px",
-      width: "400px",
-      height: "400px",
+      gridTemplateRows: "30px auto 30px",
+      width: "fit-content",
       gap: 20,
-      padding: 20
+      padding: 20,
+      paddingBottom: 15,
+   },
+   statInput: {
+      outline: "none",
    },
    title: {
       fontWeight: "bold",
@@ -16,12 +19,30 @@ export const styles = style({
       gap: 5,
    },
    statsWrapper: {
-      padding: 5,
+      marginBlock: 15,
+      display: "flex",
+      flexDirection: "column",
+      gap: 5,
+   },
+   inputWrapper: {
+      marginBlock: 15,
+      display: "flex",
+      flexDirection: "column",
+      width: "100%",
+      gap: 15,
    },
    buttons: {
-      display: "grid",
-      height: 30,
-      gap: 10,
-      gridTemplateColumns: "50% 50%",
+      display: "flex",
+      width: "100%",
+   },
+   button: {
+      borderRadius: 3,
+   },
+   confirmButton: {
+      outline: "1px solid black",
+      borderRadius: 3,
+      ":hover": {
+         backgroundColor: "green",
+      }
    }
 })

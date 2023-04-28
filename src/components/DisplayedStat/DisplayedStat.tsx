@@ -9,8 +9,10 @@ interface IDisplayedStat {
 const cssClasses = getClasses(styles);
 export const DisplayedStat = ({stat}: IDisplayedStat) => {
    const mappedStat = StatMap(stat.name);
-   return <div className={cssClasses.statWrapper}>{mappedStat.text}
+   return <div className={cssClasses.statWrapper}>
+      <div className={cssClasses.name}>{mappedStat.name}:</div>
       <div
          className={cssClasses.value}>{stat.value}</div>
-      {mappedStat.preferedUnit}</div>
+      <div className={cssClasses.unit}>{mappedStat.preferedUnit}</div>
+   </div>
 }
