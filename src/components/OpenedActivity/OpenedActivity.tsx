@@ -2,7 +2,6 @@ import {ActivityProps, DateType} from "../../store/activities/types";
 import {getClasses} from "../../utils/styleUtils";
 import {styles} from "./styles";
 import {getGeneratedDisplayDate} from "../calendar/utils";
-import {Input, LabelMode} from "../Input/Input";
 import {useCallback, useMemo, useState} from "react";
 import produce from "immer";
 import {DisplayedStat} from "../DisplayedStat/DisplayedStat";
@@ -11,6 +10,7 @@ import {ConfirmButton} from "../ConfirmButton/ConfirmButton";
 import {useAppSelector} from "../../store/store";
 import {getCell} from "../../store/activities/activitiesSelectors";
 import {StatWithValue} from "../../activitiesAssembly/stats";
+import {ActivityInput} from "../ActivityInput/ActivityInput";
 
 interface OpenedActivityProps {
    activeActivity: { index: number, activity: ActivityProps },
@@ -31,7 +31,8 @@ export const OpenedActivity = ({
 
    const cell = useAppSelector(getCell(activeActivity.index, date));
    const cellMarked = useMemo(() => cell && cell.marked, [cell]);
-   const [stats, setStats] = useState<(StatWithValue)[]>(activeActivity.activity.stats.map((stat) => {
+
+   const [stats, setStats] = useState<StatWithValue[]>(activeActivity.activity.stats.map((stat) => {
       return {name: stat, value: 0}
    }));
 
@@ -50,16 +51,13 @@ export const OpenedActivity = ({
              <small>Here is the overview of your activity</small>
              <div className={cssClasses.statsWrapper}>{cell.stats.map((stat) => <DisplayedStat key={stat.name}
                                                                                                stat={stat}/>)}</div>
-         </>
-         }
+         </>}
          {!cellMarked && <div className={cssClasses.inputWrapper}>
             {stats.map((stat, index) =>
-               <Input labelMode={LabelMode.TOP}
-                      key={stat.name} label={stat.name}
-                      onChange={(value) => handleStatsChange(value, index)}
-                      type={"number"}/>
-            )}</div>
-         }
+               <ActivityInput key={stat.name} label={stat.name}
+                              onChange={(value) => handleStatsChange(value, index)}
+                              stat={stat.name}/>
+            )}</div>}
       </div>
       <div className={cssClasses.buttons}>
          {!cellMarked ? <Button

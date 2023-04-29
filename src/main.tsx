@@ -14,6 +14,8 @@ import {ActivityPage} from "./pages/ActivityPage/ActivityPage";
 import {ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import {LandingPage} from "./pages/LandingPage/LandingPage";
+import {LocalizationProvider} from "@mui/x-date-pickers";
+import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
 
 const cssClasses = getClasses(mainStyles);
 
@@ -22,20 +24,22 @@ const App = () => {
 
    return (
       <>
-         <BrowserRouter>
-            <Body>
-               <Header/>
-               <Routes>
-                  <Route element={isLoggedIn ? <Navigate to={Pages.OVERVIEW}/> : <LandingPage/>} path={Pages.HOME}/>
-                  <Route
-                     element={isLoggedIn ? <Overview/> : <Navigate to={Pages.HOME}/>}
-                     path={Pages.OVERVIEW}
-                  />
-                  <Route element={<Dashboard/>} path={Pages.DASHBOARD}/>
-                  <Route element={<ActivityPage/>} path={Pages.ACTIVITY}/>
-               </Routes>
-            </Body>
-         </BrowserRouter>
+         <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <BrowserRouter>
+               <Body>
+                  <Header/>
+                  <Routes>
+                     <Route element={isLoggedIn ? <Navigate to={Pages.OVERVIEW}/> : <LandingPage/>} path={Pages.HOME}/>
+                     <Route
+                        element={isLoggedIn ? <Overview/> : <Navigate to={Pages.HOME}/>}
+                        path={Pages.OVERVIEW}
+                     />
+                     <Route element={<Dashboard/>} path={Pages.DASHBOARD}/>
+                     <Route element={<ActivityPage/>} path={Pages.ACTIVITY}/>
+                  </Routes>
+               </Body>
+            </BrowserRouter>
+         </LocalizationProvider>
          <ToastContainer autoClose={2000} hideProgressBar={true}/>
       </>
    );

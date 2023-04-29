@@ -1,5 +1,4 @@
 import {useNavigate} from "react-router-dom";
-import {getLoginData} from "../../store/authentication/authSelectors";
 import {useAppSelector} from "../../store/store";
 import {Pages} from "../../types/pages";
 import {Button} from "../../basicComponents/Button/Button";
@@ -10,7 +9,6 @@ import {ActivityProps} from "../../store/activities/types";
 import {getActivities} from "../../store/activities/activitiesSelectors";
 
 export const Dashboard = () => {
-   const userData = useAppSelector(getLoginData);
    const navigate = useNavigate();
    const buttons = useAppSelector(getActivities).filter((activity) => Object.values(activity.calendarEntries).length >= 2).map((activity) =>
       <Button onClick={() => setSelectedActivity(activity)}>{activity.name}</Button>);

@@ -1,9 +1,20 @@
-import {useEffect, useMemo, useRef, useState} from "react";
+import {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {Line} from "react-chartjs-2";
-import {CategoryScale, Chart, ChartOptions, LinearScale, LineElement, PointElement, Title, Tooltip} from "chart.js";
+import {
+   CategoryScale,
+   Chart,
+   ChartOptions,
+   LinearScale,
+   LineElement,
+   PointElement,
+   Title,
+   Tooltip,
+   TooltipItem
+} from "chart.js";
 import {ChartData} from "../../../store/activeActivity/activitySelector";
 import {Button} from "../../../basicComponents/Button/Button";
-import {StatEnumType, StatMap} from "../../../activitiesAssembly/stats";
+import {StatMap} from "../../../activitiesAssembly/stats";
+import {isTimeType, toHourFormat} from "../../../utils/getStringifiedTime";
 
 interface IActivityChart {
    chartData: ChartData,
@@ -31,11 +42,11 @@ const stepCount = 6;
 export const ActivityChart = ({chartData}: IActivityChart) => {
 
    const [showChart, setShowChart] = useState(true);
-   const [filter, setFilter] = useState<StatEnumType | undefined>(chartData?.datasets?.[0]?.label ?? undefined);
-   const [datasets, setDatasets] = useState<ChartData["datasets"]>(chartData.datasets.filter((data) => data.label === filter));
+   const [filter, setFilter] = useState(chartData?.datasets?.[0]?.label ?? undefined);
+   const [datasets, setDatasets] = useState(chartData.datasets.filter((data) => data.label === filter));
    const [minMax, setMinMax] = useState<{ min: number, max: number }>();
-   const chartRef = useRef<Chart<"line">>(null);
-   const unit = useMemo(() => filter ? StatMap(filter).preferedUnit : "", [filter]);
+   const chartRef = useRef<Chart<"line", number[], string>>(null);
+   const stat = useMemo(() => filter && StatMap(filter), [filter]);
    const showChartSheet = useMemo(() => chartData.dateLabels.length > 1, [chartData.dateLabels]);
 
    useEffect(() => {
@@ -56,6 +67,26 @@ export const ActivityChart = ({chartData}: IActivityChart) => {
       setDatasets(filteredDataset);
    }, [filter, chartData]);
 
+   const getLabel = useCallback((tooltipItem: TooltipItem<"line">) => {
+      const data = tooltipItem.dataset.data[tooltipItem.dataIndex]
+      if (stat.type && isTimeType(stat.type) && typeof data === "number") {
+         return `${toHourFormat(data)} ${stat?.preferedUnit ?? ""}`
+      }
+      return `${data} ${stat?.preferedUnit ?? ""}`
+   }, [stat])
+
+   const getValue = useCallback((value: number | string) => {
+      if (typeof value === "number") {
+         if (stat.type && isTimeType(stat.type)) {
+            return `${toHourFormat(value)} ${stat.preferedUnit}`
+         } else {
+            return `${value} ${stat.preferedUnit}`;
+
+         }
+      }
+      return value;
+   }, [stat])
+
    const options: ChartOptions<"line"> = useMemo(() => {
       return {
          scales: {
@@ -66,6 +97,8 @@ export const ActivityChart = ({chartData}: IActivityChart) => {
             },
             y: {
                ticks: {
+                  precision: 2,
+                  callback: (tickValue) => getValue(tickValue),
                   count: stepCount,
                },
                suggestedMin: minMax?.min,
@@ -82,13 +115,13 @@ export const ActivityChart = ({chartData}: IActivityChart) => {
             tooltip: {
                displayColors: false,
                callbacks: {
-                  label: (tooltipItem) => `${tooltipItem.dataset.data[tooltipItem.dataIndex]} ${unit}`,
+                  label: (tooltipItem) => getLabel(tooltipItem),
                }
             }
          },
          ...commonOptions,
       }
-   }, [minMax]);
+   }, [minMax, stat, chartData]);
 
    const formatedData = useMemo(() => {
       return {

@@ -6,7 +6,7 @@ import {ActiveActivityActionType, ActivityActions} from "./activeActivity/activi
 import {ActivitiesActions, ActivitiesActionType} from "./activities/activitiesActions";
 import {AuthenticationActions, AuthenticationActionType} from "./authentication/authActions";
 import {CalendarActions, CalendarActionType} from "./calendar/calendarActions";
-import {RouterActionType} from "./router/routerActions";
+import {RouterActions, RouterActionType} from "./router/routerActions";
 import {Pages} from "../types/pages";
 
 export type GamificationModel = {
@@ -35,4 +35,4 @@ export type GamificationActions =
    | ActivityActions
    | ActivitiesActions
    | AuthenticationActions
-   | CalendarActions
+   | CalendarActions | RouterActions

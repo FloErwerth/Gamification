@@ -28,7 +28,7 @@ export const ActivityPage = () => {
    const dispatch = useAppDispatch();
    const navigate = useNavigate();
 
-   const handleProgressConfirm = useCallback((stats: StatWithValue[]) => {
+   const handleConfirmProgress = useCallback((stats: StatWithValue[]) => {
       if (selectedDate) {
          dispatch(updateCell({
             activityIndex: activeActivity.index,
@@ -88,7 +88,7 @@ export const ActivityPage = () => {
          Activity</ConfirmButton>
       {editProgress && <Modal onClose={() => setEditProgress(false)} open={editProgress}>
           <OpenedActivity activeActivity={activeActivity} date={selectedDate}
-                          onConfirmProgress={handleProgressConfirm}
+                          onConfirmProgress={handleConfirmProgress}
                           onDeleteProgress={handleDeleteProgress} onInfoChange={handleInfoChange}/>
       </Modal>}
    </div>

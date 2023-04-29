@@ -9,7 +9,7 @@ export const useLevelUp = () => {
    const onConfirmProgress = useCallback(() => {
       setActiveActivity((current) => {
          const newActivity = current;
-         newActivity.currentValue += progress;
+         newActivity.activity.currentValue += progress;
          return {...newActivity}
       })
    }, [progress, activeActivity])

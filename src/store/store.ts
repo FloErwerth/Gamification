@@ -9,15 +9,16 @@ import {badgeReducer} from "./badges/badgeReducer";
 import {badgeMiddleware} from "./badges/badgeMiddleware";
 import {GamificationActions, GamificationModel} from "./types";
 import {routerReducer} from "./router/routerReducer";
+import {Pages} from "../types/pages";
 
 const defaultState: GamificationModel = {
    activities: [],
    activeActivityIndex: -1,
-   authentication: {email: "", loggedIn: false, userId: "", creationDate: " - -"},
+   authentication: {email: "", loggedIn: false, userId: "", creationDate: " - - "},
    calendar: {daysInMonth: -1, currentlySelectedMonth: -1},
    badges: [],
    router: {
-      lastPage: "",
+      lastPage: Pages.DASHBOARD,
    }
 };
 
