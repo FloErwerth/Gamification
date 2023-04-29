@@ -8,6 +8,7 @@ import {calendarReducer} from "./calendar/calendarReducer";
 import {badgeReducer} from "./badges/badgeReducer";
 import {badgeMiddleware} from "./badges/badgeMiddleware";
 import {GamificationActions, GamificationModel} from "./types";
+import {routerReducer} from "./router/routerReducer";
 
 const defaultState: GamificationModel = {
    activities: [],
@@ -15,6 +16,9 @@ const defaultState: GamificationModel = {
    authentication: {email: "", loggedIn: false, userId: "", creationDate: " - -"},
    calendar: {daysInMonth: -1, currentlySelectedMonth: -1},
    badges: [],
+   router: {
+      lastPage: "",
+   }
 };
 
 export const InitialGamificiationState: GamificationModel = {...defaultState, ...getState()}
@@ -27,6 +31,7 @@ export const store = configureStore<GamificationModel, GamificationActions>({
       activeActivityIndex: activityReducer,
       calendar: calendarReducer,
       badges: badgeReducer,
+      router: routerReducer,
    }),
    middleware: [badgeMiddleware]
 })

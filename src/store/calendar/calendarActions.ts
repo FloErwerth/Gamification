@@ -1,8 +1,6 @@
 import {generateAction} from "../utils";
 
 export enum CalendarActionType {
-
-
    SET_DAYS_IN_MONTH = "gamification/calendar/date",
    SET_CURRENTLY_SELECTED_MONTH = "gamification/calendar/selected_month",
 }

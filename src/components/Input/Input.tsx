@@ -2,6 +2,7 @@ import {HTMLInputTypeAttribute, KeyboardEvent, PropsWithChildren, useId, useMemo
 import {cx} from "@emotion/css";
 import {getClasses} from "../../utils/styleUtils";
 import {inputStyles} from "./inputStyles";
+import {TextField} from "@mui/material";
 import {PasswordVisibiltyToggler} from "./PasswordVisibilityToggler/PasswordVisibilityToggler";
 
 type InputType = "text" | "number" | "password";
@@ -68,30 +69,22 @@ export const Input = ({
    const id = useId();
 
    return (
-      <div className={wrapperClasses}>
-         <input
-            onKeyDown={(e) => onKeyDown?.(e)}
-            placeholder={" "}
-            step={0.01}
-            value={value}
-            ref={inputRef}
-            onChange={(e) => onChange(e.target.value)}
-            required={required}
-            type={showPW ? "text" : type}
-            className={inputClasses}
-            name={id}
-            id={id}
-            onFocus={onFocus}
-            onBlur={onBlur}
-         />
-         {label && (
-            <label className={cssClasses.label} htmlFor={id}>
-               {label}
-            </label>
-         )}
-         {type === "password" && (
-            <PasswordVisibiltyToggler setShow={setShowPW} show={showPW}/>
-         )}
-      </div>
+      <TextField
+         onKeyDown={(e) => onKeyDown?.(e)}
+         placeholder={" "}
+         value={value}
+         ref={inputRef}
+         onChange={(e) => onChange(e.target.value)}
+         required={required}
+         type={showPW ? "text" : type}
+         name={id}
+         id={id}
+         InputProps={{
+            endAdornment: type === "password" ? <PasswordVisibiltyToggler show={showPW} setShow={setShowPW}/> : null
+         }}
+         onFocus={onFocus}
+         onBlur={onBlur}
+         label={label}
+      />
    );
 }

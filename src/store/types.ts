@@ -1,11 +1,13 @@
 import {AuthenticationPayload} from "./authentication/types";
 import {ActivityProps} from "./activities/types";
 import {Badge} from "./badges/types";
-import {BadgesActions} from "./badges/badgesActions";
-import {ActivityActions} from "./activeActivity/activityActions";
-import {ActivitiesActions} from "./activities/activitiesActions";
-import {AuthenticationActions} from "./authentication/authActions";
-import {CalendarActions} from "./calendar/calendarActions";
+import {BadgeActionType, BadgesActions} from "./badges/badgesActions";
+import {ActiveActivityActionType, ActivityActions} from "./activeActivity/activityActions";
+import {ActivitiesActions, ActivitiesActionType} from "./activities/activitiesActions";
+import {AuthenticationActions, AuthenticationActionType} from "./authentication/authActions";
+import {CalendarActions, CalendarActionType} from "./calendar/calendarActions";
+import {RouterActionType} from "./router/routerActions";
+import {Pages} from "../types/pages";
 
 export type GamificationModel = {
    activities: ActivityProps[]
@@ -13,7 +15,20 @@ export type GamificationModel = {
    authentication: AuthenticationPayload,
    badges: Badge[],
    calendar: { daysInMonth: number, currentlySelectedMonth: number }
+   router: {
+      lastPage: Pages
+   }
 }
+
+
+export type GamificationActionTypes =
+   BadgeActionType
+   | ActivitiesActionType
+   | ActiveActivityActionType
+   | CalendarActionType
+   | AuthenticationActionType
+   | RouterActionType
+
 
 export type GamificationActions =
    BadgesActions

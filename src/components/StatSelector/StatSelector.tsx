@@ -1,14 +1,15 @@
 import {useCallback, useState} from "react";
 
-import {Modal, ModalProps} from "../Modal/Modal";
+import {Modal, ModalProps} from "../../basicComponents/Modal/Modal";
 import {getClasses} from "../../utils/styleUtils";
 import {styles} from "./styles";
 import {SelectableField} from "../SelectableField/SelectableField";
-import {Button} from "../Button/Button";
+import {Button} from "../../basicComponents/Button/Button";
 import {StatEnumType} from "../../activitiesAssembly/stats";
 import {ActivityCategory, MapCategoryToStats, TActivityCategory} from "../../activitiesAssembly/categories";
 
 interface IFieldsSelector extends ModalProps {
+
    onFieldSelectorClosed: (fields: StatEnumType[]) => void;
    alreadyChosenFields?: StatEnumType[];
 }

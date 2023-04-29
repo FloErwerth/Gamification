@@ -6,6 +6,7 @@ const commonButtonStyle = (disabled?: boolean): Styles => {
       all: "unset",
       display: "block",
       minHeight: 20,
+      height: "100%",
       borderRadius: 3,
       cursor: "pointer",
       textAlign: "center",
@@ -42,9 +43,9 @@ const CTAButtonTheme = (): Styles => {
 
 const getButtonStyleByTheme = (theme: ButtonThemeType) => {
    switch (theme) {
-      case ButtonThemeEnum.CTA:
+      case ButtonThemeEnum.contained:
          return CTAButtonTheme();
-      case ButtonThemeEnum.SELECTED:
+      case ButtonThemeEnum.outlined:
          return selectedButtonTheme();
    }
 }

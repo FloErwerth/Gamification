@@ -1,11 +1,11 @@
 import {getClasses} from "../../utils/styleUtils";
 import {landingPageStyles} from "./landingPageStyles";
-import {Button} from "../../components/Button/Button";
-import {ButtonThemeEnum} from "../../components/Button/types";
-import {Card} from "../../components/Card/Card";
+import {Button} from "../../basicComponents/Button/Button";
+import {ButtonThemeEnum} from "../../basicComponents/Button/types";
 import {useState} from "react";
-import {Modal} from "../../components/Modal/Modal";
+import {Modal} from "../../basicComponents/Modal/Modal";
 import {AuthenticationForm} from "../../forms/Authentication/AuthenticationForm";
+import {Card} from "../../basicComponents/Card/Card";
 
 const cssClasses = getClasses(landingPageStyles);
 
@@ -23,11 +23,11 @@ export const LandingPage = () => {
                and share them with
                other users and your friends.
             </div>
-            <Button theme={ButtonThemeEnum.CTA} onClick={() => setShowAuth(true)} className={cssClasses.button}>GAME
+            <Button theme={ButtonThemeEnum.contained} onClick={() => setShowAuth(true)} className={cssClasses.button}>GAME
                ON</Button>
          </div>
          <div className={cssClasses.grid3}>
-            <Card title={"DEFINE GOALS"} expandedContent={<div>You can chose from</div>}>
+            <Card title={"DEFINE GOALS"}>
                Gamify offers many options to define goals and create activities from them.
             </Card>
             <Card title={"KEEP TRACK"}>

@@ -1,8 +1,10 @@
-import {ButtonProps} from "../Button/Button";
+import {ButtonProps} from "../../basicComponents/Button/Button";
+import {Button} from "@mui/material";
 import {useEffect, useMemo, useRef, useState} from "react";
 import {getClasses} from "../../utils/styleUtils";
 import {styles} from "./styles";
 import {cx} from "@emotion/css";
+import {Delete} from "@mui/icons-material";
 
 const intervalTime = 10;
 
@@ -27,7 +29,7 @@ export const ConfirmButton = ({
                               }: ConfirmButtonProps) => {
 
    const [timeProgess, setTimeProgress] = useState(0);
-   const buttonRef = useRef<HTMLButtonElement>(null);
+   const buttonRef = useRef<HTMLDivElement>(null);
    const [counterStarted, setStartCounter] = useState(false);
    const cssClasses = useMemo(() => getClasses(styles((timeProgess / confirmTime) * 100, barColor, textColor, backgroundColor, hoverColor)), [timeProgess]);
    const buttonClasses = useMemo(() => cx(cssClasses.button, className), [cssClasses, className]);
@@ -65,7 +67,7 @@ export const ConfirmButton = ({
       }
    }, []);
 
-   return <button className={buttonClasses} ref={buttonRef}>
-      <div className={cssClasses.buttonContent}>{children}</div>
-   </button>
+   return <div ref={buttonRef}>
+      <Button endIcon={<Delete/>} disableRipple={true} className={buttonClasses}>{children}</Button>
+   </div>
 }

@@ -3,7 +3,7 @@ import {useMemo} from "react";
 import {cx} from "@emotion/css";
 import {getClasses} from "../../utils/styleUtils";
 import {DeleteIcon} from "../../media/icons";
-import {Button} from "../Button/Button";
+import {Button} from "../../basicComponents/Button/Button";
 import {Stat, StatEnumType} from "../../activitiesAssembly/stats";
 
 interface IField extends Omit<Stat, "text" | "preferedUnit"> {

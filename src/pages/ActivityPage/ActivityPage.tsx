@@ -1,4 +1,4 @@
-import {useCallback, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import {useAppDispatch, useAppSelector} from "../../store/store";
 import {deleteActivity, deleteCell, updateCell} from "../../store/activities/activitiesActions";
 import {useNavigate} from "react-router-dom";
@@ -7,22 +7,21 @@ import {deleteActivityCell, updateActivitiesInDatabase, updateActivityCell} from
 import {getUserId} from "../../store/authentication/authSelectors";
 import {Calendar} from "../../components/calendar/Calendar";
 import {DateType} from "../../store/activities/types";
-import {Modal} from "../../components/Modal/Modal";
+import {Modal} from "../../basicComponents/Modal/Modal";
 import {OpenedActivity} from "../../components/OpenedActivity/OpenedActivity";
-import {getActiveActivity, getChartData} from "../../store/activeActivity/activitySelector";
+import {getActiveActivity} from "../../store/activeActivity/activitySelector";
 import {getActivities} from "../../store/activities/activitiesSelectors";
 import {getClasses} from "../../utils/styleUtils";
 import {styles} from "./styles";
 import {ConfirmButton} from "../../components/ConfirmButton/ConfirmButton";
-import {ActivityChart} from "../../components/Charts/ActivityChart/ActivityChart";
 import {toast} from "react-toastify";
 import {StatWithValue} from "../../activitiesAssembly/stats";
+import {setLastPage} from "../../store/router/routerActions";
 
 const cssClasses = getClasses(styles);
 export const ActivityPage = () => {
    const [editProgress, setEditProgress] = useState(false);
    const [selectedDate, setSelectedDate] = useState<DateType>("00-00-00");
-   const chartData = useAppSelector(getChartData);
    const uid = useAppSelector(getUserId);
    const activeActivity = useAppSelector(getActiveActivity);
    const activities = useAppSelector(getActivities);
@@ -74,9 +73,14 @@ export const ActivityPage = () => {
       dispatch(updateCell({activityIndex: activeActivity.index, date: selectedDate, content: {info}}))
    }, [selectedDate]);
 
+   useEffect(() => {
+      return () => {
+         dispatch(setLastPage(Pages.ACTIVITY));
+      }
+   }, [])
+
    return <div className={cssClasses.wrapper}>
       {activeActivity.activity && <Calendar activity={activeActivity.activity} onClick={handleCalendarClick}/>}
-      {chartData && <ActivityChart chartData={chartData}/>}
       <ConfirmButton
          hoverColor={"rgba(255,50,50,0.8)"} backgroundColor={"rgba(255,150,150,0.8)"} barColor={"red"}
          textColor={"black"}

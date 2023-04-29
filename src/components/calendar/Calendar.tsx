@@ -4,7 +4,7 @@ import {ActivityProps, CellInfo, DateType} from "../../store/activities/types";
 import {useCalendar} from "./useCalendar";
 import {useMemo} from "react";
 import {getDay, getDisplayMonth} from "./utils";
-import {Button} from "../Button/Button";
+import {Button} from "../../basicComponents/Button/Button";
 import {StatWithValue} from "../../activitiesAssembly/stats";
 
 interface CalendarProps {

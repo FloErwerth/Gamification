@@ -22,6 +22,7 @@ export const headerStyle = style({
    },
    buttonWrapper: {
       ...flex,
+      height: 40,
       gap: 10,
    }
 });

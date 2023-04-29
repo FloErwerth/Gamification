@@ -1,8 +1,7 @@
 import {PropsWithChildren, useEffect, useRef} from "react";
 import {getClasses} from "../../utils/styleUtils";
 import {modalStyle} from "./modalStyle";
-import {Button} from "../Button/Button";
-import {CloseCircle} from "../../media/icons";
+import {Dialog} from "@mui/material";
 
 export interface ModalProps extends PropsWithChildren {
    open: boolean;
@@ -19,7 +18,7 @@ export const Modal = ({open, children, onClose}: ModalProps) => {
       }
    }, [open])
 
-   return <>{open && <dialog onClose={onClose} className={cssClasses.modal} ref={modalRef}>{children}
-      {onClose && <Button className={cssClasses.close} onClick={() => onClose()}><CloseCircle/></Button>}
-   </dialog>}</>
+   return <Dialog onClose={onClose} open={open}>
+      {children}
+   </Dialog>
 }

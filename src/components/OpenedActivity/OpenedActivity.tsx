@@ -6,7 +6,7 @@ import {Input, LabelMode} from "../Input/Input";
 import {useCallback, useMemo, useState} from "react";
 import produce from "immer";
 import {DisplayedStat} from "../DisplayedStat/DisplayedStat";
-import {Button} from "../Button/Button";
+import {Button} from "../../basicComponents/Button/Button";
 import {ConfirmButton} from "../ConfirmButton/ConfirmButton";
 import {useAppSelector} from "../../store/store";
 import {getCell} from "../../store/activities/activitiesSelectors";
@@ -25,7 +25,6 @@ const cssClasses = getClasses(styles);
 export const OpenedActivity = ({
                                   activeActivity,
                                   date,
-                                  onInfoChange,
                                   onConfirmProgress,
                                   onDeleteProgress
                                }: OpenedActivityProps) => {

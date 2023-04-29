@@ -11,6 +11,7 @@ export const styles = style({
    },
    buttonWrapper: {
       display: "flex",
+      alignItems: "center",
       flexDirection: "column",
       gap: 15,
    },
@@ -23,9 +24,8 @@ export const styles = style({
       marginInline: "auto"
    },
    loginButton: {
-      marginInline: "auto",
-      width: 90,
-      height: 25,
+      width: 150,
+      height: 30,
    },
    registerLink: {
       all: "unset",

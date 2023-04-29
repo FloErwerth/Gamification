@@ -1,7 +1,7 @@
 import {createSelector} from "@reduxjs/toolkit";
 import {getActivities} from "../activities/activitiesSelectors";
 import {GamificationModel} from "../types";
-import {CellInfo, DateType} from "../activities/types";
+import {ActivityProps, CellInfo, DateType} from "../activities/types";
 import produce from "immer";
 import {getCurrentlySelectedMonth} from "../calendar/calendarSelectors";
 import {StatEnumType} from "../../activitiesAssembly/stats";
@@ -38,10 +38,10 @@ const sortObject = (chartData: ChartData): ChartData => {
    })
 }
 
-export const getChartData = createSelector([getActiveActivity, getCurrentlySelectedMonth], (activteActivity, month): ChartData | undefined => {
-   if (activteActivity.activity && activteActivity.activity.stats && activteActivity.activity.calendarEntries) {
+export const getChartData = (activity?: ActivityProps) => createSelector([getCurrentlySelectedMonth], (month): ChartData | undefined => {
+   if (activity && activity.stats && activity.calendarEntries) {
       const chartData: ChartData = {
-         dateLabels: [], datasets: activteActivity.activity.stats.map((stat: StatEnumType) => {
+         dateLabels: [], datasets: activity.stats.map((stat: StatEnumType) => {
             return {
                label: stat,
                dates: [],
@@ -53,7 +53,7 @@ export const getChartData = createSelector([getActiveActivity, getCurrentlySelec
          })
       };
 
-      Object.entries<CellInfo>(activteActivity.activity.calendarEntries).forEach(([date, cellInfo]) => cellInfo.stats?.forEach((stat) => {
+      Object.entries<CellInfo>(activity.calendarEntries).forEach(([date, cellInfo]) => cellInfo.stats?.forEach((stat) => {
          const dataset = chartData.datasets[chartData.datasets.findIndex((data) => data.label === stat.name)];
          if (month === parseInt(date.split("-")[1])) {
             if (!chartData.dateLabels.includes(date as DateType)) {

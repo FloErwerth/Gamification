@@ -1,7 +1,6 @@
 import React, {PropsWithChildren} from "react";
-import ReactDOM from "react-dom/client";
+import {createRoot} from "react-dom/client";
 import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
-import {LandingPage} from "./pages";
 import {Header} from "./components/header/Header";
 import {getClasses} from "./utils/styleUtils";
 import {mainStyles} from "./mainStyles";
@@ -14,11 +13,13 @@ import {getIsLoggedIn} from "./store/authentication/authSelectors";
 import {ActivityPage} from "./pages/ActivityPage/ActivityPage";
 import {ToastContainer} from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import {LandingPage} from "./pages/LandingPage/LandingPage";
 
 const cssClasses = getClasses(mainStyles);
 
 const App = () => {
    const isLoggedIn = useAppSelector(getIsLoggedIn);
+
    return (
       <>
          <BrowserRouter>
@@ -39,12 +40,11 @@ const App = () => {
       </>
    );
 };
-
 const Body = ({children}: PropsWithChildren) => {
    return <div className={cssClasses.body}>{children}</div>;
 };
 
-ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
+createRoot(document.getElementById("root") as HTMLElement).render(
    <React.StrictMode>
       <Provider store={store}>
          <App/>

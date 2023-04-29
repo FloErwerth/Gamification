@@ -1,9 +1,5 @@
-import {BadgeActionType} from "./badges/badgesActions";
-import {ActivitiesActionType} from "./activities/activitiesActions";
-import {ActiveActivityActionType} from "./activeActivity/activityActions";
-import {CalendarActionType} from "./calendar/calendarActions";
-import {AuthenticationActionType} from "./authentication/authActions";
+import {GamificationActionTypes} from "./types";
 
-export function generateAction<P, A extends BadgeActionType | ActivitiesActionType | ActiveActivityActionType | CalendarActionType | AuthenticationActionType>(type: A, payload: P) {
+export function generateAction<P, A extends GamificationActionTypes>(type: A, payload: P) {
    return {type, payload};
 }

@@ -7,7 +7,7 @@ import {Pages} from "../../types/pages";
 import {Activity} from "./Activitiy";
 import {ActivityProps} from "../../store/activities/types";
 import {setActiveActivity} from "../../store/activeActivity/activityActions";
-import {Button} from "../Button/Button";
+import {Button} from "../../basicComponents/Button/Button";
 
 const wrapperClasses = getClasses(wrapperStyles);
 export const ActivityWrapper = ({

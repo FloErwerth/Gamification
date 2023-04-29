@@ -2,7 +2,7 @@ import {useEffect, useMemo, useRef, useState} from "react";
 import {Line} from "react-chartjs-2";
 import {CategoryScale, Chart, ChartOptions, LinearScale, LineElement, PointElement, Title, Tooltip} from "chart.js";
 import {ChartData} from "../../../store/activeActivity/activitySelector";
-import {Button} from "../../Button/Button";
+import {Button} from "../../../basicComponents/Button/Button";
 import {StatEnumType, StatMap} from "../../../activitiesAssembly/stats";
 
 interface IActivityChart {
@@ -101,7 +101,7 @@ export const ActivityChart = ({chartData}: IActivityChart) => {
    return <>{chartData && <div style={{width: "50%", margin: "auto", position: "relative"}}>
        <div>Show Stat:
            <div style={{display: "flex", gap: 10,}}>{chartData.datasets.map((data) => <Button key={data.label}
-                                                                                              theme={filter === data.label ? "SELECTED" : "DEFAULT"}
+                                                                                              theme={filter === data.label ? "contained" : "outlined"}
                                                                                               onClick={() => setFilter(data.label)}>{data.label}</Button>)}</div>
        </div>
       {filter ? showChartSheet && showChart ? <Line ref={chartRef} options={options} data={formatedData}/> :

@@ -1,24 +1,20 @@
 import {AuthenticationMode} from "./types";
 import {useCallback, useState} from "react";
 import {useNavigate} from "react-router-dom";
-import {useAppDispatch} from "../../store/store";
+import {useAppDispatch, useAppSelector} from "../../store/store";
 import {addFirebaseUser, getStoredActivities, Signin, Signup} from "../../../firebase";
-import {
-   setCreationTime,
-   setEmailAction,
-   setLoggedIn,
-   setStayLoggedIn,
-   setUserId
-} from "../../store/authentication/authActions";
+import {setCreationTime, setEmailAction, setLoggedIn, setUserId} from "../../store/authentication/authActions";
 import {setActivities} from "../../store/activities/activitiesActions";
 import {Pages} from "../../types/pages";
 import {Input} from "../../components/Input/Input";
-import {Checkmark} from "../../components/Checkmark/Checkmark";
-import {Button} from "../../components/Button/Button";
+import {Checkmark} from "../../basicComponents/Checkmark/Checkmark";
+import {Button} from "../../basicComponents/Button/Button";
 import {getClasses} from "../../utils/styleUtils";
 import {styles} from "./styles";
 import {Temporal} from "@js-temporal/polyfill";
 import {DateType} from "../../store/activities/types";
+import {getStayLoggedIn} from "../../store/authentication/authSelectors";
+import {useToggle} from "../../utils/useToggle";
 
 
 const cssClasses = getClasses(styles);
@@ -42,13 +38,17 @@ interface IAuthenticationForm {
 }
 
 export const AuthenticationForm = ({forcedMode, onActionDone}: IAuthenticationForm) => {
+   const dispatch = useAppDispatch();
+   const isStayLoggedIn = useAppSelector(getStayLoggedIn);
+   const {value, toggleValue} = useToggle(isStayLoggedIn ?? false, (value) => dispatch(setLoggedIn(value)));
+
    const [mode, setMode] = useState<AuthenticationMode>(forcedMode ?? "LOGIN");
 
    const [email, setEmail] = useState("");
    const [password, setPassword] = useState("");
 
    const navigate = useNavigate();
-   const dispatch = useAppDispatch();
+
 
    const handleLogin = useCallback(async () => {
       const result = await Signin(email, password);
@@ -101,27 +101,24 @@ export const AuthenticationForm = ({forcedMode, onActionDone}: IAuthenticationFo
       setMode((current) => current === "LOGIN" ? "REGISTER" : "LOGIN");
    }, [mode]);
 
-   const handleStayLoggedIn = useCallback((value: boolean) => {
-      dispatch(setStayLoggedIn(value));
-   }, []);
-
    return <div className={cssClasses.wrapper}>
       <div className={cssClasses.inputWrapper}>
          <h4>{mode}</h4>
          <Input
             onChange={(value) => setEmail(value)}
-            placeholder={"Email"}
+            label={"Email"}
             type={"text"}
          />
          <Input
             onChange={(value) => setPassword(value)}
-            placeholder={"Password"}
+            label={"Password"}
             type={"password"}
          />
-         {mode === "LOGIN" && <Checkmark label="Stay logged in" onToggle={handleStayLoggedIn}/>}
+         {mode === "LOGIN" &&
+             <Checkmark checked={value ?? false} label="Stay logged in" onToggle={(stay) => toggleValue(!stay)}/>}
       </div>
       <div className={cssClasses.buttonWrapper}>
-         <Button className={cssClasses.loginButton} onClick={handleActionClick}>
+         <Button className={cssClasses.loginButton} theme={"outlined"} onClick={handleActionClick}>
             {mode === "LOGIN" ? "Login" : "Register"}
          </Button>
          <button

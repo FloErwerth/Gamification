@@ -1,9 +1,8 @@
 import {useStringFilter} from "../../utils/usePropsFilter";
 import {KeyboardEvent, useCallback, useMemo, useState} from "react";
-import {LabelMode} from "../Input/Input";
+import {Input, LabelMode} from "../Input/Input";
 import {getClasses} from "../../utils/styleUtils";
 import {styles} from "./styles";
-import {InputWithDelete} from "../Input/InputWithDelete/InputWithDelete";
 import {useArrowNavigation} from "./useArrowNavigation";
 
 interface IAutoComplete<Options extends string[]> {
@@ -78,10 +77,10 @@ export function AutoComplete<Options extends string[]>({options, onChosenOption}
                   e.preventDefault();
                   setTimeout(() => setShowDropdown(false), 100)
                }}>
-      <InputWithDelete onKeyDown={handleNavigation} value={filter}
-                       onFocus={() => setShowDropdown(true)}
-                       labelMode={LabelMode.INLINE}
-                       onChange={handleChange}/>
+      <Input onKeyDown={handleNavigation} value={filter}
+             onFocus={() => setShowDropdown(true)}
+             labelMode={LabelMode.INLINE}
+             onChange={handleChange}/>
       {showDropdown && <ul className={cssClasses.dropdownList} id={"dropdown"}>{dropdownList}
       </ul>}
    </div>

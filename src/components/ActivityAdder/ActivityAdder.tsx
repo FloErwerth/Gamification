@@ -1,5 +1,5 @@
 import {useCallback, useEffect, useMemo, useState} from "react";
-import {Modal} from "../Modal/Modal";
+import {Modal} from "../../basicComponents/Modal/Modal";
 import {getClasses} from "../../utils/styleUtils";
 import {activityAdderClasses} from "./styles";
 import {addActivity} from "../../store/activities/activitiesActions";
@@ -10,7 +10,7 @@ import {PredefinedActivities,} from "../../activitiesAssembly/predefinedActiviti
 import {DisplayedField} from "../DisplayedField/DisplayedField";
 import {Input} from "../Input/Input";
 import {ActivityProps} from "../../store/activities/types";
-import {Button} from "../Button/Button";
+import {Button} from "../../basicComponents/Button/Button";
 import {getActivities} from "../../store/activities/activitiesSelectors";
 import {toast} from "react-toastify";
 import {StatSelector} from "../StatSelector/StatSelector";

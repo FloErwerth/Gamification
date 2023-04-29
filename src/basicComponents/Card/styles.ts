@@ -7,7 +7,6 @@ export const styles = style({
       borderRadius: '5px',
       backgroundColor: '#fff',
       margin: 'auto',
-      width: "100%",
    },
    cardHeader: {
       backgroundColor: '#f2f2f2',

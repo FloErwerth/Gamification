@@ -16,6 +16,7 @@ export const wrapperStyles = style({
       }
    },
    text: {
+      fontSize: 20,
       marginBottom: 5,
    }
 })

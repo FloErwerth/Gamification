@@ -1,5 +1,5 @@
 import {useCallback, useMemo, useState} from "react";
-import {Button} from "../Button/Button";
+import {Button} from "../../basicComponents/Button/Button";
 import {getClasses} from "../../utils/styleUtils";
 import {styles} from "./styles";
 import {DisplayedField} from "../DisplayedField/DisplayedField";

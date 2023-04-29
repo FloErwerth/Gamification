@@ -1,10 +1,10 @@
 import {useCallback, useState} from "react";
-import {Button} from "../../Button/Button";
+import {Button} from "../../../basicComponents/Button/Button";
 import {getClasses} from "../../../utils/styleUtils";
 import {styles} from "./styles";
 import {useAppDispatch, useAppSelector} from "../../../store/store";
 import {getIsLoggedIn} from "../../../store/authentication/authSelectors";
-import {Modal} from "../../Modal/Modal";
+import {Modal} from "../../../basicComponents/Modal/Modal";
 import {AuthenticationForm} from "../../../forms/Authentication/AuthenticationForm";
 import {SignOut} from "../../../../firebase";
 import {setLoggedIn} from "../../../store/authentication/authActions";
@@ -12,13 +12,9 @@ import {useNavigate} from "react-router-dom";
 import {Pages} from "../../../types/pages";
 import {deleteState} from "../../../browserStorage/localStorage";
 
-interface LoginButtonProps {
-   handleClick: () => void;
-}
-
 const cssClasses = getClasses(styles);
 
-export const LoginToggle = ({handleClick}: LoginButtonProps) => {
+export const LoginToggle = () => {
    const loggedIn = useAppSelector(getIsLoggedIn);
    const [loginOpened, setLoginOpened] = useState(false);
    const dispatch = useAppDispatch();
@@ -41,14 +37,10 @@ export const LoginToggle = ({handleClick}: LoginButtonProps) => {
    }
 
    if (!loggedIn) {
-      return (
-         <>
-            <Button className={cssClasses.login} onClick={handleOpenLogin}>Login</Button>
-            {loginOpened && <Modal open={loginOpened}
-                                   onClose={() => setLoginOpened(false)}><AuthenticationForm
-                onActionDone={() => setLoginOpened(false)}/></Modal>}
-         </>
-      );
+      return <><Button className={cssClasses.login} onClick={handleOpenLogin}>Login</Button>
+         {loginOpened && <Modal open={loginOpened}
+                                onClose={() => setLoginOpened(false)}><AuthenticationForm
+             onActionDone={() => setLoginOpened(false)}/></Modal>}</>
    }
 
    return null;
