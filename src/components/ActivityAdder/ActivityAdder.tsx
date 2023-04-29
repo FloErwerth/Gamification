@@ -10,13 +10,13 @@ import {PredefinedActivities,} from "../../activitiesAssembly/predefinedActiviti
 import {DisplayedField} from "../DisplayedField/DisplayedField";
 import {Input} from "../Input/Input";
 import {ActivityProps} from "../../store/activities/types";
-import {Dropdown} from "../Dropdown/Dropdown";
 import {Button} from "../Button/Button";
 import {getActivities} from "../../store/activities/activitiesSelectors";
 import {toast} from "react-toastify";
 import {StatSelector} from "../StatSelector/StatSelector";
 import {StatEnumType, StatMap} from "../../activitiesAssembly/stats";
 import {ActivityAssembly} from "../../activitiesAssembly/activityAssembly";
+import {AutoComplete} from "../AutoComplete/AutoComplete";
 
 const cssClasses = getClasses(activityAdderClasses);
 
@@ -28,7 +28,7 @@ const AddActivityModalContent = ({
                                     onCreation,
                                  }: ActivityAdderModalContentProps) => {
    const [activityName, setActivityName] = useState("");
-   const [predefinedActivity, setPredefinedActivity] = useState<PredefinedActivities>(PredefinedActivities.Enum.Aerobic);
+   const [predefinedActivity, setPredefinedActivity] = useState<PredefinedActivities>("Aerobic");
    const [stats, setStats] = useState<StatEnumType[]>([])
    const [addAdditionalActivity, setAddAdditionalAcitivity] = useState(false);
    const isAddingActivityAllowed = useMemo(() => stats.length < 5, [stats]);
@@ -58,7 +58,7 @@ const AddActivityModalContent = ({
    }, [userId, activityName, stats]);
 
    useEffect(() => {
-      if (predefinedActivity === "CUSTOM") {
+      if (predefinedActivity === "Custom") {
          setActivityName("");
       } else {
          setActivityName(predefinedActivity);
@@ -80,18 +80,18 @@ const AddActivityModalContent = ({
       <div className={cssClasses.modalWrapper}>
          <div>Add an activity</div>
          <div>
-            {predefinedActivity === PredefinedActivities.Enum.CUSTOM &&
-                <Input customWrapperClasses={cssClasses.nameInput} placeholder={"Name for the activity"}
+            {predefinedActivity === PredefinedActivities.Enum.Custom &&
+                <Input customWrapperClasses={cssClasses.nameInput} label={"Activity name"}
                        onChange={(value) => setActivityName(value)}/>}
-            <Dropdown options={PredefinedActivities.options}
-                      label={predefinedActivity}
-                      setValue={(value) => setPredefinedActivity(value as PredefinedActivities)}/>
-            {predefinedActivity !== PredefinedActivities.Enum.CUSTOM &&
+            <AutoComplete options={PredefinedActivities.options}
+                          onChosenOption={(activity) => {
+                             setPredefinedActivity(activity)
+                          }}/>
+            {predefinedActivity !== PredefinedActivities.Enum.Custom &&
                 <div className={cssClasses.statsTitle}>The following stats are available:</div>}
             <div className={cssClasses.fieldsWrapper}>{stats.map((stat) => {
                   const mappedField = StatMap(stat);
                   return <DisplayedField name={mappedField.name}
-                                         description={mappedField.description}
                                          onDeletion={handleDeleteSelectedField}/>
                }
             )}</div>

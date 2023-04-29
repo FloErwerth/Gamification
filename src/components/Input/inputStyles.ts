@@ -13,7 +13,7 @@ const errorMessageAnimation = keyframes({
    }
 )
 
-const getLabelStyles = (labelMode: LabelMode): Styles => {
+const getLabelStyles = (labelMode?: LabelMode): Styles => {
    if (labelMode === LabelMode.TOP) {
       return {
          top: "50%",
@@ -30,28 +30,26 @@ const getLabelStyles = (labelMode: LabelMode): Styles => {
    }
 }
 
-const moveLabelUp = (labelMode: LabelMode): Styles => {
+const moveLabelUp = (labelMode?: LabelMode): Styles => {
    return {
       transform: labelMode === LabelMode.TOP ? "translateY(0)" : "",
       top: labelMode === LabelMode.TOP ? 0 : "",
       fontSize: 12,
       color: "black",
-
    }
 }
 
-export const inputStyles = (labelMode: LabelMode) => style({
+export const inputStyles = (labelMode?: LabelMode) => style({
    wrapper: {
       position: "relative",
       display: "flex",
       flexDirection: "column",
       cursor: "text",
-
+      width: "100%",
    },
    input: {
       all: "unset",
       height: 30,
-
       padding: labelMode === LabelMode.TOP ? "10px 5px 0px 5px" : 5,
       paddingInline: 15,
       display: "flex",
@@ -83,33 +81,14 @@ export const inputStyles = (labelMode: LabelMode) => style({
       }, "input[type=number]": {
          "-moz-appearance": "textfield",
       },
+   },
 
-   },
-   inputWithDeleteWrapper: {
-      position: "relative",
-      display: "flex",
-      alignItems: "center",
-      "& > div > div > input": {
-         paddingRight: 30,
-      },
-   },
-   delete: {
-      all: "unset",
-      position: "absolute",
-      cursor: "pointer",
-      right: 10,
-   },
-   icon: {
-      width: 12,
-      height: 12,
-   },
    label: {
       color: "rgb(150,150,150)",
       position: "absolute",
       ...getLabelStyles(labelMode),
       transition: "100ms",
       cursor: "text",
-
    },
    error: {
       outlineColor: "red",

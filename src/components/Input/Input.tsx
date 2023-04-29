@@ -1,4 +1,4 @@
-import {HTMLInputTypeAttribute, PropsWithChildren, useId, useMemo, useRef, useState,} from "react";
+import {HTMLInputTypeAttribute, KeyboardEvent, PropsWithChildren, useId, useMemo, useRef, useState} from "react";
 import {cx} from "@emotion/css";
 import {getClasses} from "../../utils/styleUtils";
 import {inputStyles} from "./inputStyles";
@@ -19,6 +19,9 @@ export interface InputProps
    type?: InputType;
    required?: boolean;
    value?: string;
+   onFocus?: () => void;
+   onBlur?: () => void;
+   onKeyDown?: (e: KeyboardEvent) => void;
 }
 
 
@@ -41,15 +44,19 @@ export const Input = ({
                          onChange,
                          label,
                          customWrapperClasses,
-                         customInputWrapperClasses, customInputClasses,
+                         customInputClasses,
                          type = "text",
                          required = false,
                          labelMode = LabelMode.INLINE,
+                         value,
+                         onFocus,
+                         onBlur,
+                         onKeyDown
                       }: InputProps) => {
    const cssClasses = useMemo(() => getClasses(inputStyles(labelMode)), [labelMode]);
 
    const wrapperClasses = useMemo(
-      () => cx(cssClasses.wrapper, customInputWrapperClasses),
+      () => cx(cssClasses.wrapper, customWrapperClasses),
       [cssClasses.wrapper, customWrapperClasses]
    );
 
@@ -63,8 +70,10 @@ export const Input = ({
    return (
       <div className={wrapperClasses}>
          <input
+            onKeyDown={(e) => onKeyDown?.(e)}
             placeholder={" "}
             step={0.01}
+            value={value}
             ref={inputRef}
             onChange={(e) => onChange(e.target.value)}
             required={required}
@@ -72,6 +81,8 @@ export const Input = ({
             className={inputClasses}
             name={id}
             id={id}
+            onFocus={onFocus}
+            onBlur={onBlur}
          />
          {label && (
             <label className={cssClasses.label} htmlFor={id}>
