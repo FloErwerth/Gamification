@@ -7,6 +7,7 @@ import {getChartData} from "../../store/activeActivity/activitySelector";
 import {useState} from "react";
 import {ActivityProps} from "../../store/activities/types";
 import {getActivities} from "../../store/activities/activitiesSelectors";
+import {OverallStatistics} from "../../components/OverallStatistics/OverallStatistics";
 
 export const Dashboard = () => {
    const navigate = useNavigate();
@@ -18,6 +19,8 @@ export const Dashboard = () => {
    return (
       <div>
          <h2>Dashboard</h2>
+         <OverallStatistics/>
+
          {buttons.length > 0 ? buttons : "There are no activities with data to display statistics"}
          {chartData && <ActivityChart chartData={chartData}/>}
          <Button onClick={() => navigate(Pages.OVERVIEW)}>

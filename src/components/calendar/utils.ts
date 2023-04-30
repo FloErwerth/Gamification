@@ -1,4 +1,5 @@
 import {DateType} from "../../store/activities/types";
+import {Temporal} from "@js-temporal/polyfill";
 
 export const getDisplayMonth = (month: number) => {
    switch (month) {
@@ -32,13 +33,27 @@ export const getDisplayMonth = (month: number) => {
 export const getGeneratedDisplayDate = (date: DateType) => {
    const split = date.split("-");
    const month = getDisplayMonth(parseInt(split[1]));
-   return `${month} ${split[1]}`
+   return `${month}, ${split[1]}`
 }
 
 export const getDay = (date: DateType) => {
    return date.split("-")[0];
 }
 
+export const getWholeDisplayDate = (date: DateType) => {
+   const temporalDate = Temporal.PlainDate.from(getIsoDateWithLeadingZeros(date));
+   return `${getDisplayMonth(temporalDate.month)} ${temporalDate.day}, ${temporalDate.year}`
+}
+
+export const getIsoDateWithLeadingZeros = (date: DateType) => {
+   const split = date.split("-");
+   const year = parseInt(split[2]);
+   const month = parseInt(split[1]);
+   const day = parseInt(split[0]);
+   return `${year}-${month < 10 ? `0${month}` : month}-${day < 10 ? `0${day}` : day}`
+}
+
 export const generateISOString = (date: string): DateType => {
    return date.split(".").join("-") as DateType;
 }
+

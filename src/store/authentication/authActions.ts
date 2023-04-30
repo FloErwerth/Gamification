@@ -28,7 +28,7 @@ export const setUserId = (payload: string) => {
    return generateAction(AuthenticationActionType.SET_USER_ID, payload);
 }
 
-export const setCreationTime = (payload: DateType) => {
+export const setCreationDate = (payload: DateType) => {
    return generateAction(AuthenticationActionType.SET_CREATION_DATE, payload);
 }
 

@@ -3,7 +3,7 @@ import {useCallback, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {useAppDispatch, useAppSelector} from "../../store/store";
 import {addFirebaseUser, getStoredActivities, Signin, Signup} from "../../../firebase";
-import {setCreationTime, setEmailAction, setLoggedIn, setUserId} from "../../store/authentication/authActions";
+import {setCreationDate, setEmailAction, setLoggedIn, setUserId} from "../../store/authentication/authActions";
 import {setActivities} from "../../store/activities/activitiesActions";
 import {Pages} from "../../types/pages";
 import {Input} from "../../components/Input/Input";
@@ -57,7 +57,7 @@ export const AuthenticationForm = ({forcedMode, onActionDone}: IAuthenticationFo
          onActionDone?.();
          dispatch(setLoggedIn(loggedIn));
          dispatch(setUserId(result.user.uid));
-         dispatch(setCreationTime(createDateFromFirebaseDate(result.user.metadata.creationTime)));
+         dispatch(setCreationDate(createDateFromFirebaseDate(result.user.metadata.creationTime)));
          const storedActivities = await getStoredActivities(result.user.uid);
          if (storedActivities) {
             dispatch(setActivities(storedActivities));
@@ -75,7 +75,7 @@ export const AuthenticationForm = ({forcedMode, onActionDone}: IAuthenticationFo
          const signupResult = await Signup(email, password);
          if (signupResult.user.email) {
             onActionDone?.();
-            dispatch(setCreationTime(createDateFromFirebaseDate(signupResult.user.metadata.creationTime)));
+            dispatch(setCreationDate(createDateFromFirebaseDate(signupResult.user.metadata.creationTime)));
             dispatch(setEmailAction(email));
             dispatch(setLoggedIn(true));
             dispatch(setUserId(signupResult.user.uid));
