@@ -4,9 +4,9 @@ import {Modal, ModalProps} from "../../basicComponents/Modal/Modal";
 import {getClasses} from "../../utils/styleUtils";
 import {styles} from "./styles";
 import {SelectableField} from "../SelectableField/SelectableField";
-import {Button} from "../../basicComponents/Button/Button";
 import {StatEnumType} from "../../activitiesAssembly/stats";
 import {ActivityCategory, MapCategoryToStats, TActivityCategory} from "../../activitiesAssembly/categories";
+import {AutoComplete} from "../AutoComplete/AutoComplete";
 
 interface IFieldsSelector extends ModalProps {
 
@@ -27,7 +27,7 @@ const cssClasses = getClasses(styles);
 
 export const StatSelector = ({onFieldSelectorClosed, open, alreadyChosenFields}: IFieldsSelector) => {
    const [selectedFields, setSelectedFields] = useState<StatEnumType[]>([]);
-   const [filter, setFilter] = useState<TActivityCategory>("None")
+   const [filter, setFilter] = useState<TActivityCategory>("All")
 
    const handleSelection = useCallback((value: StatEnumType, selected: boolean) => {
       if (selected) {
@@ -42,17 +42,18 @@ export const StatSelector = ({onFieldSelectorClosed, open, alreadyChosenFields}:
 
    return <Modal open={open}
                  onClose={() => onFieldSelectorClosed(selectedFields)}>
-
       <div className={cssClasses.wrapper}>
-         <h3>Select fields from below to add to your activity</h3>
-         <div className={cssClasses.filterButtons}>{ActivityCategory.options.map((category) => <Button
-            onClick={() => setFilter(category)}>{category}</Button>)}</div>
+         <AutoComplete label={"Category"} options={ActivityCategory.options}
+                       onInputChange={(value) => !value && setFilter("All")}
+                       onChosenOption={(category) => {
+                          setFilter(category)
+                       }}/>
+         <h5>Displaying: {filter}</h5>
          <div
-            className={cssClasses.fieldsWrapper}>{getAvailableFields(filter, alreadyChosenFields).map((field) => {
+            className={cssClasses.selectableFieldsWrapper}>{getAvailableFields(filter, alreadyChosenFields).map((field) => {
             return <SelectableField selectableStat={field}
                                     onClick={handleSelection}/>
-         })}
-         </div>
+         })}</div>
       </div>
    </Modal>
 }

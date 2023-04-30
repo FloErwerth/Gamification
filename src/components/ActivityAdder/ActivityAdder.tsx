@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useMemo, useState} from "react";
+import {useCallback, useEffect, useState} from "react";
 import {Modal} from "../../basicComponents/Modal/Modal";
 import {getClasses} from "../../utils/styleUtils";
 import {activityAdderClasses} from "./styles";
@@ -10,13 +10,14 @@ import {PredefinedActivities,} from "../../activitiesAssembly/predefinedActiviti
 import {DisplayedField} from "../DisplayedField/DisplayedField";
 import {Input} from "../Input/Input";
 import {ActivityProps} from "../../store/activities/types";
-import {Button} from "../../basicComponents/Button/Button";
 import {getActivities} from "../../store/activities/activitiesSelectors";
 import {toast} from "react-toastify";
 import {StatSelector} from "../StatSelector/StatSelector";
 import {StatEnumType, StatMap} from "../../activitiesAssembly/stats";
 import {ActivityAssembly} from "../../activitiesAssembly/activityAssembly";
 import {AutoComplete} from "../AutoComplete/AutoComplete";
+import {Button} from "@mui/material";
+import {AddCircle, ClearAllRounded} from "@mui/icons-material";
 
 const cssClasses = getClasses(activityAdderClasses);
 
@@ -31,7 +32,6 @@ const AddActivityModalContent = ({
    const [predefinedActivity, setPredefinedActivity] = useState<PredefinedActivities>("Aerobic");
    const [stats, setStats] = useState<StatEnumType[]>([])
    const [addAdditionalActivity, setAddAdditionalAcitivity] = useState(false);
-   const isAddingActivityAllowed = useMemo(() => stats.length < 5, [stats]);
    const userId = useAppSelector(getUserId);
    const currentActivites = useAppSelector(getActivities);
 
@@ -83,31 +83,26 @@ const AddActivityModalContent = ({
             {predefinedActivity === PredefinedActivities.Enum.Custom &&
                 <Input customWrapperClasses={cssClasses.nameInput} label={"Activity name"}
                        onChange={(value) => setActivityName(value)}/>}
-            <AutoComplete options={PredefinedActivities.options}
-                          onChosenOption={(activity) => {
-                             setPredefinedActivity(activity)
-                          }}/>
+            <AutoComplete label={"Predefined activities"} options={PredefinedActivities.options}
+                          onChosenOption={(value) => setPredefinedActivity(value)}/>
             {predefinedActivity !== PredefinedActivities.Enum.Custom &&
-                <div className={cssClasses.statsTitle}>The following stats are available:</div>}
+                <div className={cssClasses.statsTitle}>The following stats will be added to your activity:</div>}
+
             <div className={cssClasses.fieldsWrapper}>{stats.map((stat) => {
                   const mappedField = StatMap(stat);
                   return <DisplayedField name={mappedField.name}
                                          onDeletion={handleDeleteSelectedField}/>
                }
             )}</div>
-            {isAddingActivityAllowed &&
-                <Button onClick={() => setAddAdditionalAcitivity(true)} className={cssClasses.addButton}>+</Button>}
+            <div className={cssClasses.addButtonWrapper}>
+               <Button startIcon={<AddCircle/>} onClick={() => setAddAdditionalAcitivity(true)} color={"primary"}>Add
+                  stat</Button>{stats.length > 0 &&
+                <Button onClick={() => setStats([])} startIcon={<ClearAllRounded/>}>Clear all stats</Button>}</div>
             {addAdditionalActivity &&
                 <StatSelector onFieldSelectorClosed={handleSetAdditionalFields} open={addAdditionalActivity}
                               alreadyChosenFields={stats}/>}
          </div>
-         <div>
-            {isAddingActivityAllowed && <div style={{marginBottom: 10, fontSize: "smaller"}}>Note: You can add up
-                to {5 - stats.length} more
-                activities
-            </div>}
-            <Button onClick={handleCreation}>Create Activity</Button>
-         </div>
+         <Button variant={"contained"} onClick={handleCreation}>Create Activity</Button>
       </div>
    );
 };
@@ -128,7 +123,7 @@ export const ActivityAdder = () => {
    return (
       <>
          <Button
-            className={cssClasses.adder}
+            className={cssClasses.addButton}
             onClick={() => setShowAdderModal(true)}
          >
             Add Activity

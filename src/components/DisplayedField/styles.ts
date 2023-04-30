@@ -1,6 +1,4 @@
-import {style} from "../../utils/styleUtils";
-
-export const styles = style({
+export const styles = {
    fieldWrapper: {
       padding: 10,
       borderRadius: 5,
@@ -13,14 +11,11 @@ export const styles = style({
       fontWeight: "bold",
    },
    deleteButton: {
-      width: 20,
-      height: 20,
       padding: 3,
       outline: "none",
    },
    icon: {
-      fill: "red",
       width: 20,
       height: 20,
    }
-})
+}

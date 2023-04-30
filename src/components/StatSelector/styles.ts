@@ -2,7 +2,8 @@ import {style} from "../../utils/styleUtils";
 
 export const styles = style({
    wrapper: {
-      width: "80vw",
+      padding: 20,
+      minHeight: 200,
    },
    fieldsWrapper: {
       padding: 20,
@@ -10,8 +11,16 @@ export const styles = style({
       gridTemplateColumns: "repeat(4,24.5%)",
       gap: 10,
    },
+   selectableFieldsWrapper: {
+      display: "grid",
+      minWidth: 500,
+      gridTemplateColumns: "repeat(5, max(100px))",
+      gap: 10,
+   },
    filterButtons: {
       display: "flex",
+      alignItems: "center",
+      marginBlock: 30,
       gap: 5,
    }
 })

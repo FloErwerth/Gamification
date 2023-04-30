@@ -18,7 +18,7 @@ export const Modal = ({open, children, onClose}: ModalProps) => {
       }
    }, [open])
 
-   return <Dialog onClose={onClose} open={open}>
+   return <Dialog maxWidth={"md"} onClose={onClose} open={open}>
       {children}
    </Dialog>
 }

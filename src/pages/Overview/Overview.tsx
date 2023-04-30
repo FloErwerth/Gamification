@@ -19,7 +19,6 @@ export const Overview = () => {
                 type="text"
                 label="Filter activities"
                 value={filter}
-
                 onChange={(value) => setFilter(value)}
             />}
          </div>

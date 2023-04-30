@@ -3,13 +3,21 @@ export const activityAdderClasses = {
       display: "grid",
       gridTemplateRows: "30px 440px 30px",
       padding: 20,
+      width: 500,
       gap: 20,
-      minHeight: 500,
-      width: 300,
    },
-   adder: {
-      padding: 15,
-      width: 150,
+   addButtonWrapper: {
+      marginTop: 10,
+      display: "flex",
+      justifyContent: "space-around",
+   },
+   addButton: {
+      width: 40,
+      height: 40,
+   },
+   addIcon: {
+      width: 30,
+      height: 30,
    },
    nameInput: {
       marginBottom: 10,
@@ -17,15 +25,14 @@ export const activityAdderClasses = {
    statsTitle: {
       paddingBlock: 15,
    },
-   addButton: {
-      marginBlock: 10,
-      marginInline: "auto",
-   },
    fieldsWrapper: {
       marginTop: 10,
       display: "flex",
-      flexDirection: "column",
+      flexDirection: "row",
+      padding: 10,
       gap: 5,
+      overflowY: "auto",
+      height: 250,
    },
    inputWrapper: {
       display: "flex",

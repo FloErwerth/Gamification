@@ -4,10 +4,9 @@ import {wrapperStyles} from "./styles";
 import {useAppDispatch} from "../../store/store";
 import {useNavigate} from "react-router-dom";
 import {Pages} from "../../types/pages";
-import {Activity} from "./Activitiy";
 import {ActivityProps} from "../../store/activities/types";
 import {setActiveActivity} from "../../store/activeActivity/activityActions";
-import {Button} from "../../basicComponents/Button/Button";
+import {ClickableCard} from "../../basicComponents/Card/Card";
 
 const wrapperClasses = getClasses(wrapperStyles);
 export const ActivityWrapper = ({
@@ -23,12 +22,6 @@ export const ActivityWrapper = ({
       navigate(Pages.ACTIVITY);
    }, []);
 
-   return (
-      <Button className={wrapperClasses.activityWrapper} onClick={openActivity}>
-         <div className={wrapperClasses.text}>{name}</div>
-         <Activity
-            stats={stats}
-         />
-      </Button>
-   );
+   return <ClickableCard titleFontSize={15} title={name} onClick={openActivity}>
+   </ClickableCard>
 };
