@@ -2,7 +2,7 @@ import {AuthenticationMode} from "./types";
 import {useCallback, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {useAppDispatch, useAppSelector} from "../../store/store";
-import {addFirebaseUser, getStoredActivities, Signin, Signup} from "../../../firebase";
+import {addFirebaseUser, getStoredActivities, getStoredBadges, Signin, Signup} from "../../../firebase";
 import {setCreationDate, setEmailAction, setLoggedIn, setUserId} from "../../store/authentication/authActions";
 import {setActivities} from "../../store/activities/activitiesActions";
 import {Pages} from "../../types/pages";
@@ -15,6 +15,7 @@ import {Temporal} from "@js-temporal/polyfill";
 import {DateType} from "../../store/activities/types";
 import {getStayLoggedIn} from "../../store/authentication/authSelectors";
 import {useToggle} from "../../utils/useToggle";
+import {setBadges} from "../../store/badges/badgesActions";
 
 
 const cssClasses = getClasses(styles);
@@ -58,14 +59,10 @@ export const AuthenticationForm = ({forcedMode, onActionDone}: IAuthenticationFo
          dispatch(setLoggedIn(loggedIn));
          dispatch(setUserId(result.user.uid));
          dispatch(setCreationDate(createDateFromFirebaseDate(result.user.metadata.creationTime)));
-         const storedActivities = await getStoredActivities(result.user.uid);
-         if (storedActivities) {
-            dispatch(setActivities(storedActivities));
-         }
-         if (Boolean(result.user.email) && result.user.email) {
-            dispatch(setEmailAction(result.user.email));
-            navigate(Pages.OVERVIEW);
-         }
+         await Promise.all([getStoredBadges(result.user.uid), getStoredActivities(result.user.uid)]).then((result) => {
+            dispatch(setBadges(result[0]))
+            dispatch(setActivities(result[1]));
+         })
       }
    }, [email, password]);
 

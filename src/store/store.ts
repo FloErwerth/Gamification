@@ -14,7 +14,7 @@ import {Pages} from "../types/pages";
 const defaultState: GamificationModel = {
    activities: [],
    activeActivityIndex: -1,
-   authentication: {email: "", loggedIn: false, userId: "", creationDate: " - - "},
+   authentication: {email: "", loggedIn: false, userId: "", creationDate: "1900-01-01"},
    calendar: {daysInMonth: -1, currentlySelectedMonth: -1},
    badges: [],
    router: {

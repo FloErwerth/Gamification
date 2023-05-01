@@ -2,7 +2,7 @@ import {createUserWithEmailAndPassword, getAuth, signInWithEmailAndPassword, sig
 import {initializeApp} from "firebase/app";
 import {deleteField, doc, getDoc, getFirestore, setDoc} from "firebase/firestore";
 import {ActivityProps, CellInfo, DateType} from "./src/store/activities/types";
-import {Badge, BadgeId} from "./src/store/badges/types";
+import {BadgeId} from "./src/store/badges/types";
 
 const firebaseApp = initializeApp({
    apiKey: "AIzaSyDFK3fGAEFWRpdAhwC5FPE5beGcNDzAMXk",
@@ -36,6 +36,14 @@ export const getStoredActivities = async (userId: string): Promise<ActivityProps
       return Object.values(userDoc.data()) as ActivityProps[];
    } else return []
 }
+
+export const getStoredBadges = async (userId: string): Promise<BadgeId[]> => {
+   const userDoc = await getDoc(getOverallBadgesRef(userId));
+   if (userDoc.exists()) {
+      return Object.keys(userDoc.data().badges) as BadgeId[];
+   } else return []
+}
+
 
 type GeneratedObject<T> = { [index: number]: T };
 
@@ -77,7 +85,7 @@ export const addOverallBadgeInDatabase = (uid: string, badgeId: BadgeId) => {
    Promise.resolve(setDoc(overallBadgesRef, {badges: {[badgeId]: badgeId}}, {merge: true, mergeFields: ["/badges"]}));
 }
 
-export const removeOverallBadgeInDatabase = (uid: string, badgeId: Badge["id"]) => {
+export const removeOverallBadgeInDatabase = (uid: string, badgeId: BadgeId) => {
    const overallBadgesRef = getOverallBadgesRef(uid);
    Promise.resolve(setDoc(overallBadgesRef, {
       [badgeId]: deleteField()

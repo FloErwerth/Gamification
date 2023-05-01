@@ -37,9 +37,12 @@ export const getMaxActivitiesDoneADay = createSelector([getActivities], activiti
          }
       });
    })
-   const {date, numberOfActivities} = dates.sort((a, b) => b.numberOfActivities - a.numberOfActivities)[0];
-   return {
-      date: getWholeDisplayDate(date),
-      numberOfActivities
-   };
+
+   if (dates[0]) {
+      const {date, numberOfActivities} = dates.sort((a, b) => b.numberOfActivities - a.numberOfActivities)[0];
+      return {
+         date: getWholeDisplayDate(date),
+         numberOfActivities
+      };
+   }
 });
