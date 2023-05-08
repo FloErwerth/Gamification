@@ -81,7 +81,7 @@ const AddActivityModalContent = ({
                           onActivityChange={(value) => setActivity(value)}/>
             {stats.length > 0 &&
                 <div className={cssClasses.statsTitle}>The following stats will be added to your activity:</div>}
-            <div className={cssClasses.fieldsWrapper}>{stats.map((stat) => {
+            <div className={cssClasses.fieldsWrapper}>{[...stats, ...additionalStats].map((stat) => {
                   const mappedField = StatMap(stat);
                   return <DisplayedField name={mappedField.name}
                                          onDeletion={handleDeleteSelectedField}/>
