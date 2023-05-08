@@ -15,7 +15,6 @@ export const DashboardToggle = () => {
    const location = useLocation();
    const activeActivity = useAppSelector(getActiveActivity);
    const lastPage = useAppSelector(getLastPage);
-
    return <>{activeActivity && activeActivity.activity && activeActivity.activity.name && lastPage === Pages.ACTIVITY && location.pathname === Pages.DASHBOARD ?
       <Button
          endIcon={<Dashboard/>}
