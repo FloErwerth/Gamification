@@ -20,6 +20,9 @@ export type GamificationModel = {
    }
 }
 
+export enum GamificationTopLevelActions {
+   CLEAR_STATE = "gamification/clear"
+}
 
 export type GamificationActionTypes =
    BadgeActionType

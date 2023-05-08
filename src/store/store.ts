@@ -2,11 +2,11 @@ import {combineReducers, configureStore} from "@reduxjs/toolkit";
 import {TypedUseSelectorHook, useDispatch, useSelector} from "react-redux";
 import {activitiesReducer} from "./activities/activitiesReducer";
 import {authReducer} from "./authentication/authReducer";
-import {getState, saveState} from "../browserStorage/localStorage";
+import {deleteState, getState, saveState} from "../browserStorage/localStorage";
 import {activityReducer} from "./activeActivity/activityReducer";
 import {calendarReducer} from "./calendar/calendarReducer";
 import {badgeReducer} from "./badges/badgeReducer";
-import {badgeMiddleware} from "./badges/badgeMiddleware";
+import {middleware} from "./badges/middleware";
 import {GamificationActions, GamificationModel} from "./types";
 import {routerReducer} from "./router/routerReducer";
 import {Pages} from "../types/pages";
@@ -34,12 +34,15 @@ export const store = configureStore<GamificationModel, GamificationActions>({
       badges: badgeReducer,
       router: routerReducer,
    }),
-   middleware: [badgeMiddleware]
+   middleware: [middleware]
 })
 
 store.subscribe(() => {
    if (store.getState().authentication.loggedIn) {
       saveState(store.getState());
+   }
+   if (!store.getState().authentication.loggedIn) {
+      deleteState();
    }
 })
 

@@ -10,6 +10,7 @@ export enum AuthenticationActionType {
    SET_USER_ID = "gamification/authentication/user_id",
    SET_EMAIL = "gamification/authentication/set_email",
    SET_STAY_LOGGED_IN = "gamification/authentication/set_logged_in",
+   LOGOUT = "gamification/authentication/logout",
 }
 
 export type AuthenticationActions =
@@ -19,6 +20,7 @@ export type AuthenticationActions =
    | { type: AuthenticationActionType.SET_EMAIL, payload: string }
    | { type: AuthenticationActionType.SET_STAY_LOGGED_IN, payload: boolean }
    | { type: AuthenticationActionType.REGISTER, payload: GamificationModel["authentication"] }
+   | { type: AuthenticationActionType.LOGOUT, payload: undefined }
 
 export const setLoggedIn = (payload: boolean) => {
    return generateAction(AuthenticationActionType.LOGIN, payload);
@@ -40,8 +42,8 @@ export const setStayLoggedIn = (payload: boolean) => {
    return generateAction(AuthenticationActionType.SET_STAY_LOGGED_IN, payload);
 }
 
-export const logoutAction = async () => {
-   return generateAction(AuthenticationActionType.LOGIN, false);
+export const logoutAction = () => {
+   return generateAction(AuthenticationActionType.LOGOUT, undefined);
 }
 
 export const signupAction = async (email: string, password: string) => {

@@ -10,7 +10,6 @@ import {SignOut} from "../../../../firebase";
 import {setLoggedIn} from "../../../store/authentication/authActions";
 import {useNavigate} from "react-router-dom";
 import {Pages} from "../../../types/pages";
-import {deleteState} from "../../../browserStorage/localStorage";
 
 const cssClasses = getClasses(styles);
 
@@ -26,9 +25,8 @@ export const LoginToggle = () => {
 
    const handleLogout = useCallback(() => {
       SignOut().then(() => {
-         deleteState()
          navigate(Pages.HOME);
-         dispatch(setLoggedIn(false))
+         dispatch(setLoggedIn(false));
       });
    }, []);
 

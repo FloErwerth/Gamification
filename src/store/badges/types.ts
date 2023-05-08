@@ -7,59 +7,61 @@ import {
    ThirtyDayRegisteredBadge
 } from "../../media/badgeSvgs";
 
-export const OverallBadges = z.enum(["OVERALL/ACTIVITY/FIRST", "OVERALL/ACTIVITY/FIVE", "OVERALL/REGISTERED/FIRST", "OVERALL/REGISTERED/SEVEN", "OVERALL/REGISTERED/THIRTY"]);
-export const OverallBadgesEnum = OverallBadges.Enum;
-type OverallBadgesType = z.infer<typeof OverallBadges>;
+
+export type BadgeSignature = { [generalBadgeType in GeneralBadgeType]?: { [badgeSubtype in BadgeSubtype]?: { id: BadgeId, earned?: boolean }[] } };
+export const GeneralBadgeType = z.enum(["Personal"] as const);
+export type GeneralBadgeType = z.infer<typeof GeneralBadgeType>;
+
+export type BadgeSubtype = "Registration" | "Activities";
+
+export type BadgeSpecifier = "FIRST" | "FIVE" | "SEVEN" | "THIRTY"
+export type BadgeId = `${GeneralBadgeType}/${BadgeSubtype}/${BadgeSpecifier}`;
+
+export type BadgeType = { id: BadgeId, title: string, description: string, BadgeSVG: React.FC<React.SVGProps<SVGSVGElement>> }
 
 
-export const BadgeMap = (badgeId: BadgeId) => OverallBadges.transform((badgeEnum): BadgeType => {
+export const PersonalBadges = z.enum(["Personal/Activities/FIRST", "Personal/Activities/FIVE", "Personal/Registration/FIRST", "Personal/Registration/SEVEN", "Personal/Registration/THIRTY"]);
+export const PersonalBadgesEnum = PersonalBadges.Enum;
+
+
+export const BadgeMap = (badgeId: BadgeId) => PersonalBadges.transform((badgeEnum: BadgeId | undefined): BadgeType | undefined => {
    switch (badgeEnum) {
-      case "OVERALL/ACTIVITY/FIRST":
+      case "Personal/Activities/FIRST":
          return {
             id: badgeEnum,
             title: "First Activity",
             description: "You have created your first activity",
-            SVG: FirstActivityBadge
+            BadgeSVG: FirstActivityBadge
          }
-      case "OVERALL/ACTIVITY/FIVE":
+      case "Personal/Activities/FIVE":
          return {
             id: badgeEnum,
             title: "Fifth Activity",
             description: "You have created your fifth activity",
-            SVG: FifthActivityBadge
+            BadgeSVG: FifthActivityBadge
          }
-      case "OVERALL/REGISTERED/FIRST":
+      case "Personal/Registration/FIRST":
          return {
             id: badgeEnum,
             title: "Registered 1 day",
             description: "You are registered 1 day",
-            SVG: FirstDayRegisteredBadge
+            BadgeSVG: FirstDayRegisteredBadge
          };
-      case "OVERALL/REGISTERED/SEVEN":
+      case "Personal/Registration/SEVEN":
          return {
             id: badgeEnum,
             title: "Registered 7 days",
             description: "You are registered a week",
-            SVG: SeventhDayRegisteredBadge
+            BadgeSVG: SeventhDayRegisteredBadge
          };
-      case "OVERALL/REGISTERED/THIRTY":
+      case "Personal/Registration/THIRTY":
          return {
             id: badgeEnum,
             title: "Registered 30 days",
             description: "You are registered a month",
-            SVG: ThirtyDayRegisteredBadge
+            BadgeSVG: ThirtyDayRegisteredBadge
          };
-
+      default:
+         return undefined;
    }
 }).parse(badgeId);
-
-export const GeneralBadgeType = z.enum(["OVERALL"]);
-export type GeneralBadgeType = z.infer<typeof GeneralBadgeType>;
-
-export const BadgeSubtype = z.enum(["REGISTERED", "ACTIVITY"]);
-export type BadgeSubtypeType = z.infer<typeof BadgeSubtype>
-
-export type BadgeSpecifier<Subtype extends BadgeSubtypeType> = Subtype extends "REGISTERED" ? "FIRST" | "SEVEN" | "THIRTY" : "FIRST" | "FIVE";
-export type BadgeId = `${GeneralBadgeType}/${BadgeSubtypeType}/${BadgeSpecifier<BadgeSubtypeType>}`;
-
-export type BadgeType = { id: BadgeId, title: string, description: string, SVG: React.FC<React.SVGProps<SVGSVGElement>> };
