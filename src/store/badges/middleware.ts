@@ -17,7 +17,7 @@ export const middleware: Middleware<{}, GamificationModel, Dispatch<Gamification
    if (action.type === BadgeActionType.CHECK_BADGES || action.type === ActivitiesActionType.ADD_ACTIVITY) {
       const activities = api.getState().activities;
       const badges = api.getState().badges;
-      if (activities.length === 0 || (activities.length > 0 && !hasBadge("Personal/Activities/FIRST", badges))) {
+      if (activities.length === 1 || (activities.length > 0 && !hasBadge("Personal/Activities/FIRST", badges))) {
          const badge = PersonalBadgesEnum["Personal/Activities/FIRST"]
          api.dispatch(generateAction(BadgeActionType.ADD_BADGE, badge));
          addOverallBadgeInDatabase(api.getState().authentication.userId, badge);

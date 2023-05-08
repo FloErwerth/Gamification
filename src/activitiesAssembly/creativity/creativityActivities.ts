@@ -5,7 +5,7 @@ import {PredefinedActivities} from "../predefinedActivities";
 export const CreativityActivitiy = z.enum(["Writing", "Reading"]);
 
 export function CreativityActivityAssembly<T>(statEnum: T) {
-   return PredefinedActivities.transform((activity): CreativityStatType[] => {
+   const parse = PredefinedActivities.transform((activity): CreativityStatType[] => {
       switch (activity) {
          case "Writing":
             return ["Pages written"]
@@ -14,6 +14,11 @@ export function CreativityActivityAssembly<T>(statEnum: T) {
          default:
             return [];
       }
-   }).parse(statEnum);
+   }).safeParse(statEnum);
+
+   if (parse.success) {
+      return parse.data;
+   }
+   return [];
 
 }

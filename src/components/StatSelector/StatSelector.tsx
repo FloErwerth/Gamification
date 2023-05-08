@@ -45,7 +45,7 @@ export const StatSelector = ({onFieldSelectorClosed, open, alreadyChosenFields}:
       <div className={cssClasses.wrapper}>
          <AutoComplete label={"Category"} options={ActivityCategory.options}
                        onInputChange={(value) => !value && setFilter("All")}
-                       onChosenOption={(category) => {
+                       onActivityChange={(category) => {
                           setFilter(category)
                        }}/>
          <h5>Displaying: {filter}</h5>

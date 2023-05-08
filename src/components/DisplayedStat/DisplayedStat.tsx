@@ -2,7 +2,7 @@ import {getClasses} from "../../utils/styleUtils";
 import {styles} from "./styles";
 import {StatMap, StatWithValue} from "../../activitiesAssembly/stats";
 import {useMemo} from "react";
-import {isTimeType, toHourFormat} from "../../utils/getStringifiedTime";
+import {isTimeType, toTimeFormat} from "../../utils/getStringifiedTime";
 
 interface IDisplayedStat {
    stat: StatWithValue
@@ -14,7 +14,7 @@ export const DisplayedStat = ({stat}: IDisplayedStat) => {
 
    const getValue = useMemo(() => {
       if (isTimeType(mappedStat.type)) {
-         return toHourFormat(stat.value);
+         return toTimeFormat(stat.value, mappedStat.type === "hours");
       }
       return stat.value;
    }, [mappedStat, stat])

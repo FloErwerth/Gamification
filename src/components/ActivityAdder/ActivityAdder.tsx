@@ -8,7 +8,6 @@ import {addActivityInDatabase} from "../../../firebase";
 import {getIsLoggedIn, getUserId,} from "../../store/authentication/authSelectors";
 import {PredefinedActivities,} from "../../activitiesAssembly/predefinedActivities";
 import {DisplayedField} from "../DisplayedField/DisplayedField";
-import {Input} from "../Input/Input";
 import {ActivityProps} from "../../store/activities/types";
 import {getActivities} from "../../store/activities/activitiesSelectors";
 import {toast} from "react-toastify";
@@ -28,8 +27,7 @@ interface ActivityAdderModalContentProps {
 const AddActivityModalContent = ({
                                     onCreation,
                                  }: ActivityAdderModalContentProps) => {
-   const [activityName, setActivityName] = useState("");
-   const [predefinedActivity, setPredefinedActivity] = useState<PredefinedActivities>("Aerobic");
+   const [activity, setActivity] = useState<PredefinedActivities | string>("Aerobic");
    const [stats, setStats] = useState<StatEnumType[]>([])
    const [addAdditionalActivity, setAddAdditionalAcitivity] = useState(false);
    const userId = useAppSelector(getUserId);
@@ -39,12 +37,12 @@ const AddActivityModalContent = ({
 
    const handleCreation = useCallback(() => {
       if (
-         activityName.length > 3 && stats.length !== 0 &&
+         activity.length > 3 && stats.length !== 0 &&
          userId
       ) {
          onCreation();
          const generatedActivity: ActivityProps = {
-            name: activityName,
+            name: activity,
             calendarEntries: {},
             stats,
             maxValue: 1,
@@ -55,16 +53,11 @@ const AddActivityModalContent = ({
             dispatch(addActivity(generatedActivity));
          });
       }
-   }, [userId, activityName, stats]);
+   }, [userId, activity, stats]);
 
    useEffect(() => {
-      if (predefinedActivity === "Custom") {
-         setActivityName("");
-      } else {
-         setActivityName(predefinedActivity);
-      }
-      setStats(ActivityAssembly(predefinedActivity))
-   }, [predefinedActivity])
+      setStats(ActivityAssembly(activity))
+   }, [activity])
 
    const handleSetAdditionalFields = useCallback((statEnums: StatEnumType[]) => {
       setStats((previous) => [...previous, ...statEnums]);
@@ -80,14 +73,11 @@ const AddActivityModalContent = ({
       <div className={cssClasses.modalWrapper}>
          <div>Add an activity</div>
          <div>
-            {predefinedActivity === PredefinedActivities.Enum.Custom &&
-                <Input customWrapperClasses={cssClasses.nameInput} label={"Activity name"}
-                       onChange={(value) => setActivityName(value)}/>}
-            <AutoComplete label={"Predefined activities"} options={PredefinedActivities.options}
-                          onChosenOption={(value) => setPredefinedActivity(value)}/>
-            {predefinedActivity !== PredefinedActivities.Enum.Custom &&
+            <AutoComplete onInputChange={(value) => setActivity(value)} label={"Predefined activities"}
+                          options={PredefinedActivities.options}
+                          onActivityChange={(value) => setActivity(value)}/>
+            {stats.length > 0 &&
                 <div className={cssClasses.statsTitle}>The following stats will be added to your activity:</div>}
-
             <div className={cssClasses.fieldsWrapper}>{stats.map((stat) => {
                   const mappedField = StatMap(stat);
                   return <DisplayedField name={mappedField.name}

@@ -14,7 +14,7 @@ import {
 import {ChartData} from "../../../store/activeActivity/activitySelector";
 import {Button} from "../../../basicComponents/Button/Button";
 import {StatMap} from "../../../activitiesAssembly/stats";
-import {isTimeType, toHourFormat} from "../../../utils/getStringifiedTime";
+import {isTimeType, toTimeFormat} from "../../../utils/getStringifiedTime";
 
 interface IActivityChart {
    chartData: ChartData,
@@ -70,7 +70,7 @@ export const ActivityChart = ({chartData}: IActivityChart) => {
    const getLabel = useCallback((tooltipItem: TooltipItem<"line">) => {
       const data = tooltipItem.dataset.data[tooltipItem.dataIndex]
       if (stat.type && isTimeType(stat.type) && typeof data === "number") {
-         return `${toHourFormat(data)} ${stat?.preferedUnit ?? ""}`
+         return `${toTimeFormat(data)} ${stat?.preferedUnit ?? ""}`
       }
       return `${data} ${stat?.preferedUnit ?? ""}`
    }, [stat])
@@ -78,7 +78,7 @@ export const ActivityChart = ({chartData}: IActivityChart) => {
    const getValue = useCallback((value: number | string) => {
       if (typeof value === "number") {
          if (stat.type && isTimeType(stat.type)) {
-            return `${toHourFormat(value)} ${stat.preferedUnit}`
+            return `${toTimeFormat(value)} ${stat.preferedUnit}`
          } else {
             return `${value} ${stat.preferedUnit}`;
 
