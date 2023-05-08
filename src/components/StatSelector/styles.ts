@@ -14,6 +14,7 @@ export const styles = style({
    selectableFieldsWrapper: {
       display: "grid",
       minWidth: 500,
+      marginBottom: 20,
       gridTemplateColumns: "repeat(5, max(100px))",
       gap: 10,
    },

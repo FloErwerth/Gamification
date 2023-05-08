@@ -7,7 +7,8 @@ interface IAutoComplete {
    onActivityChange: (value: string) => void;
    label?: string;
    onInputChange?: (value: string) => void;
-   maxWidth?: number
+   maxWidth?: number;
+   freeSolo?: boolean;
 }
 
 const cssClasses = getClasses(styles);
@@ -25,8 +26,9 @@ export function AutoComplete({
                                 onActivityChange,
                                 label, onInputChange,
                                 maxWidth = 200,
+                                freeSolo = true
                              }: IAutoComplete) {
-   return <Autocomplete freeSolo={true} sx={{maxWidth}} size={"small"}
+   return <Autocomplete freeSolo={freeSolo} sx={{maxWidth}} size={"small"}
                         onInputChange={(_, value) => onInputChange?.(value)}
                         options={options}
                         renderInput={(params) => <AutocompleteItem {...params} label={label}/>}

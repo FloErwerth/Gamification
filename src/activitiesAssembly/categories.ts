@@ -6,13 +6,20 @@ import {StatEnum} from "./stats";
 export const ActivityCategory = z.enum(["Sports", "Creativity", "All"]);
 export type TActivityCategory = z.infer<typeof ActivityCategory>;
 
-export const MapCategoryToStats = (category: TActivityCategory) => ActivityCategory.transform((category) => {
-   switch (category) {
-      case "Sports":
-         return SportStat;
-      case "Creativity":
-         return CreativityStat;
-      case "All":
-         return StatEnum;
+export const MapCategoryToStats = (category: string) => {
+   const parse = ActivityCategory.transform((category) => {
+      switch (category) {
+         case "Sports":
+            return SportStat;
+         case "Creativity":
+            return CreativityStat;
+         case "All":
+            return StatEnum;
+      }
+   }).safeParse(category);
+
+   if (parse.success) {
+      return parse.data;
    }
-}).parse(category);
+   return StatEnum
+}

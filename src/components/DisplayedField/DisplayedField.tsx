@@ -1,13 +1,11 @@
-import {useMemo} from "react";
 import {Stat, StatEnumType} from "../../activitiesAssembly/stats";
 import {Chip, SxProps, Theme} from "@mui/material";
 
 interface IField extends Omit<Stat, "text" | "preferedUnit"> {
    wrapperClasses?: SxProps<Theme>;
+   onClick?: () => void;
    onDeletion?: (field: StatEnumType) => void;
    showDeleteButton?: boolean,
-   unit?: string,
-   onClick?: () => void;
 }
 
 export const DisplayedField = ({
@@ -15,14 +13,11 @@ export const DisplayedField = ({
                                   wrapperClasses,
                                   onDeletion,
                                   onClick,
-                                  unit = "",
-                                  showDeleteButton = true
                                }: IField) => {
 
+   if (onDeletion) {
+      return <Chip sx={wrapperClasses} label={name} onDelete={() => onDeletion(name)}/>
+   }
 
-   const chipProps = useMemo(() => {
-      return {label: name, onDelete: onDeletion ? onDeletion : undefined, onClick}
-   }, [onDeletion, name])
-
-   return <Chip sx={wrapperClasses} {...chipProps} />
+   return <Chip sx={wrapperClasses} onClick={onClick} label={name}/>
 }

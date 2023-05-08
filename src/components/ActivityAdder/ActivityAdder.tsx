@@ -28,7 +28,8 @@ const AddActivityModalContent = ({
                                     onCreation,
                                  }: ActivityAdderModalContentProps) => {
    const [activity, setActivity] = useState<PredefinedActivities | string>("Aerobic");
-   const [stats, setStats] = useState<StatEnumType[]>([])
+   const [stats, setStats] = useState<StatEnumType[]>([]);
+   const [additionalStats, setAdditionalStats] = useState<StatEnumType[]>([])
    const [addAdditionalActivity, setAddAdditionalAcitivity] = useState(false);
    const userId = useAppSelector(getUserId);
    const currentActivites = useAppSelector(getActivities);
@@ -56,18 +57,20 @@ const AddActivityModalContent = ({
    }, [userId, activity, stats]);
 
    useEffect(() => {
-      setStats(ActivityAssembly(activity))
+      const assemblyStats = ActivityAssembly(activity);
+      setStats([...assemblyStats, ...additionalStats]);
    }, [activity])
 
    const handleSetAdditionalFields = useCallback((statEnums: StatEnumType[]) => {
-      setStats((previous) => [...previous, ...statEnums]);
+      setAdditionalStats((previous) => [...previous, ...statEnums]);
       setAddAdditionalAcitivity(false);
    }, [])
 
    const handleDeleteSelectedField = useCallback((deletedField: StatEnumType) => {
-      setStats((previous) =>
+      setStats((prev) => prev.filter((field) => field !== deletedField));
+      setAdditionalStats((previous) =>
          previous.filter((field) => field !== deletedField))
-   }, []);
+   }, [stats, additionalStats]);
 
    return (
       <div className={cssClasses.modalWrapper}>
