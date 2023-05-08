@@ -58,7 +58,7 @@ export const StatMap = (field: StatEnumType) => StatEnum.transform((field): Stat
          return {
             name: field,
             preferedUnit: "min/km",
-            type: ActivityInputTypes.MIN_PER_KM,
+            type: ActivityInputTypes.MINUTES,
          }
       case "Sets":
          return {name: field, preferedUnit: field, type: ActivityInputTypes.NUMBER}

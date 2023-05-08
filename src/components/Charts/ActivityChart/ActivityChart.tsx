@@ -11,10 +11,12 @@ import {
    Tooltip,
    TooltipItem
 } from "chart.js";
-import {ChartData} from "../../../store/activeActivity/activitySelector";
+import {ChartData, getActiveActivity, getChartData} from "../../../store/activeActivity/activitySelector";
 import {Button} from "../../../basicComponents/Button/Button";
 import {StatMap} from "../../../activitiesAssembly/stats";
 import {isTimeType, toTimeFormat} from "../../../utils/getStringifiedTime";
+import {useAppSelector} from "../../../store/store";
+import {Switch} from "@mui/material";
 
 interface IActivityChart {
    chartData: ChartData,
@@ -39,7 +41,15 @@ const commonOptions: ChartOptions<"line"> = {
 
 const stepCount = 6;
 
-export const ActivityChart = ({chartData}: IActivityChart) => {
+export const ActivityChart = () => {
+
+   const [showAllMonths, setShowAllMonths] = useState(false);
+   const activeActivity = useAppSelector(getActiveActivity);
+   const chartData = useAppSelector(getChartData(activeActivity.activity, showAllMonths));
+
+   if (!chartData) {
+      return <div>Not enough data.</div>
+   }
 
    const [showChart, setShowChart] = useState(true);
    const [filter, setFilter] = useState(chartData?.datasets?.[0]?.label ?? undefined);
@@ -47,7 +57,7 @@ export const ActivityChart = ({chartData}: IActivityChart) => {
    const [minMax, setMinMax] = useState<{ min: number, max: number }>();
    const chartRef = useRef<Chart<"line", number[], string>>(null);
    const stat = useMemo(() => filter && StatMap(filter), [filter]);
-   const showChartSheet = useMemo(() => chartData.dateLabels.length > 1, [chartData.dateLabels]);
+   const showChartSheet = useMemo(() => (chartData.dateLabels.length ?? 0) > 1, [chartData.dateLabels]);
 
    useEffect(() => {
       let min = Infinity;
@@ -65,7 +75,7 @@ export const ActivityChart = ({chartData}: IActivityChart) => {
    useEffect(() => {
       const filteredDataset = chartData.datasets.filter((data) => data.label === filter);
       setDatasets(filteredDataset);
-   }, [filter, chartData]);
+   }, [filter, showAllMonths]);
 
    const getLabel = useCallback((tooltipItem: TooltipItem<"line">) => {
       const data = tooltipItem.dataset.data[tooltipItem.dataIndex]
@@ -132,6 +142,7 @@ export const ActivityChart = ({chartData}: IActivityChart) => {
 
 
    return <>{chartData && <div style={{width: "50%", margin: "auto", position: "relative"}}>
+       <Switch onClick={() => setShowAllMonths((current) => !current)}/>
        <div>Show Stat:
            <div style={{display: "flex", gap: 10,}}>{chartData.datasets.map((data) => <Button key={data.label}
                                                                                               theme={filter === data.label ? "contained" : "outlined"}

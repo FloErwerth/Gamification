@@ -13,13 +13,23 @@ export const getActiveActivity = createSelector([getActivities, getActivityIndex
    return {index, activity: activities[index]};
 });
 
-const getDay = (day: DateType) => {
-   return parseInt(day.split("-")[0]);
+const getDayMonth = (date: DateType) => {
+   const splitt = date.split("-");
+   return {day: parseInt(splitt[0]), month: parseInt(splitt[1])}
 }
 
 const sortObject = (chartData: ChartData): ChartData => {
    return produce(chartData, newChartData => {
-      newChartData.dateLabels.sort((a, b) => getDay(a) - getDay(b));
+      newChartData.dateLabels.sort((a, b) => {
+         const dayMonthA = getDayMonth(a);
+         const dayMonthB = getDayMonth(b);
+         if (dayMonthA.month !== dayMonthB.month) {
+            return dayMonthA.month - dayMonthB.month;
+         } else {
+            return dayMonthA.day - dayMonthB.day;
+         }
+      });
+
       const datasets: ChartData["datasets"] = [];
       newChartData.datasets.forEach((dataset) => {
          const newData: number[] = [];
@@ -38,7 +48,7 @@ const sortObject = (chartData: ChartData): ChartData => {
    })
 }
 
-export const getChartData = (activity?: ActivityProps) => createSelector([getCurrentlySelectedMonth], (month): ChartData | undefined => {
+export const getChartData = (activity?: ActivityProps, showAllMonths: boolean = false) => createSelector([getCurrentlySelectedMonth], (month): ChartData | undefined => {
    if (activity && activity.stats && activity.calendarEntries) {
       const chartData: ChartData = {
          dateLabels: [], datasets: activity.stats.map((stat: StatEnumType) => {
@@ -55,7 +65,7 @@ export const getChartData = (activity?: ActivityProps) => createSelector([getCur
 
       Object.entries<CellInfo>(activity.calendarEntries).forEach(([date, cellInfo]) => cellInfo.stats?.forEach((stat) => {
          const dataset = chartData.datasets[chartData.datasets.findIndex((data) => data.label === stat.name)];
-         if (month === parseInt(date.split("-")[1])) {
+         if (month === getDayMonth(date as DateType).month || showAllMonths) {
             if (!chartData.dateLabels.includes(date as DateType)) {
                chartData.dateLabels.push(date as DateType);
             }

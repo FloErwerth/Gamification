@@ -9,7 +9,7 @@ import {Calendar} from "../../components/calendar/Calendar";
 import {DateType} from "../../store/activities/types";
 import {Modal} from "../../basicComponents/Modal/Modal";
 import {OpenedActivity} from "../../components/OpenedActivity/OpenedActivity";
-import {getActiveActivity} from "../../store/activeActivity/activitySelector";
+import {getActiveActivity, getChartData} from "../../store/activeActivity/activitySelector";
 import {getActivities} from "../../store/activities/activitiesSelectors";
 import {getClasses} from "../../utils/styleUtils";
 import {styles} from "./styles";
@@ -17,6 +17,7 @@ import {ConfirmButton} from "../../components/ConfirmButton/ConfirmButton";
 import {toast} from "react-toastify";
 import {StatWithValue} from "../../activitiesAssembly/stats";
 import {setLastPage} from "../../store/router/routerActions";
+import {ActivityChart} from "../../components/Charts/ActivityChart/ActivityChart";
 
 const cssClasses = getClasses(styles);
 export const ActivityPage = () => {
@@ -27,6 +28,7 @@ export const ActivityPage = () => {
    const activities = useAppSelector(getActivities);
    const dispatch = useAppDispatch();
    const navigate = useNavigate();
+   const chartData = useAppSelector(getChartData(activeActivity.activity))
 
    const handleConfirmProgress = useCallback((stats: StatWithValue[]) => {
       if (selectedDate) {
@@ -81,6 +83,7 @@ export const ActivityPage = () => {
 
    return <div className={cssClasses.wrapper}>
       {activeActivity.activity && <Calendar activity={activeActivity.activity} onClick={handleCalendarClick}/>}
+      {chartData && <ActivityChart chartData={chartData}/>}
       <ConfirmButton
          hoverColor={"rgba(255,50,50,0.8)"} backgroundColor={"rgba(255,150,150,0.8)"} barColor={"red"}
          textColor={"black"}
@@ -90,6 +93,7 @@ export const ActivityPage = () => {
           <OpenedActivity activeActivity={activeActivity} date={selectedDate}
                           onConfirmProgress={handleConfirmProgress}
                           onDeleteProgress={handleDeleteProgress} onInfoChange={handleInfoChange}/>
+
       </Modal>}
    </div>
 };
