@@ -1,26 +1,29 @@
 import {createSelector} from "@reduxjs/toolkit";
 import {getActivities} from "../activities/activitiesSelectors";
 import {GamificationModel} from "../types";
-import {ActivityProps, CellInfo, DateType} from "../activities/types";
+import {CellInfo, DateType} from "../activities/types";
 import produce from "immer";
 import {getCurrentlySelectedMonth} from "../calendar/calendarSelectors";
 import {StatEnumType} from "../../activitiesAssembly/stats";
 
-export type ChartData = { dateLabels: DateType[], datasets: { label: StatEnumType, data: number[], cubicInterpolationMode: "monotone", pointStyle: "circle", pointRadius: 5, }[] };
+export type ChartData = { labels: string[], datasets: { label: StatEnumType, data: number[], cubicInterpolationMode: "monotone", pointStyle: "circle", pointRadius: 5, }[] };
 const getActivityIndex = ({activeActivityIndex}: GamificationModel) => activeActivityIndex;
 
 export const getActiveActivity = createSelector([getActivities, getActivityIndex], (activities, index) => {
    return {index, activity: activities[index]};
 });
 
-const getDayMonth = (date: DateType) => {
+const getDayMonth = (date: string) => {
    const splitt = date.split("-");
+   if (splitt.length < 3) {
+      return {day: 0, month: 0}
+   }
    return {day: parseInt(splitt[0]), month: parseInt(splitt[1])}
 }
 
 const sortObject = (chartData: ChartData): ChartData => {
    return produce(chartData, newChartData => {
-      newChartData.dateLabels.sort((a, b) => {
+      newChartData.labels.sort((a, b) => {
          const dayMonthA = getDayMonth(a);
          const dayMonthB = getDayMonth(b);
          if (dayMonthA.month !== dayMonthB.month) {
@@ -33,8 +36,8 @@ const sortObject = (chartData: ChartData): ChartData => {
       const datasets: ChartData["datasets"] = [];
       newChartData.datasets.forEach((dataset) => {
          const newData: number[] = [];
-         newChartData.dateLabels.forEach((date) => {
-            newData.push(dataset.data[chartData.dateLabels.indexOf(date)])
+         newChartData.labels.forEach((date) => {
+            newData.push(dataset.data[chartData.labels?.indexOf(date) ?? 0])
          })
          datasets.push({
             label: dataset.label,
@@ -48,13 +51,13 @@ const sortObject = (chartData: ChartData): ChartData => {
    })
 }
 
-export const getChartData = (activity?: ActivityProps, showAllMonths: boolean = false) => createSelector([getCurrentlySelectedMonth], (month): ChartData | undefined => {
+export const getActivityChartData = (showAllMonths: boolean = false) => createSelector([getCurrentlySelectedMonth, getActiveActivity], (month, {activity}): ChartData | undefined => {
    if (activity && activity.stats && activity.calendarEntries) {
       const chartData: ChartData = {
-         dateLabels: [], datasets: activity.stats.map((stat: StatEnumType) => {
+         labels: [],
+         datasets: activity.stats.map((stat: StatEnumType) => {
             return {
                label: stat,
-               dates: [],
                data: [],
                cubicInterpolationMode: "monotone",
                pointStyle: "circle",
@@ -66,8 +69,8 @@ export const getChartData = (activity?: ActivityProps, showAllMonths: boolean = 
       Object.entries<CellInfo>(activity.calendarEntries).forEach(([date, cellInfo]) => cellInfo.stats?.forEach((stat) => {
          const dataset = chartData.datasets[chartData.datasets.findIndex((data) => data.label === stat.name)];
          if (month === getDayMonth(date as DateType).month || showAllMonths) {
-            if (!chartData.dateLabels.includes(date as DateType)) {
-               chartData.dateLabels.push(date as DateType);
+            if (!chartData.labels?.includes(date as DateType)) {
+               chartData.labels?.push(date as DateType);
             }
             chartData.datasets[chartData.datasets.findIndex((data) => data.label === stat.name)] = produce(dataset, newDataSet => {
                newDataSet.data = [...dataset.data, stat.value];
@@ -77,4 +80,24 @@ export const getChartData = (activity?: ActivityProps, showAllMonths: boolean = 
       }));
       return sortObject(chartData);
    } else return undefined;
+})
+
+const disallowedNames: StatEnumType[] = ["Speed"];
+export const getCumulatedData = createSelector([getActiveActivity], ({activity}) => {
+   if (activity && activity.stats && activity.calendarEntries) {
+      const dataObject: { label: StatEnumType, data: number }[] = [];
+      Object.values<CellInfo>(activity.calendarEntries).forEach((cellInfo) => cellInfo.stats?.filter((stat) => {
+         return !disallowedNames.includes(stat.name)
+      }).forEach((stat) => {
+         const index = dataObject.findIndex((data) => data.label === stat.name);
+         if (index === -1) {
+            dataObject.push({label: stat.name, data: stat.value});
+         } else {
+            dataObject[index].data += stat.value;
+         }
+      }))
+      return dataObject;
+   }
+
+   return undefined;
 })

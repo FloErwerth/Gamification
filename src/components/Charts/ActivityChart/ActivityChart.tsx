@@ -11,12 +11,13 @@ import {
    Tooltip,
    TooltipItem
 } from "chart.js";
-import {ChartData, getActiveActivity, getChartData} from "../../../store/activeActivity/activitySelector";
+import {ChartData, getActivityChartData} from "../../../store/activeActivity/activitySelector";
 import {Button} from "../../../basicComponents/Button/Button";
 import {StatMap} from "../../../activitiesAssembly/stats";
 import {isTimeType, toTimeFormat} from "../../../utils/getStringifiedTime";
 import {useAppSelector} from "../../../store/store";
-import {Switch} from "@mui/material";
+import {FormControlLabel, Switch} from "@mui/material";
+import {useMinMax} from "../hooks/useMinMax";
 
 interface IActivityChart {
    chartData: ChartData,
@@ -44,8 +45,7 @@ const stepCount = 6;
 export const ActivityChart = () => {
 
    const [showAllMonths, setShowAllMonths] = useState(false);
-   const activeActivity = useAppSelector(getActiveActivity);
-   const chartData = useAppSelector(getChartData(activeActivity.activity, showAllMonths));
+   const chartData = useAppSelector(getActivityChartData(showAllMonths));
 
    if (!chartData) {
       return <div>Not enough data.</div>
@@ -54,23 +54,10 @@ export const ActivityChart = () => {
    const [showChart, setShowChart] = useState(true);
    const [filter, setFilter] = useState(chartData?.datasets?.[0]?.label ?? undefined);
    const [datasets, setDatasets] = useState(chartData.datasets.filter((data) => data.label === filter));
-   const [minMax, setMinMax] = useState<{ min: number, max: number }>();
+   const {min, max} = useMinMax(datasets);
    const chartRef = useRef<Chart<"line", number[], string>>(null);
    const stat = useMemo(() => filter && StatMap(filter), [filter]);
-   const showChartSheet = useMemo(() => (chartData.dateLabels.length ?? 0) > 1, [chartData.dateLabels]);
-
-   useEffect(() => {
-      let min = Infinity;
-      let max = 0;
-      datasets.forEach((dataset) => dataset.data.forEach((value) => {
-         min = value < min ? value : min;
-         max = value > max ? value : max;
-      }));
-      const step = (max - min) / stepCount;
-      const maybeMin = min - step;
-      min = maybeMin < 0 ? 0 : maybeMin;
-      setMinMax({min, max: max + step});
-   }, [datasets]);
+   const showChartSheet = useMemo(() => (chartData.labels.length ?? 0) > 1, [chartData.labels]);
 
    useEffect(() => {
       const filteredDataset = chartData.datasets.filter((data) => data.label === filter);
@@ -102,7 +89,7 @@ export const ActivityChart = () => {
          scales: {
             x: {
                ticks: {
-                  callback: (tickValue, index) => chartData.dateLabels[index]?.split("-").slice(0, 2).join(".") ?? tickValue
+                  callback: (tickValue, index) => chartData.labels[index]?.split("-").slice(0, 2).join(".") ?? tickValue
                }
             },
             y: {
@@ -111,8 +98,8 @@ export const ActivityChart = () => {
                   callback: (tickValue) => getValue(tickValue),
                   count: stepCount,
                },
-               suggestedMin: minMax?.min,
-               suggestedMax: minMax?.max,
+               suggestedMin: min,
+               suggestedMax: max,
             }
          },
          plugins: {
@@ -131,18 +118,19 @@ export const ActivityChart = () => {
          },
          ...commonOptions,
       }
-   }, [minMax, stat, chartData]);
+   }, [min, max, stat, chartData]);
 
    const formatedData = useMemo(() => {
       return {
-         labels: chartData.dateLabels,
+         labels: chartData.labels,
          datasets,
       }
    }, [filter, chartData, datasets]);
 
 
    return <>{chartData && <div style={{width: "50%", margin: "auto", position: "relative"}}>
-       <Switch onClick={() => setShowAllMonths((current) => !current)}/>
+       <FormControlLabel control={<Switch onClick={() => setShowAllMonths((current) => !current)}/>}
+                         label={"Show all data"}/>
        <div>Show Stat:
            <div style={{display: "flex", gap: 10,}}>{chartData.datasets.map((data) => <Button key={data.label}
                                                                                               theme={filter === data.label ? "contained" : "outlined"}

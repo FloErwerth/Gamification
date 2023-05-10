@@ -1,13 +1,13 @@
 import {Box} from "@mui/material";
-import {useAppSelector} from "../../store/store";
+import {useAppSelector} from "../store/store";
 import {
    getActivitiesCreated,
    getActivitiesDone,
    getAverageActivitiesDoneDaily,
    getMaxActivitiesDoneADay
-} from "../../store/activities/activitiesSelectors";
-import {getFormatedTimeSinceCreation} from "../../store/authentication/authSelectors";
-import {BadgesSheet} from "../BadgesSheet/BadgesSheet";
+} from "../store/activities/activitiesSelectors";
+import {getFormatedTimeSinceCreation} from "../store/authentication/authSelectors";
+import {BadgesSheet} from "../components/BadgesSheet/BadgesSheet";
 
 export const OverallStatistics = () => {
    const activitiesCreated = useAppSelector(getActivitiesCreated);
