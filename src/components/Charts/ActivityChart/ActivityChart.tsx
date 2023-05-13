@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useMemo, useRef, useState} from "react";
+import {useCallback, useMemo, useRef, useState} from "react";
 import {Line} from "react-chartjs-2";
 import {
    CategoryScale,
@@ -11,7 +11,7 @@ import {
    Tooltip,
    TooltipItem
 } from "chart.js";
-import {ChartData, getActivityChartData} from "../../../store/activeActivity/activitySelector";
+import {ChartData, getActiveActivity, getActivityChartData} from "../../../store/activeActivity/activitySelector";
 import {Button} from "../../../basicComponents/Button/Button";
 import {StatMap} from "../../../activitiesAssembly/stats";
 import {isTimeType, toTimeFormat} from "../../../utils/getStringifiedTime";
@@ -35,9 +35,9 @@ Chart.register(
 const commonOptions: ChartOptions<"line"> = {
    responsive: true,
    animation: {
-      duration: 300,
+      duration: 200,
       easing: "easeInOutSine"
-   }
+   },
 }
 
 const stepCount = 6;
@@ -45,24 +45,20 @@ const stepCount = 6;
 export const ActivityChart = () => {
 
    const [showAllMonths, setShowAllMonths] = useState(false);
-   const chartData = useAppSelector(getActivityChartData(showAllMonths));
+
+   const [showChart, setShowChart] = useState(true);
+   const activeActivity = useAppSelector(getActiveActivity).activity;
+   const [filter, setFilter] = useState(activeActivity.stats[0]);
+   const chartData = useAppSelector(getActivityChartData(filter, showAllMonths));
 
    if (!chartData) {
       return <div>Not enough data.</div>
    }
 
-   const [showChart, setShowChart] = useState(true);
-   const [filter, setFilter] = useState(chartData?.datasets?.[0]?.label ?? undefined);
-   const [datasets, setDatasets] = useState(chartData.datasets.filter((data) => data.label === filter));
-   const {min, max} = useMinMax(datasets);
+   const {min, max} = useMinMax(chartData.datasets);
    const chartRef = useRef<Chart<"line", number[], string>>(null);
    const stat = useMemo(() => filter && StatMap(filter), [filter]);
    const showChartSheet = useMemo(() => (chartData.labels.length ?? 0) > 1, [chartData.labels]);
-
-   useEffect(() => {
-      const filteredDataset = chartData.datasets.filter((data) => data.label === filter);
-      setDatasets(filteredDataset);
-   }, [filter, showAllMonths]);
 
    const getLabel = useCallback((tooltipItem: TooltipItem<"line">) => {
       const data = tooltipItem.dataset.data[tooltipItem.dataIndex]
@@ -102,6 +98,7 @@ export const ActivityChart = () => {
                suggestedMax: max,
             }
          },
+
          plugins: {
             legend: {
                display: false,
@@ -120,13 +117,6 @@ export const ActivityChart = () => {
       }
    }, [min, max, stat, chartData]);
 
-   const formatedData = useMemo(() => {
-      return {
-         labels: chartData.labels,
-         datasets,
-      }
-   }, [filter, chartData, datasets]);
-
 
    return <>{chartData && <div style={{width: "50%", margin: "auto", position: "relative"}}>
        <FormControlLabel control={<Switch onClick={() => setShowAllMonths((current) => !current)}/>}
@@ -136,7 +126,7 @@ export const ActivityChart = () => {
                                                                                               theme={filter === data.label ? "contained" : "outlined"}
                                                                                               onClick={() => setFilter(data.label)}>{data.label}</Button>)}</div>
        </div>
-      {filter ? showChartSheet && showChart ? <Line ref={chartRef} options={options} data={formatedData}/> :
+      {filter ? showChartSheet && showChart ? <Line ref={chartRef} options={options} data={chartData}/> :
          <div>Please add more data.</div> : <div>Please select data to show</div>}
       {showChartSheet &&
           <Button onClick={() => setShowChart(!showChart)}>{!showChart ? "Show Chart" : "Hide Chart"}</Button>}

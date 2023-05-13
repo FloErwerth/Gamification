@@ -51,7 +51,7 @@ const sortObject = (chartData: ChartData): ChartData => {
    })
 }
 
-export const getActivityChartData = (showAllMonths: boolean = false) => createSelector([getCurrentlySelectedMonth, getActiveActivity], (month, {activity}): ChartData | undefined => {
+export const getActivityChartData = (filter: StatEnumType, showAllMonths: boolean = false) => createSelector([getCurrentlySelectedMonth, getActiveActivity], (month, {activity}): ChartData | undefined => {
    if (activity && activity.stats && activity.calendarEntries) {
       const chartData: ChartData = {
          labels: [],
@@ -68,7 +68,7 @@ export const getActivityChartData = (showAllMonths: boolean = false) => createSe
 
       Object.entries<CellInfo>(activity.calendarEntries).forEach(([date, cellInfo]) => cellInfo.stats?.forEach((stat) => {
          const dataset = chartData.datasets[chartData.datasets.findIndex((data) => data.label === stat.name)];
-         if (month === getDayMonth(date as DateType).month || showAllMonths) {
+         if ((month === getDayMonth(date as DateType).month || showAllMonths) && stat.name === filter) {
             if (!chartData.labels?.includes(date as DateType)) {
                chartData.labels?.push(date as DateType);
             }

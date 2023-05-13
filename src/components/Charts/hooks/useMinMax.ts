@@ -1,5 +1,5 @@
 import {ChartData} from "../../../store/activeActivity/activitySelector";
-import {useEffect, useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 
 export const useMinMaxSingle = (data?: ChartData["datasets"][number]["data"], stepCount: number = 6) => {
    const [minMax, setMinMax] = useState<{ min: number, max: number }>();
@@ -25,13 +25,12 @@ export const useMinMaxSingle = (data?: ChartData["datasets"][number]["data"], st
 }
 
 export const useMinMax = (datasets?: ChartData["datasets"], stepCount: number = 6) => {
-   const [minMax, setMinMax] = useState<{ min: number, max: number }>();
 
    if (!datasets) {
       return {min: undefined, max: undefined}
    }
 
-   useEffect(() => {
+   return useMemo(() => {
       let min = Infinity;
       let max = 0;
       datasets.forEach((dataset) => dataset.data.forEach((value) => {
@@ -41,8 +40,6 @@ export const useMinMax = (datasets?: ChartData["datasets"], stepCount: number = 
       const step = (max - min) / stepCount;
       const maybeMin = min - step;
       min = maybeMin < 0 ? 0 : maybeMin;
-      setMinMax({min, max: max + step});
+      return {min, max: max + step}
    }, [datasets]);
-
-   return {min: minMax?.min, max: minMax?.max}
 }
