@@ -6,6 +6,7 @@ interface IField extends Omit<Stat, "text" | "preferedUnit"> {
    onClick?: () => void;
    onDeletion?: (field: StatEnumType) => void;
    showDeleteButton?: boolean,
+   disabled?: boolean;
 }
 
 export const DisplayedField = ({
@@ -13,11 +14,12 @@ export const DisplayedField = ({
                                   wrapperClasses,
                                   onDeletion,
                                   onClick,
+                                  disabled = false
                                }: IField) => {
 
    if (onDeletion) {
       return <Chip sx={wrapperClasses} label={name} onDelete={() => onDeletion(name)}/>
    }
 
-   return <Chip sx={wrapperClasses} onClick={onClick} label={name}/>
+   return <Chip disabled={disabled} sx={wrapperClasses} onClick={onClick} label={name}/>
 }

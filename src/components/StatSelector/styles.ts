@@ -12,15 +12,20 @@ export const styles = style({
       width: "fit-content",
    },
    fieldsWrapper: {
-      padding: 15,
-
       display: "flex",
-      gap: 10,
+      flexWrap: "wrap",
+      justifyContent: "flex-start",
+      rowGap: 4,
+      columnGap: 5,
    },
    fieldsOuterWrapper: {
+      display: "flex",
+      flexDirection: "column",
       height: 200,
-      padding: 4,
+      maxWidth: 400,
+      padding: 10,
       overflow: "auto",
+      gap: 25,
    },
    selectableFieldsWrapper: {
       display: "grid",

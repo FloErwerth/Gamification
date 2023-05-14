@@ -28,9 +28,8 @@ interface ActivityAdderModalContentProps {
 const AddActivityModalContent = ({
                                     onCreation,
                                  }: ActivityAdderModalContentProps) => {
-   const [activity, setActivity] = useState<PredefinedActivities | string>("Aerobic");
+   const [activityName, setActivityName] = useState<PredefinedActivities | string>("Aerobic");
    const [stats, setStats] = useState<StatEnumType[]>([]);
-   const [additionalStats, setAdditionalStats] = useState<StatEnumType[]>([])
    const [addAdditionalActivity, setAddAdditionalAcitivity] = useState(false);
    const userId = useAppSelector(getUserId);
    const currentActivites = useAppSelector(getActivities);
@@ -39,12 +38,12 @@ const AddActivityModalContent = ({
 
    const handleCreation = useCallback(() => {
       if (
-         activity.length > 3 && stats.length !== 0 &&
+         activityName.length > 3 && stats.length !== 0 &&
          userId
       ) {
          onCreation();
          const generatedActivity: ActivityProps = {
-            name: activity,
+            name: activityName,
             calendarEntries: {},
             stats,
             maxValue: 1,
@@ -55,40 +54,41 @@ const AddActivityModalContent = ({
             dispatch(addActivity(generatedActivity));
          });
       }
-   }, [userId, activity, stats]);
+   }, [userId, activityName, stats]);
 
    useEffect(() => {
-      const assemblyStats = ActivityAssembly(activity);
-      setStats([...assemblyStats, ...additionalStats]);
-   }, [activity])
+      const assemblyStats = ActivityAssembly(activityName).filter((stat) => !stats.includes(stat));
+      setStats([...assemblyStats, ...stats]);
+   }, [stats, activityName])
 
    const handleSetAdditionalFields = useCallback((statEnums: StatEnumType[]) => {
-      setAdditionalStats((previous) => [...previous, ...statEnums]);
+      setStats((previous) => [...previous, ...statEnums]);
       setAddAdditionalAcitivity(false);
    }, [])
 
    const handleDeleteSelectedField = useCallback((deletedField: StatEnumType) => {
       setStats((prev) => prev.filter((field) => field !== deletedField));
-      setAdditionalStats((previous) =>
-         previous.filter((field) => field !== deletedField))
-   }, [stats, additionalStats]);
+   }, [stats]);
 
    return (
       <div className={cssClasses.modalWrapper}>
          <div>Add an activity</div>
-         <div>
-            <AutoComplete onInputChange={(value) => setActivity(value)} label={"Predefined activities"}
+         <div className={cssClasses.fieldsContainer}>
+            <AutoComplete onInputChange={(value) => setActivityName(value)} label={"Predefined activities"}
                           options={PredefinedActivities.options} groupBy={(option) => getCategory(option)}
-                          onActivityChange={(value) => setActivity(value)}/>
-            {stats.length > 0 &&
-                <div className={cssClasses.statsTitle}>The following stats will be added to your activity:</div>}
-            <div className={cssClasses.fieldsWrapper}>{[...stats, ...additionalStats].map((stat) => {
-                  const mappedField = StatMap(stat);
-                  return <DisplayedField name={mappedField.name}
-                                         onDeletion={handleDeleteSelectedField}/>
-               }
-            )}</div>
-            <div className={cssClasses.addButtonWrapper}>
+                          onActivityChange={(value) => setActivityName(value)}/>
+
+            <div
+               className={cssClasses.statsTitle}>{stats.length > 0 && "The following stats will be added to your activity:"}</div>
+            <div className={cssClasses.fieldsOuterWrapper}>
+               <div className={cssClasses.fieldsWrapper}>{stats.map((stat) => {
+                     const mappedField = StatMap(stat);
+                     return <DisplayedField name={mappedField.name}
+                                            onDeletion={handleDeleteSelectedField}/>
+                  }
+               )}</div>
+            </div>
+            <div className={cssClasses.buttons}>
                <Button startIcon={<AddCircle/>} onClick={() => setAddAdditionalAcitivity(true)} color={"primary"}>Add
                   stat</Button>{stats.length > 0 &&
                 <Button onClick={() => setStats([])} startIcon={<ClearAllRounded/>}>Clear all stats</Button>}</div>

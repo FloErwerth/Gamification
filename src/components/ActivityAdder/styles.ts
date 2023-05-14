@@ -6,10 +6,10 @@ export const activityAdderClasses = {
       width: 500,
       gap: 20,
    },
-   addButtonWrapper: {
+   buttons: {
       marginTop: 10,
-      display: "flex",
-      justifyContent: "space-around",
+      display: "grid",
+      gridTemplateColumns: "1fr 1fr"
    },
    addButton: {
       width: 40,
@@ -29,10 +29,18 @@ export const activityAdderClasses = {
       marginTop: 10,
       display: "flex",
       flexDirection: "row",
+      flexWrap: "wrap",
       padding: 10,
       gap: 5,
       overflowY: "auto",
-      height: 250,
+   },
+   fieldsOuterWrapper: {
+      height: 200,
+      overflowY: "auto",
+   },
+   fieldsContainer: {
+      display: "grid",
+      gridTemplateRows: "30px 300px 30px",
    },
    inputWrapper: {
       display: "flex",

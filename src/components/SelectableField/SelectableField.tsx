@@ -15,7 +15,7 @@ export const SelectableField = ({onClick, selectableStat}: ISelectableButton) =>
    const cssClasses = useMemo(() => getClasses(styles(selected)), [selected])
 
    const handleClick = useCallback(() => {
-      onClick?.(selectableStat, selected)
+      onClick?.(selectableStat, !selected)
       setSelected((currentlySelected) => !currentlySelected);
    }, [selected])
 

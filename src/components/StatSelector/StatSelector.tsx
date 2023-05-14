@@ -1,34 +1,38 @@
-import {useCallback, useState} from "react";
+import {useCallback, useMemo, useState} from "react";
 
 import {Modal, ModalProps} from "../../basicComponents/Modal/Modal";
 import {getClasses} from "../../utils/styleUtils";
 import {styles} from "./styles";
 import {SelectableField} from "../SelectableField/SelectableField";
 import {StatEnum, StatEnumType} from "../../activitiesAssembly/stats";
+import {ActivityCategory, MapCategoryToStats, TActivityCategory} from "../../activitiesAssembly/categories";
 import {Button} from "@mui/material";
-import {useStringFilter} from "../../utils/usePropsFilter";
-import {Input} from "../Input/Input";
+import {AutoComplete} from "../AutocompleteItem/AutoComplete";
+import {DisplayedField} from "../DisplayedField/DisplayedField";
 
 interface IFieldsSelector extends ModalProps {
    onFieldSelectorClosed: (fields: StatEnumType[]) => void;
    alreadyChosenFields?: StatEnumType[];
 }
 
-const getAvailableFields = (alreadyAdded: StatEnumType[] | undefined) => {
-   const options = StatEnum.options;
-   if (!alreadyAdded || alreadyAdded.length === 0) {
-      return options;
+const getAvailableFields = (filter: TActivityCategory, alreadyAdded: StatEnumType[] | undefined, handleSelection: (value: StatEnumType, selected: boolean) => void): { shownElements: JSX.Element[], hiddenElements: JSX.Element[] } => {
+   const shownOptionsFields = MapCategoryToStats(filter).options;
+   const hiddenOptions = StatEnum.options.filter((option) => !Array.from(shownOptionsFields).includes(option) || alreadyAdded?.includes(option)).map((field) =>
+      <DisplayedField disabled={true} name={field}/>)
+   return {
+      shownElements: shownOptionsFields.map((field) => <SelectableField onClick={handleSelection}
+                                                                        selectableStat={field}/>),
+      hiddenElements: hiddenOptions
    }
-   return options.filter((option) => !alreadyAdded.find((addedOption) => option === addedOption))
 }
 const cssClasses = getClasses(styles);
 
 export const StatSelector = ({onFieldSelectorClosed, open, alreadyChosenFields}: IFieldsSelector) => {
    const [selectedFields, setSelectedFields] = useState<StatEnumType[]>([]);
-   const [filteredArray, _, setFilter] = useStringFilter(getAvailableFields(alreadyChosenFields));
+   const [filter, setFilter] = useState<TActivityCategory>("All");
 
    const handleSelection = useCallback((value: StatEnumType, selected: boolean) => {
-      if (selected) {
+      if (!selected) {
          setSelectedFields((fields) => {
             fields.splice(selectedFields.findIndex((field) => field === value))
             return [...fields];
@@ -38,18 +42,21 @@ export const StatSelector = ({onFieldSelectorClosed, open, alreadyChosenFields}:
       }
    }, [selectedFields]);
 
+   const fields = useMemo(() => getAvailableFields(filter, alreadyChosenFields, handleSelection), [filter, alreadyChosenFields, handleSelection]);
+
 
    return <Modal open={open}
                  onClose={() => onFieldSelectorClosed(selectedFields)}>
       <div className={cssClasses.wrapper}>
-         <div className={cssClasses.filterWrapper}><Input label={"Filter by"} onChange={(value) => setFilter(value)}/>
-         </div>
+         <AutoComplete label={"Category"} options={ActivityCategory.options}
+                       onInputChange={(value) => !value && setFilter("All")}
+                       onActivityChange={(category) => {
+                          setFilter(category)
+                       }}/>
          <div className={cssClasses.fieldsOuterWrapper}>
             <div
-               className={cssClasses.selectableFieldsWrapper}>{filteredArray.map((field) => {
-               return <SelectableField selectableStat={field}
-                                       onClick={handleSelection}/>
-            })}</div>
+               className={cssClasses.fieldsWrapper}>{fields.shownElements}</div>
+            <div className={cssClasses.fieldsWrapper}>{fields.hiddenElements}</div>
          </div>
          <Button variant={"contained"} onClick={() => onFieldSelectorClosed(selectedFields)}>Confirm selection</Button>
       </div>

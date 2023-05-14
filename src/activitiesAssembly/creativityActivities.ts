@@ -26,5 +26,4 @@ export function CreativityActivityAssembly<T>(statEnum: T) {
    }
 
    return [];
-
 }

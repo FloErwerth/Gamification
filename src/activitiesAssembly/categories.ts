@@ -33,7 +33,6 @@ export const MapCategoryToStats = (category: string) => {
             return StatEnum;
       }
    }).safeParse(category);
-
    if (parse.success) {
       return parse.data;
    }
