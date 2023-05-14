@@ -1,9 +1,10 @@
 import {z} from "zod";
-import {CreativityStat} from "./creativity/creativityStat";
-import {SportStat} from "./sports/sportEnum";
 import {ActivityInputTypes} from "../components/ActivityInput/ActivityInput";
+import {CreativityStat} from "./creativityActivities";
+import {SportStat} from "./sportActivities";
+import {PersonalStat} from "./personalActivities";
 
-export const StatEnum = z.enum([...CreativityStat.options, ...SportStat.options]);
+export const StatEnum = z.enum([...CreativityStat.options, ...SportStat.options, ...PersonalStat.options]);
 export type StatEnumType = z.infer<typeof StatEnum>;
 
 export type StatWithValue = { name: StatEnumType, value: number, type?: ActivityInputTypes };

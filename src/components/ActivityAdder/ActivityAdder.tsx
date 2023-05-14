@@ -14,9 +14,10 @@ import {toast} from "react-toastify";
 import {StatSelector} from "../StatSelector/StatSelector";
 import {StatEnumType, StatMap} from "../../activitiesAssembly/stats";
 import {ActivityAssembly} from "../../activitiesAssembly/activityAssembly";
-import {AutoComplete} from "../AutoComplete/AutoComplete";
 import {Button} from "@mui/material";
 import {AddCircle, ClearAllRounded} from "@mui/icons-material";
+import {AutoComplete} from "../AutocompleteItem/AutoComplete";
+import {getCategory} from "../../activitiesAssembly/categories";
 
 const cssClasses = getClasses(activityAdderClasses);
 
@@ -77,7 +78,7 @@ const AddActivityModalContent = ({
          <div>Add an activity</div>
          <div>
             <AutoComplete onInputChange={(value) => setActivity(value)} label={"Predefined activities"}
-                          options={PredefinedActivities.options}
+                          options={PredefinedActivities.options} groupBy={(option) => getCategory(option)}
                           onActivityChange={(value) => setActivity(value)}/>
             {stats.length > 0 &&
                 <div className={cssClasses.statsTitle}>The following stats will be added to your activity:</div>}

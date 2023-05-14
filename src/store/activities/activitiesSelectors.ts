@@ -21,7 +21,7 @@ export const getActivitiesDone = createSelector([getActivities], (actvities) => 
 }, 0));
 
 export const getAverageActivitiesDoneDaily = createSelector([getDaysSinceCreation, getActivitiesDone], (daysSinceCreation, getActivitiesDone) => {
-   return getActivitiesDone / daysSinceCreation;
+   return (getActivitiesDone / daysSinceCreation).toFixed(2);
 })
 
 export const getMaxActivitiesDoneADay = createSelector([getActivities], activities => {

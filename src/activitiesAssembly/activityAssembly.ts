@@ -1,11 +1,13 @@
-import {CreativityActivityAssembly} from "./creativity/creativityActivities";
-import {SportsActivityAssembly} from "./sports/sportActivities";
-import {PredefinedActivities} from "./predefinedActivities";
 import {StatEnumType} from "./stats";
+import {CreativityActivityAssembly} from "./creativityActivities";
+import {SportsActivityAssembly} from "./sportActivities";
+import {PredefinedActivities} from "./predefinedActivities";
+import {PersonalActivityAssembly} from "./personalActivities";
 
 export function ActivityAssembly<T extends PredefinedActivities>(statEnum: T): StatEnumType[] {
    return [
-      ...CreativityActivityAssembly(statEnum),
+      ...PersonalActivityAssembly(statEnum),
       ...SportsActivityAssembly(statEnum),
+      ...CreativityActivityAssembly(statEnum),
    ]
 }

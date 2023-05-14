@@ -1,5 +1,4 @@
 import {HTMLInputTypeAttribute, KeyboardEvent, PropsWithChildren, useId, useMemo, useRef, useState} from "react";
-import {cx} from "@emotion/css";
 import {getClasses} from "../../utils/styleUtils";
 import {inputStyles} from "./inputStyles";
 import {TextField} from "@mui/material";
@@ -56,12 +55,6 @@ export const Input = ({
                       }: InputProps) => {
    const cssClasses = useMemo(() => getClasses(inputStyles(labelMode)), [labelMode]);
 
-   const wrapperClasses = useMemo(
-      () => cx(cssClasses.wrapper, customWrapperClasses),
-      [cssClasses.wrapper, customWrapperClasses]
-   );
-
-   const inputClasses = useMemo(() => cx(cssClasses.input, customInputClasses), [cssClasses.input, customInputClasses]);
 
    const [showPW, setShowPW] = useState(false);
    const inputRef = useRef<HTMLInputElement>(null);
@@ -79,6 +72,7 @@ export const Input = ({
          type={showPW ? "text" : type}
          name={id}
          id={id}
+         size={"small"}
          InputProps={{
             endAdornment: type === "password" ? <PasswordVisibiltyToggler show={showPW} setShow={setShowPW}/> : null
          }}

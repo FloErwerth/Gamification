@@ -11,7 +11,7 @@ export const ActivityStatistics = () => {
       if (isTimeType(type)) {
          return toTimeFormat(data, data > 3600);
       }
-      return data;
+      return data.toFixed(2);
    }, [cumulatedData])
    const getUnit = useCallback((name: StatEnumType, data: number) => {
       const stat = StatMap(name)

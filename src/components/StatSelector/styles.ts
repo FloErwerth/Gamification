@@ -2,20 +2,31 @@ import {style} from "../../utils/styleUtils";
 
 export const styles = style({
    wrapper: {
+      display: "flex",
+      flexDirection: "column",
+      justifyContent: "space-between",
+      gap: 20,
       padding: 20,
-      minHeight: 200,
+   },
+   filterWrapper: {
+      width: "fit-content",
    },
    fieldsWrapper: {
-      padding: 20,
-      display: "grid",
-      gridTemplateColumns: "repeat(4,24.5%)",
+      padding: 15,
+
+      display: "flex",
       gap: 10,
+   },
+   fieldsOuterWrapper: {
+      height: 200,
+      padding: 4,
+      overflow: "auto",
    },
    selectableFieldsWrapper: {
       display: "grid",
-      minWidth: 500,
-      marginBottom: 20,
-      gridTemplateColumns: "repeat(5, max(100px))",
+      alignItems: "center",
+      gridTemplateColumns: "repeat(4, max-content)",
+      height: 200,
       gap: 10,
    },
    filterButtons: {
