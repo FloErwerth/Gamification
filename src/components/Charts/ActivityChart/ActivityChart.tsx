@@ -13,7 +13,7 @@ import {
 } from "chart.js";
 import {ChartData, getActiveActivity, getActivityChartData} from "../../../store/activeActivity/activitySelector";
 import {Button} from "../../../basicComponents/Button/Button";
-import {StatMap} from "../../../activitiesAssembly/stats";
+import {StatInfoMap} from "../../../activitiesAssembly/stats";
 import {isTimeType, toTimeFormat} from "../../../utils/getStringifiedTime";
 import {useAppSelector} from "../../../store/store";
 import {FormControlLabel, Switch} from "@mui/material";
@@ -57,7 +57,7 @@ export const ActivityChart = () => {
 
    const {min, max} = useMinMax(chartData.datasets);
    const chartRef = useRef<Chart<"line", number[], string>>(null);
-   const stat = useMemo(() => filter && StatMap(filter), [filter]);
+   const stat = useMemo(() => filter && StatInfoMap(filter), [filter]);
    const showChartSheet = useMemo(() => (chartData.labels.length ?? 0) > 1, [chartData.labels]);
 
    const getLabel = useCallback((tooltipItem: TooltipItem<"line">) => {

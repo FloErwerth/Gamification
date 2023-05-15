@@ -1,5 +1,5 @@
 import {TextField} from "@mui/material"
-import {StatEnumType, StatMap} from "../../activitiesAssembly/stats";
+import {StatEnumType, StatInfoMap} from "../../activitiesAssembly/stats";
 import {TimeField} from "@mui/x-date-pickers";
 import {useCallback, useMemo} from "react";
 import {Dayjs} from "dayjs";
@@ -17,7 +17,7 @@ export enum ActivityInputTypes {
 
 
 export const ActivityInput = ({stat, label, onChange}: IActivityInput) => {
-   const {preferedUnit, type} = StatMap(stat);
+   const {preferedUnit, type} = StatInfoMap(stat);
    const getFormat = useMemo(() => type === ActivityInputTypes.HOURS ? "hh:mm:ss" : "mm:ss", []);
    const getFieldProps = useMemo(() => {
       const format = isTimeType(type) ? getFormat : undefined;

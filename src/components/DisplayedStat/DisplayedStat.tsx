@@ -1,6 +1,6 @@
 import {getClasses} from "../../utils/styleUtils";
 import {styles} from "./styles";
-import {StatMap, StatWithValue} from "../../activitiesAssembly/stats";
+import {StatInfoMap, StatWithValue} from "../../activitiesAssembly/stats";
 import {useMemo} from "react";
 import {isTimeType, toTimeFormat} from "../../utils/getStringifiedTime";
 
@@ -10,7 +10,7 @@ interface IDisplayedStat {
 
 const cssClasses = getClasses(styles);
 export const DisplayedStat = ({stat}: IDisplayedStat) => {
-   const mappedStat = StatMap(stat.name);
+   const mappedStat = StatInfoMap(stat.name);
 
    const getValue = useMemo(() => {
       if (isTimeType(mappedStat.type)) {

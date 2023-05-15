@@ -10,7 +10,7 @@ export type StatEnumType = z.infer<typeof StatEnum>;
 export type StatWithValue = { name: StatEnumType, value: number, type?: ActivityInputTypes };
 export type Stat = { name: StatEnumType, preferedUnit: string, type?: ActivityInputTypes };
 
-export const StatMap = (field: StatEnumType) => StatEnum.transform((field): Stat => {
+export const StatInfoMap = (field: StatEnumType) => StatEnum.transform((field): Stat => {
    switch (field) {
       case "Distance":
          return {name: field, preferedUnit: "km", type: ActivityInputTypes.NUMBER};

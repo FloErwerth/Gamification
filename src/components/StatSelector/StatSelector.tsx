@@ -1,6 +1,6 @@
 import {useCallback, useMemo, useState} from "react";
 
-import {Modal, ModalProps} from "../../basicComponents/Modal/Modal";
+import {ModalProps} from "../../basicComponents/Modal/Modal";
 import {getClasses} from "../../utils/styleUtils";
 import {styles} from "./styles";
 import {SelectableField} from "../SelectableField/SelectableField";
@@ -45,20 +45,17 @@ export const StatSelector = ({onFieldSelectorClosed, open, alreadyChosenFields}:
    const fields = useMemo(() => getAvailableFields(filter, alreadyChosenFields, handleSelection), [filter, alreadyChosenFields, handleSelection]);
 
 
-   return <Modal open={open}
-                 onClose={() => onFieldSelectorClosed(selectedFields)}>
-      <div className={cssClasses.wrapper}>
-         <AutoComplete label={"Category"} options={ActivityCategory.options}
-                       onInputChange={(value) => !value && setFilter("All")}
-                       onActivityChange={(category) => {
-                          setFilter(category)
-                       }}/>
-         <div className={cssClasses.fieldsOuterWrapper}>
-            <div
-               className={cssClasses.fieldsWrapper}>{fields.shownElements}</div>
-            <div className={cssClasses.fieldsWrapper}>{fields.hiddenElements}</div>
-         </div>
-         <Button variant={"contained"} onClick={() => onFieldSelectorClosed(selectedFields)}>Confirm selection</Button>
+   return <>
+      <AutoComplete label={"Category"} options={ActivityCategory.options}
+                    onInputChange={(value) => !value && setFilter("All")}
+                    onActivityChange={(category) => {
+                       setFilter(category)
+                    }}/>
+      <div className={cssClasses.fieldsOuterWrapper}>
+         <div
+            className={cssClasses.fieldsWrapper}>{fields.shownElements}</div>
+         <div className={cssClasses.fieldsWrapper}>{fields.hiddenElements}</div>
       </div>
-   </Modal>
+      <Button variant={"contained"} onClick={() => onFieldSelectorClosed(selectedFields)}>Confirm selection</Button>
+   </>
 }
