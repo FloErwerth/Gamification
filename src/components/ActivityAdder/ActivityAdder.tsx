@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useState} from "react";
+import {useCallback, useState} from "react";
 import {Modal} from "../../basicComponents/Modal/Modal";
 import {getClasses} from "../../utils/styleUtils";
 import {activityAdderClasses} from "./styles";
@@ -56,10 +56,11 @@ const AddActivityModalContent = ({
       }
    }, [userId, activityName, stats]);
 
-   useEffect(() => {
-      const assemblyStats = ActivityAssembly(activityName).filter((stat) => !stats.includes(stat));
+   const handleSetPredefinedActivity = useCallback((name: PredefinedActivities) => {
+      const assemblyStats = ActivityAssembly(name).filter((stat) => !stats.includes(stat));
+      setActivityName(name);
       setStats([...assemblyStats, ...stats]);
-   }, [stats, activityName])
+   }, [stats]);
 
    const handleSetAdditionalFields = useCallback((statEnums: StatEnumType[]) => {
       setStats((previous) => [...previous, ...statEnums]);
@@ -74,13 +75,12 @@ const AddActivityModalContent = ({
       <div className={cssClasses.modalWrapper}>
          <div>Add an activity</div>
          <div className={cssClasses.fieldsContainer}>
-            <AutoComplete onInputChange={(value) => setActivityName(value)} label={"Predefined activities"}
+            <AutoComplete onInputChange={handleSetPredefinedActivity} label={"Predefined activities"}
                           options={PredefinedActivities.options} groupBy={(option) => getCategory(option)}
-                          onActivityChange={(value) => setActivityName(value)}/>
-
-            <div
-               className={cssClasses.statsTitle}>{stats.length > 0 && "The following stats will be added to your activity:"}</div>
+                          onActivityChange={handleSetPredefinedActivity}/>
             <div className={cssClasses.fieldsOuterWrapper}>
+               <div
+                  className={cssClasses.statsTitle}>{stats.length > 0 && "The following stats will be added to your activity:"}</div>
                <div className={cssClasses.fieldsWrapper}>{stats.map((stat) => {
                      const mappedField = StatMap(stat);
                      return <DisplayedField name={mappedField.name}

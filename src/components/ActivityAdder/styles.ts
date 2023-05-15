@@ -40,7 +40,7 @@ export const activityAdderClasses = {
    },
    fieldsContainer: {
       display: "grid",
-      gridTemplateRows: "30px 300px 30px",
+      gridTemplateRows: "30px 360px 30px",
    },
    inputWrapper: {
       display: "flex",
