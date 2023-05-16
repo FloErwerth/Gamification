@@ -1,5 +1,4 @@
 import {style} from "../../utils/styleUtils";
-import {keyframes} from "@emotion/css";
 
 export const styles = {
    fieldWrapper: {
@@ -23,41 +22,52 @@ export const styles = {
    },
 }
 
-const editLabelAnimation = keyframes({
-   from: {
-      top: -25,
-      transform: "translateY(0)",
-   },
-   to: {
-      top: 0,
-      transform: "translateY(-50%)",
-   }
-})
-
 export const editableStyles = style({
+   editableChip: {
+      width: "75%",
+      height: "100%",
+      cursor: "pointer",
+   },
+   root: {
+      gap: 10,
+
+   },
    editableChipLabel: {
       display: "flex",
       alignItems: "center",
       position: "relative",
       overflow: "hidden",
-      height: "100%",
+      height: "80%",
+
       "& > div": {
          position: "absolute",
          top: -25,
-         transition: "top 100ms",
+         transition: "top 200ms",
       },
       "& > span": {
          position: "relative",
          top: 0,
-         transition: "top 100ms",
+         transition: "top 200ms",
       },
 
       ":hover": {
          "& > span": {
             top: 25,
+            transitionDelay: "100ms",
+
          },
          "& > div": {
-            top: 8,
+            display: "flex",
+            alignItems: "center",
+            paddingLeft: 10,
+            top: 0,
+            left: 3,
+            borderRadius: 20,
+            transitionDelay: "100ms",
+
+            ":hover": {
+               backgroundColor: "rgba(0,0,0,0.1)",
+            }
          },
       },
    }

@@ -22,10 +22,11 @@ export const DisplayedField = ({
                                   disabled = false
                                }: IField) => {
    if (onDeletion && onEdit) {
-      return <Chip onClick={() => onEdit(name)} classes={{label: chipStyles.editableChipLabel}} label={<>
-         <div>Edit</div>
+      return <Chip
+         classes={{root: chipStyles.root, label: chipStyles.editableChipLabel}} label={<>
+         <div className={chipStyles.editableChip} onClick={() => onEdit(name)}>Edit</div>
          <span>{name}</span></>}
-                   onDelete={() => onDeletion(name)}/>
+         onDelete={() => onDeletion(name)}/>
    }
 
    if (onDeletion) {
