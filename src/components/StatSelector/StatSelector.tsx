@@ -14,6 +14,7 @@ interface IFieldsSelector {
 }
 
 const getAvailableFields = (filter: TActivityCategory, alreadyAdded: StatEnumType[] | undefined, handleSelection: (value: StatEnumType, selected: boolean) => void): { shownElements: JSX.Element[], hiddenElements: JSX.Element[] } => {
+
    const shownOptionsFields = MapCategoryToStats(filter).options.filter((option) => !alreadyAdded?.includes(option));
    const hiddenOptions = StatEnum.options.filter((option) => {
       return !Array.from(shownOptionsFields).includes(option) || alreadyAdded?.includes(option)
@@ -29,6 +30,7 @@ const cssClasses = getClasses(styles);
 
 export const StatSelector = ({onFieldSelectorClosed, alreadyChosenFields}: IFieldsSelector) => {
    const [selectedFields, setSelectedFields] = useState<StatEnumType[]>([]);
+
    const [filter, setFilter] = useState<TActivityCategory>("All");
    const handleSelection = useCallback((value: StatEnumType, selected: boolean) => {
       if (!selected) {

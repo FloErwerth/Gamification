@@ -11,17 +11,14 @@ import {
    Tooltip,
    TooltipItem
 } from "chart.js";
-import {ChartData, getActiveActivity, getActivityChartData} from "../../../store/activeActivity/activitySelector";
+import {getActiveActivity, getActivityChartData} from "../../../store/activeActivity/activitySelector";
 import {Button} from "../../../basicComponents/Button/Button";
-import {StatInfoMap} from "../../../activitiesAssembly/stats";
 import {isTimeType, toTimeFormat} from "../../../utils/getStringifiedTime";
 import {useAppSelector} from "../../../store/store";
 import {FormControlLabel, Switch} from "@mui/material";
 import {useMinMax} from "../hooks/useMinMax";
+import {StatEnumType} from "../../../activitiesAssembly/stats";
 
-interface IActivityChart {
-   chartData: ChartData,
-}
 
 Chart.register(
    CategoryScale,
@@ -45,11 +42,10 @@ const stepCount = 6;
 export const ActivityChart = () => {
 
    const [showAllMonths, setShowAllMonths] = useState(false);
-
    const [showChart, setShowChart] = useState(true);
    const activeActivity = useAppSelector(getActiveActivity).activity;
-   const [filter, setFilter] = useState(activeActivity.stats[0]);
-   const chartData = useAppSelector(getActivityChartData(filter, showAllMonths));
+   const [stat, setStat] = useState(activeActivity.stats[0]);
+   const chartData = useAppSelector(getActivityChartData(stat.name, showAllMonths));
 
    if (!chartData) {
       return <div>Not enough data.</div>
@@ -57,20 +53,19 @@ export const ActivityChart = () => {
 
    const {min, max} = useMinMax(chartData.datasets);
    const chartRef = useRef<Chart<"line", number[], string>>(null);
-   const stat = useMemo(() => filter && StatInfoMap(filter), [filter]);
    const showChartSheet = useMemo(() => (chartData.labels.length ?? 0) > 1, [chartData.labels]);
 
    const getLabel = useCallback((tooltipItem: TooltipItem<"line">) => {
       const data = tooltipItem.dataset.data[tooltipItem.dataIndex]
-      if (stat.type && isTimeType(stat.type) && typeof data === "number") {
-         return `${toTimeFormat(data)} ${stat?.preferedUnit ?? ""}`
+      if (stat.type && isTimeType(stat.type.input) && typeof data === "number") {
+         return `${toTimeFormat(data, stat.type.format)} ${stat?.preferedUnit ?? ""}`
       }
       return `${data} ${stat?.preferedUnit ?? ""}`
    }, [stat])
 
    const getValue = useCallback((value: number | string) => {
       if (typeof value === "number") {
-         if (stat.type && isTimeType(stat.type)) {
+         if (stat.type && isTimeType(stat.type.input)) {
             return `${toTimeFormat(value)} ${stat.preferedUnit}`
          } else {
             return `${value} ${stat.preferedUnit}`;
@@ -117,16 +112,22 @@ export const ActivityChart = () => {
       }
    }, [min, max, stat, chartData]);
 
+   const handleSetFilter = useCallback((label: StatEnumType) => {
+      const foundStat = activeActivity.stats.find((stat) => stat.name === label);
+      if (foundStat) {
+         setStat(foundStat);
+      }
+   }, [activeActivity])
 
    return <>{chartData && <div style={{width: "50%", margin: "auto", position: "relative"}}>
        <FormControlLabel control={<Switch onClick={() => setShowAllMonths((current) => !current)}/>}
                          label={"Show all data"}/>
        <div>Show Stat:
            <div style={{display: "flex", gap: 10,}}>{chartData.datasets.map((data) => <Button key={data.label}
-                                                                                              theme={filter === data.label ? "contained" : "outlined"}
-                                                                                              onClick={() => setFilter(data.label)}>{data.label}</Button>)}</div>
+                                                                                              theme={stat.name === data.label ? "contained" : "outlined"}
+                                                                                              onClick={() => handleSetFilter(data.label)}>{data.label}</Button>)}</div>
        </div>
-      {filter ? showChartSheet && showChart ? <Line ref={chartRef} options={options} data={chartData}/> :
+      {stat ? showChartSheet && showChart ? <Line ref={chartRef} options={options} data={chartData}/> :
          <div>Please add more data.</div> : <div>Please select data to show</div>}
       {showChartSheet &&
           <Button onClick={() => setShowChart(!showChart)}>{!showChart ? "Show Chart" : "Hide Chart"}</Button>}

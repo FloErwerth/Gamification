@@ -1,9 +1,8 @@
-import {Stat, StatEnumType} from "../../activitiesAssembly/stats";
+import {StatEnumType} from "../../activitiesAssembly/stats";
 import {Chip, SxProps, Theme} from "@mui/material";
-import {editableStyles} from "./styles";
-import {getClasses} from "../../utils/styleUtils";
 
-interface IField extends Omit<Stat, "text" | "preferedUnit"> {
+interface IField {
+   name: StatEnumType
    wrapperClasses?: SxProps<Theme>;
    onClick?: () => void;
    onEdit?: (field: StatEnumType) => void;
@@ -12,7 +11,6 @@ interface IField extends Omit<Stat, "text" | "preferedUnit"> {
    disabled?: boolean;
 }
 
-const chipStyles = getClasses(editableStyles);
 export const DisplayedField = ({
                                   name,
                                   wrapperClasses,

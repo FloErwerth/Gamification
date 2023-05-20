@@ -55,9 +55,9 @@ export const getActivityChartData = (filter: StatEnumType, showAllMonths: boolea
    if (activity && activity.stats && activity.calendarEntries) {
       const chartData: ChartData = {
          labels: [],
-         datasets: activity.stats.map((stat: StatEnumType) => {
+         datasets: activity.stats.map((stat) => {
             return {
-               label: stat,
+               label: stat.name,
                data: [],
                cubicInterpolationMode: "monotone",
                pointStyle: "circle",
@@ -100,4 +100,12 @@ export const getCumulatedData = createSelector([getActiveActivity], ({activity})
    }
 
    return undefined;
+})
+
+export const getActiveActivityInfo = (stat: StatEnumType) => createSelector([getActiveActivity], (activeActivity) => {
+   return activeActivity.activity.stats.find((activityStat) => activityStat.name === stat);
+});
+
+export const getActiveActivityInfos = createSelector([getActiveActivity], (activeActivitiy) => {
+   return activeActivitiy.activity.stats;
 })

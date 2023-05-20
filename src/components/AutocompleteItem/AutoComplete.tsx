@@ -30,7 +30,8 @@ export function AutoComplete<T extends string[]>({
    return <Autocomplete value={value} groupBy={groupBy} freeSolo={freeSolo} sx={{width: width}} size={"small"}
                         onInputChange={(_, value) => onInputChange?.(value)}
                         options={options}
-                        renderInput={(params) => <AutocompleteItem {...params} label={label}/>}
+                        renderInput={(params) => <AutocompleteItem {...params}
+                                                                   label={label}/>}
                         onChange={(_, value) => value && onActivityChange(value)}
    />
 }

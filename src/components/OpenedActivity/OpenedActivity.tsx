@@ -33,7 +33,7 @@ export const OpenedActivity = ({
    const cellMarked = useMemo(() => cell && cell.marked, [cell]);
 
    const [stats, setStats] = useState<StatWithValue[]>(activeActivity.activity.stats.map((stat) => {
-      return {name: stat, value: 0}
+      return {name: stat.name, value: 0}
    }));
 
    const handleStatsChange = useCallback((value: string, index: number) => {

@@ -1,21 +1,26 @@
 import {ActivityInputTypes} from "../components/ActivityInput/ActivityInput";
+import {TimeFormat} from "../activitiesAssembly/units";
 
-export const getStringifiedTime = (minutes: number, seconds: number, hours?: number) => {
-   const hourString = hours && hours >= 0 ? hours < 10 ? `0${hours}` : hours.toString() : undefined;
-   const minuteString = minutes >= 0 ? minutes < 10 ? `0${minutes}` : minutes.toString() : undefined;
-   const secondString = seconds >= 0 ? seconds < 10 ? `0${seconds}` : seconds.toString() : undefined;
+export const getStringifiedTime = (seconds: number, minutes: number, hours: number) => {
+   const hourString = hours >= 0 ? hours < 10 ? `0${hours}` : hours.toString() : "";
+   const minuteString = minutes >= 0 ? minutes < 10 ? `0${minutes}` : minutes.toString() : "";
+   const secondString = seconds >= 0 ? seconds < 10 ? `0${seconds}` : seconds.toString() : "";
 
-   return `${hourString !== undefined ? hourString.concat(":") : ""}${minuteString !== undefined ? minuteString.concat(":") : ""}${secondString !== undefined ? secondString : ""}`
+   return {secondString, minuteString, hourString}
 }
 
-export const toTimeFormat = (seconds?: number, isHourFormat?: boolean) => {
-   if (seconds) {
-      const hours = Math.floor(seconds / 3600);
-      const minutes = Math.floor((seconds - (hours * 3600)) / 60);
-      const remainingSeconds = seconds - (hours * 3600) - (minutes * 60);
-      return getStringifiedTime(minutes, remainingSeconds, isHourFormat ? hours : undefined);
+export const toTimeFormat = (seconds: number, timeFormat?: TimeFormat<ActivityInputTypes>) => {
+   const hours = Math.floor(seconds / 3600);
+   const minutes = Math.floor((seconds - (hours * 3600)) / 60);
+   const remainingSeconds = seconds - (hours * 3600) - (minutes * 60);
+   const {secondString, minuteString, hourString} = getStringifiedTime(remainingSeconds, minutes, hours);
+   if (timeFormat === "ss") {
+      return secondString;
    }
-   return "";
+   if (timeFormat === "mm:ss") {
+      return `${minuteString}:${secondString}`
+   }
+   return `${hourString}:${minuteString}:${secondString}`
 }
 
 export const toSeconds = (hour: number, minutes: number, seconds: number, type?: ActivityInputTypes) => {

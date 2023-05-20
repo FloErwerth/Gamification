@@ -1,24 +1,27 @@
 import {useAppSelector} from "../store/store";
-import {getCumulatedData} from "../store/activeActivity/activitySelector";
+import {getActiveActivityInfos, getCumulatedData} from "../store/activeActivity/activitySelector";
 import {useCallback} from "react";
-import {StatEnumType, StatInfoMap} from "../activitiesAssembly/stats";
+import {StatEnumType} from "../activitiesAssembly/stats";
 import {isTimeType, toTimeFormat} from "../utils/getStringifiedTime";
 
 export const ActivityStatistics = () => {
    const cumulatedData = useAppSelector(getCumulatedData);
+   const infos = useAppSelector(getActiveActivityInfos);
    const getData = useCallback((name: StatEnumType, data: number) => {
-      const type = StatInfoMap(name).type
-      if (isTimeType(type)) {
-         return toTimeFormat(data, data > 3600);
+      const info = infos.find((info) => info.name === name);
+      if (info) {
+         if (isTimeType(info.type.input)) {
+            return toTimeFormat(data, info.type.format);
+         }
       }
       return data.toFixed(2);
    }, [cumulatedData])
    const getUnit = useCallback((name: StatEnumType, data: number) => {
-      const stat = StatInfoMap(name)
-      if (isTimeType(stat.type)) {
+      const info = infos.find((info) => info.name === name);
+      if (isTimeType(info?.type.input)) {
          return data > 3600 ? "Hours" : "Minutes"
       }
-      return stat.preferedUnit;
+      return info?.preferedUnit;
    }, [cumulatedData])
    return <>
       {cumulatedData?.map(({label, data}) => <div style={{display: "flex", gap: 10, alignItems: "baseline"}}>
