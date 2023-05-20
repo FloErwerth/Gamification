@@ -32,15 +32,15 @@ interface ActivityAdderModalContentProps {
    setActivityName: Dispatch<SetStateAction<string>>
 }
 
-const StatAdder = ({
-                      setActivityName,
-                      activityName,
-                      onAddAdditionalStats,
-                      onCreation,
-                      onSetStats,
-                      stats,
-                      onHandleStatDeletion,
-                   }: ActivityAdderModalContentProps) => {
+const StatOverview = ({
+                         setActivityName,
+                         activityName,
+                         onAddAdditionalStats,
+                         onCreation,
+                         onSetStats,
+                         stats,
+                         onHandleStatDeletion,
+                      }: ActivityAdderModalContentProps) => {
 
    const handleSetActivityName = useCallback((name: PredefinedActivities) => {
       setActivityName(name);
@@ -160,11 +160,11 @@ export const ActivityAdder = () => {
                <div className={cssClasses.modalWrapper}>{addAdditionalActivity ?
                   <StatSelector onFieldSelectorClosed={handleSetAdditionalFields}
                                 alreadyChosenFields={stats.map((stat) => stat.name)}/> :
-                  <StatAdder setActivityName={setActivityName} activityName={activityName}
-                             onAddAdditionalStats={() => setAddAdditionalAcitivity(true)}
-                             onHandleStatDeletion={handleDeleteSelectedField} stats={stats.map((stat) => stat.name)}
-                             onSetStats={handleSetAddedStats}
-                             onCreation={handleCreation}
+                  <StatOverview setActivityName={setActivityName} activityName={activityName}
+                                onAddAdditionalStats={() => setAddAdditionalAcitivity(true)}
+                                onHandleStatDeletion={handleDeleteSelectedField} stats={stats.map((stat) => stat.name)}
+                                onSetStats={handleSetAddedStats}
+                                onCreation={handleCreation}
                   />}</div>
             </Modal>
          )}
