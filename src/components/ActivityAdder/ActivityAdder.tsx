@@ -27,7 +27,6 @@ interface ActivityAdderModalContentProps {
    setStats: Dispatch<SetStateAction<StatEnumType[]>>;
    stats: StatEnumType[],
    onHandleSetActivityName: (name: PredefinedActivities | string) => void;
-   onHandleStatEdit: (name: StatEnumType) => void;
    onHandleStatDeletion: (name: StatEnumType) => void;
    onAddAdditionalStats: (value: boolean) => void;
    activityName?: string;
@@ -40,7 +39,6 @@ const StatAdder = ({
                       setStats,
                       stats,
                       onHandleSetActivityName,
-                      onHandleStatEdit,
                       onHandleStatDeletion,
                    }: ActivityAdderModalContentProps) => {
    return (
@@ -62,7 +60,6 @@ const StatAdder = ({
                <div className={cssClasses.fieldsWrapper}>{stats.map((stat) => {
                      const mappedField = StatInfoMap(stat);
                      return <DisplayedField name={mappedField.name}
-                                            onEdit={onHandleStatEdit}
                                             onDeletion={onHandleStatDeletion}/>
                   }
                )}</div>
@@ -95,7 +92,7 @@ export const ActivityAdder = () => {
    }, [stats])
 
    const dispatch = useAppDispatch();
-   
+
    const handleDeleteSelectedField = useCallback((deletedField: StatEnumType) => {
       setStats((prev) => prev.filter((field) => field !== deletedField));
    }, [stats]);
@@ -150,7 +147,7 @@ export const ActivityAdder = () => {
                              onHandleStatDeletion={handleDeleteSelectedField} stats={stats} setStats={setStats}
                              onCreation={handleCreation}
                              onHandleSetActivityName={handleSetPredefinedActivity}
-                             onHandleStatEdit={(name) => setStatEdit(name)}
+
                   />}</div>
             </Modal>
          )}
