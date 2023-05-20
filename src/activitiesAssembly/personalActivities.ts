@@ -1,7 +1,7 @@
 import {z} from "zod";
 import {StatEnumType} from "./stats";
 
-export const PersonalStat = z.enum(["Items learned", "Pages read"]);
+export const PersonalStat = z.enum(["Items learned", "Pages read", "Done"]);
 export type PersonalStat = z.infer<typeof PersonalStat>;
 
 export const PersonalActivities = z.enum(["Learning", "Reading", "Meditation", "Gardening"])

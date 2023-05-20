@@ -14,6 +14,8 @@ export const StatInfoMap = (field: StatEnumType) => StatEnum.transform((field): 
    switch (field) {
       case "Distance":
          return {name: field, preferedUnit: "km", type: ActivityInputTypes.NUMBER};
+      case "Done":
+         return {name: field, preferedUnit: "Times", type: ActivityInputTypes.NUMBER}
       case "Duration":
          return {
             name: field,

@@ -1,6 +1,4 @@
 import {useCallback, useMemo, useState} from "react";
-
-import {ModalProps} from "../../basicComponents/Modal/Modal";
 import {getClasses} from "../../utils/styleUtils";
 import {styles} from "./styles";
 import {SelectableField} from "../SelectableField/SelectableField";
@@ -10,14 +8,16 @@ import {Button} from "@mui/material";
 import {AutoComplete} from "../AutocompleteItem/AutoComplete";
 import {DisplayedField} from "../DisplayedField/DisplayedField";
 
-interface IFieldsSelector extends ModalProps {
+interface IFieldsSelector {
    onFieldSelectorClosed: (fields: StatEnumType[]) => void;
    alreadyChosenFields?: StatEnumType[];
 }
 
 const getAvailableFields = (filter: TActivityCategory, alreadyAdded: StatEnumType[] | undefined, handleSelection: (value: StatEnumType, selected: boolean) => void): { shownElements: JSX.Element[], hiddenElements: JSX.Element[] } => {
-   const shownOptionsFields = MapCategoryToStats(filter).options;
-   const hiddenOptions = StatEnum.options.filter((option) => !Array.from(shownOptionsFields).includes(option) || alreadyAdded?.includes(option)).map((field) =>
+   const shownOptionsFields = MapCategoryToStats(filter).options.filter((option) => !alreadyAdded?.includes(option));
+   const hiddenOptions = StatEnum.options.filter((option) => {
+      return !Array.from(shownOptionsFields).includes(option) || alreadyAdded?.includes(option)
+   }).map((field) =>
       <DisplayedField disabled={true} name={field}/>)
    return {
       shownElements: shownOptionsFields.map((field) => <SelectableField onClick={handleSelection}
@@ -27,10 +27,9 @@ const getAvailableFields = (filter: TActivityCategory, alreadyAdded: StatEnumTyp
 }
 const cssClasses = getClasses(styles);
 
-export const StatSelector = ({onFieldSelectorClosed, open, alreadyChosenFields}: IFieldsSelector) => {
+export const StatSelector = ({onFieldSelectorClosed, alreadyChosenFields}: IFieldsSelector) => {
    const [selectedFields, setSelectedFields] = useState<StatEnumType[]>([]);
    const [filter, setFilter] = useState<TActivityCategory>("All");
-
    const handleSelection = useCallback((value: StatEnumType, selected: boolean) => {
       if (!selected) {
          setSelectedFields((fields) => {

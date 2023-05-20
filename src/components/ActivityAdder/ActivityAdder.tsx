@@ -18,7 +18,7 @@ import {Button} from "@mui/material";
 import {AddCircle, ClearAllRounded} from "@mui/icons-material";
 import {AutoComplete} from "../AutocompleteItem/AutoComplete";
 import {getCategory} from "../../activitiesAssembly/categories";
-import {EditStat} from "../EditStat/EditStat";
+import {WithHelpText} from "../../hoc/WithHelpText/WithHelpText";
 
 const cssClasses = getClasses(activityAdderClasses);
 
@@ -30,9 +30,11 @@ interface ActivityAdderModalContentProps {
    onHandleStatEdit: (name: StatEnumType) => void;
    onHandleStatDeletion: (name: StatEnumType) => void;
    onAddAdditionalStats: (value: boolean) => void;
+   activityName?: string;
 }
 
 const StatAdder = ({
+                      activityName,
                       onAddAdditionalStats,
                       onCreation,
                       setStats,
@@ -45,12 +47,18 @@ const StatAdder = ({
       <>
          <div>Add an activity</div>
          <div className={cssClasses.fieldsContainer}>
-            <AutoComplete onInputChange={onHandleSetActivityName} label={"Predefined activities"}
-                          options={PredefinedActivities.options} groupBy={(option) => getCategory(option)}
-                          onActivityChange={onHandleSetActivityName}/>
+            <WithHelpText position={"end"} placement={"right"}
+                          helpText={"You can also define your own activity by typing in the name and add stats to it."}><AutoComplete
+               onInputChange={onHandleSetActivityName}
+               label={"Activity Name"}
+               value={activityName}
+               options={PredefinedActivities.options}
+               groupBy={(option) => getCategory(option)}
+               onActivityChange={onHandleSetActivityName}/></WithHelpText>
             <div className={cssClasses.fieldsOuterWrapper}>
                <div
-                  className={cssClasses.statsTitle}>{stats.length > 0 && "The following stats will be added to your activity:"}</div>
+                  className={cssClasses.statsTitle}>{stats.length > 0 &&
+                   <small>The following stats will be added to your activity:</small>}</div>
                <div className={cssClasses.fieldsWrapper}>{stats.map((stat) => {
                      const mappedField = StatInfoMap(stat);
                      return <DisplayedField name={mappedField.name}
@@ -80,24 +88,25 @@ export const ActivityAdder = () => {
    const [stats, setStats] = useState<StatEnumType[]>([]);
    const [addAdditionalActivity, setAddAdditionalAcitivity] = useState(false);
 
-   const handleSetAdditionalFields = useCallback((statEnums: StatEnumType[]) => {
-      setStats((previous) => [...previous, ...statEnums]);
+   const handleSetAdditionalFields = useCallback((selectedFields: StatEnumType[]) => {
+      const newStats = [...stats, ...selectedFields]
+      setStats(newStats);
       setAddAdditionalAcitivity(false);
-   }, [])
+   }, [stats])
 
    const dispatch = useAppDispatch();
-
-   const [statEdit, setStatEdit] = useState<StatEnumType | undefined>(undefined);
-
+   
    const handleDeleteSelectedField = useCallback((deletedField: StatEnumType) => {
       setStats((prev) => prev.filter((field) => field !== deletedField));
    }, [stats]);
 
    const handleSetPredefinedActivity = useCallback((name: PredefinedActivities) => {
-      const assemblyStats = ActivityAssembly(name).filter((stat) => !stats.includes(stat));
-      setActivityName(name);
-      setStats([...assemblyStats, ...stats]);
-   }, [stats]);
+      if (name !== activityName) {
+         const assemblyStats = ActivityAssembly(name).filter((stat) => !stats.includes(stat));
+         setActivityName(name);
+         setStats([...assemblyStats, ...stats]);
+      }
+   }, [activityName, stats]);
 
    const handleCreation = useCallback(() => {
       if (
@@ -134,16 +143,15 @@ export const ActivityAdder = () => {
          </Button>
          {showAdderModal && (
             <Modal open={showAdderModal} onClose={() => setShowAdderModal(false)}>
-               <div className={cssClasses.modalWrapper}>{statEdit === undefined ?
-                  <>{addAdditionalActivity ?
-                     <StatSelector onFieldSelectorClosed={handleSetAdditionalFields} open={addAdditionalActivity}
-                                   alreadyChosenFields={stats}/> :
-                     <StatAdder onAddAdditionalStats={() => setAddAdditionalAcitivity(true)}
-                                onHandleStatDeletion={handleDeleteSelectedField} stats={stats} setStats={setStats}
-                                onCreation={handleCreation}
-                                onHandleSetActivityName={handleSetPredefinedActivity}
-                                onHandleStatEdit={(name) => setStatEdit(name)}
-                     />}</> : <EditStat onEditConfirmed={() => setStatEdit(undefined)} name={statEdit}/>}</div>
+               <div className={cssClasses.modalWrapper}>{addAdditionalActivity ?
+                  <StatSelector onFieldSelectorClosed={handleSetAdditionalFields}
+                                alreadyChosenFields={stats}/> :
+                  <StatAdder activityName={activityName} onAddAdditionalStats={() => setAddAdditionalAcitivity(true)}
+                             onHandleStatDeletion={handleDeleteSelectedField} stats={stats} setStats={setStats}
+                             onCreation={handleCreation}
+                             onHandleSetActivityName={handleSetPredefinedActivity}
+                             onHandleStatEdit={(name) => setStatEdit(name)}
+                  />}</div>
             </Modal>
          )}
       </>

@@ -1,5 +1,3 @@
-import {getClasses} from "../../utils/styleUtils";
-import {styles} from "./styles";
 import {Autocomplete, AutocompleteRenderInputParams, TextField} from "@mui/material";
 
 interface IAutoComplete<T extends string[]> {
@@ -7,12 +5,11 @@ interface IAutoComplete<T extends string[]> {
    onActivityChange: (value: T[number]) => void;
    label?: string;
    onInputChange?: (value: T[number]) => void;
-   maxWidth?: number;
+   width?: number;
    freeSolo?: boolean;
    groupBy?: (option: T[number]) => string;
+   value?: string;
 }
-
-const cssClasses = getClasses(styles);
 
 interface IAutocompleteItem extends AutocompleteRenderInputParams {
    label?: string;
@@ -26,11 +23,11 @@ export function AutoComplete<T extends string[]>({
                                                     options,
                                                     onActivityChange,
                                                     label, onInputChange,
-                                                    maxWidth = 200,
+                                                    width = 200,
                                                     freeSolo = true,
-                                                    groupBy,
+                                                    groupBy, value
                                                  }: IAutoComplete<T>) {
-   return <Autocomplete groupBy={groupBy} freeSolo={freeSolo} sx={{maxWidth}} size={"small"}
+   return <Autocomplete value={value} groupBy={groupBy} freeSolo={freeSolo} sx={{width: width}} size={"small"}
                         onInputChange={(_, value) => onInputChange?.(value)}
                         options={options}
                         renderInput={(params) => <AutocompleteItem {...params} label={label}/>}
