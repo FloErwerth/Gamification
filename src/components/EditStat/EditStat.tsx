@@ -3,16 +3,23 @@ import {getClasses} from "../../utils/styleUtils";
 import {styles} from "./styles";
 import {useCallback, useContext} from "react";
 import {ActivityAdderContext} from "../ActivityAdder/ActivityAdderContext/ActivityAdderContext";
-import {getUnitOptions, Unit} from "../../activitiesAssembly/units";
+import {getTypeFromUnit, getUnitOptions, Unit} from "../../activitiesAssembly/units";
+import {Stat} from "../../activitiesAssembly/stats";
 
 const cssClasses = getClasses(styles);
 export const EditStat = () => {
-   const {editedStat, setEditStat, setEditedStat} = useContext(ActivityAdderContext);
+   const {editedStat, setEditStat, setEditedStat, setStats} = useContext(ActivityAdderContext);
    const options = getUnitOptions(editedStat?.name);
 
    const handleConfirmEdit = useCallback(() => {
+      if (editedStat) {
+         setStats?.((stats) => {
+            stats.splice(stats.findIndex((stat) => stat.name === editedStat.name), 1, editedStat)
+            return stats;
+         });
+      }
       setEditStat?.(false);
-   }, [setEditStat]);
+   }, [editedStat, setEditStat]);
 
    const handleCancelEdit = useCallback(() => {
       setEditStat?.(false);
@@ -20,9 +27,12 @@ export const EditStat = () => {
 
    const handleStatEdit = useCallback((unit: Unit) => {
       if (editedStat) {
-         setEditedStat?.(() => {
-            return {...editedStat, preferedUnit: unit}
-         })
+         const newStat: Stat = {
+            name: editedStat.name,
+            preferedUnit: unit,
+            type: getTypeFromUnit(unit) ?? editedStat.type
+         };
+         setEditedStat?.(newStat);
       }
    }, [editedStat, setEditedStat]);
 

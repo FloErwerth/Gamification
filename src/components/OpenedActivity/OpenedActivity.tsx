@@ -33,16 +33,26 @@ export const OpenedActivity = ({
    const cellMarked = useMemo(() => cell && cell.marked, [cell]);
 
    const [stats, setStats] = useState<StatWithValue[]>(activeActivity.activity.stats.map((stat) => {
-      return {name: stat.name, value: 0}
+      return {name: stat.name, value: ""}
    }));
 
    const handleStatsChange = useCallback((value: string, index: number) => {
-      if (value && !cellMarked) {
+      if (!cellMarked) {
          setStats((old) => produce(old, newStats => {
-            newStats[index].value = parseFloat(value);
+            if (!value) {
+               newStats[index].value = "";
+            } else {
+               newStats[index].value = parseFloat(value);
+            }
          }));
       }
    }, [stats]);
+
+   const handleConfirm = useCallback(() => {
+      if (stats.every((stat) => Boolean(stat.value))) {
+         onConfirmProgress(stats);
+      }
+   }, [stats])
 
    return <div className={cssClasses.mainWrapper}>
       <div className={cssClasses.title}>{getGeneratedDisplayDate(date)}</div>
@@ -56,12 +66,12 @@ export const OpenedActivity = ({
             {stats.map((stat, index) =>
                <ActivityInput key={stat.name} label={stat.name}
                               onChange={(value) => handleStatsChange(value, index)}
-                              stat={stat.name}/>
+                              stat={stat}/>
             )}</div>}
       </div>
       <div className={cssClasses.buttons}>
          {!cellMarked ? <Button
-               onClick={() => onConfirmProgress(stats)}>Confirm progress</Button> :
+               onClick={handleConfirm}>Confirm progress</Button> :
             <ConfirmButton className={cssClasses.button} barColor={"rgb(255, 100, 100)"} confirmTime={500}
                            onClick={onDeleteProgress}>Delete
                progress</ConfirmButton>}</div>

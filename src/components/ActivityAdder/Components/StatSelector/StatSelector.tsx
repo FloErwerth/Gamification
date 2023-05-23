@@ -1,4 +1,4 @@
-import {useCallback, useMemo, useState} from "react";
+import {useCallback, useContext, useMemo, useState} from "react";
 import {getClasses} from "../../../../utils/styleUtils";
 import {styles} from "./styles";
 import {SelectableField} from "../../../SelectableField/SelectableField";
@@ -8,6 +8,7 @@ import {Button} from "@mui/material";
 import {AutoComplete} from "../../../AutocompleteItem/AutoComplete";
 import {DisplayedField} from "../DisplayedField/DisplayedField";
 import {getDefaultStat} from "../../../../activitiesAssembly/units";
+import {ActivityAdderContext} from "../../ActivityAdderContext/ActivityAdderContext";
 
 interface IFieldsSelector {
    onFieldSelectorClosed: (fields: Stat[]) => void;
@@ -28,9 +29,9 @@ const getAvailableFields = (filter: TActivityCategory, alreadyAdded: Stat[] | un
 }
 const cssClasses = getClasses(styles);
 
-export const StatSelector = ({onFieldSelectorClosed, alreadyChosenFields}: IFieldsSelector) => {
+export const StatSelector = ({onFieldSelectorClosed}: IFieldsSelector) => {
    const [selectedFields, setSelectedFields] = useState<Stat[]>([]);
-
+   const {stats: alreadyChosenFields} = useContext(ActivityAdderContext);
    const [filter, setFilter] = useState<TActivityCategory>("All");
    const handleSelection = useCallback((value: Stat, selected: boolean) => {
       if (!selected) {

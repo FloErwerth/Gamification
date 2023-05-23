@@ -28,5 +28,7 @@ export const toSeconds = (hour: number, minutes: number, seconds: number, type?:
    const minutesSeconds = minutes * 60;
    return hoursSeconds + minutesSeconds + seconds;
 }
-
-export const isTimeType = (type?: ActivityInputTypes) => type && type === ActivityInputTypes.MINUTES || type === ActivityInputTypes.HOURS;
+export const getIsNumberType = (input?: ActivityInputTypes) => {
+   return input && input === ActivityInputTypes.NUMBER || input === ActivityInputTypes.SECONDS || input === ActivityInputTypes.MINUTES || input === ActivityInputTypes.HOURS || input === ActivityInputTypes.MIN_PER_KM
+};
+export const isTimeType = (type?: ActivityInputTypes) => type && type === ActivityInputTypes.SECONDS || type === ActivityInputTypes.MINUTES || type === ActivityInputTypes.HOURS;

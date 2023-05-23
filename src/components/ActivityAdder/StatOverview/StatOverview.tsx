@@ -11,7 +11,7 @@ import {getClasses} from "../../../utils/styleUtils";
 import {activityAdderClasses} from "../styles";
 import {DisplayedField} from "../Components/DisplayedField/DisplayedField";
 import {ActivityAdderContext} from "../ActivityAdderContext/ActivityAdderContext";
-import {getDefaultStats} from "../../../activitiesAssembly/stats";
+import {getDefaultStats, Stat} from "../../../activitiesAssembly/stats";
 
 const cssClasses = getClasses(activityAdderClasses);
 export const StatOverview = ({
@@ -20,15 +20,20 @@ export const StatOverview = ({
                                 onAddAdditionalStats,
                                 onCreation,
                                 onSetStats,
-                                stats,
                                 onHandleStatDeletion,
                              }: ActivityAdderModalContentProps) => {
-   const {setEditedStat, setEditStat} = useContext(ActivityAdderContext);
+   const {stats, setEditedStat, setEditStat} = useContext(ActivityAdderContext);
+
    const handleSetActivityName = useCallback((name: PredefinedActivities) => {
       setActivityName(name);
-      if (stats.length === 0 || name && name !== activityName) {
+      if (stats?.length === 0 || name && name !== activityName) {
          const parsedStats = getDefaultStats(ActivityAssembly(name));
-         onSetStats([...stats, ...parsedStats])
+         if (stats) {
+            onSetStats([...stats, ...parsedStats])
+         }
+      }
+      if (stats?.length === 0 || name && name !== activityName) {
+
       }
    }, [activityName, stats, ActivityAssembly])
 
@@ -38,6 +43,11 @@ export const StatOverview = ({
          setActivityName("");
       }
    }, [activityName])
+
+   const handleStatEdit = useCallback((stat: Stat) => {
+      setEditStat?.(true);
+      setEditedStat?.(stat);
+   }, [setEditedStat, setEditedStat])
 
    return (
       <>
@@ -52,15 +62,12 @@ export const StatOverview = ({
                groupBy={(option) => getCategory(option)}
                onActivityChange={handleSetActivityName}/></WithHelpText>
             <div className={cssClasses.fieldsOuterWrapper}>
-               <div
-                  className={cssClasses.statsTitle}>{stats.length > 0 &&
-                   <small>The following stats will be added to your activity:</small>}</div>
-               <div className={cssClasses.fieldsWrapper}>{stats.map((stat) => {
+               {stats && <div
+                   className={cssClasses.statsTitle}>{stats.length > 0 &&
+                   <small>The following stats will be added to your activity:</small>}</div>}
+               <div className={cssClasses.fieldsWrapper}>{stats?.map((stat) => {
                      return <DisplayedField stat={stat}
-                                            onEdit={(stat) => {
-                                               setEditStat?.(true);
-                                               setEditedStat?.(stat);
-                                            }}
+                                            onEdit={handleStatEdit}
                                             onDeletion={onHandleStatDeletion}/>
                   }
                )}</div>
@@ -68,7 +75,7 @@ export const StatOverview = ({
             </div>
             <div className={cssClasses.buttons}>
                <Button startIcon={<AddCircle/>} onClick={() => onAddAdditionalStats(true)} color={"primary"}>Add
-                  stat</Button>{stats.length > 0 &&
+                  stat</Button>{stats && stats.length > 0 &&
                 <Button onClick={handleClearStats} startIcon={<ClearAllRounded/>}>Clear all stats</Button>}
             </div>
 

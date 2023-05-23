@@ -22,11 +22,10 @@ const cssClasses = getClasses(activityAdderClasses);
 export interface ActivityAdderModalContentProps {
    onCreation: () => void;
    onSetStats: (stats: Stat[]) => void;
-   stats: Stat[],
    onHandleStatDeletion: (name: Stat) => void;
    onAddAdditionalStats: (value: boolean) => void;
-   activityName?: string;
    setActivityName: Dispatch<SetStateAction<string>>
+   activityName?: string;
 }
 
 
@@ -36,33 +35,34 @@ export const ActivityAdder = () => {
    const [activityName, setActivityName] = useState<PredefinedActivities | string>("");
    const userId = useAppSelector(getUserId);
    const currentActivites = useAppSelector(getActivities);
-   const [stats, setStats] = useState<Stat[]>([]);
    const [addAdditionalActivity, setAddAdditionalAcitivity] = useState(false);
-   const {editStat} = useContext(ActivityAdderContext);
+   const {editStat, stats, setStats} = useContext(ActivityAdderContext);
+   const dispatch = useAppDispatch();
 
    const handleSetAdditionalFields = useCallback((selectedFields: Stat[]) => {
-      setStats((stats) => [...stats, ...selectedFields]);
+      setStats?.((stats) => [...stats, ...selectedFields]);
       setAddAdditionalAcitivity(false);
    }, [stats])
 
-   const dispatch = useAppDispatch();
 
    const handleDeleteSelectedField = useCallback((deletedField: Stat) => {
-      setStats((prev) => prev.filter((field) => field.name !== deletedField.name));
+      setStats?.((prev) => prev.filter((field) => field.name !== deletedField.name));
    }, [stats]);
 
    const handleSetAddedStats = useCallback((newStats: Stat[]) => {
       if (newStats.length === 0) {
-         setStats([]);
+         setStats?.([]);
          return;
       }
-      const newDefaultStats = newStats.filter((stat) => !stats.find((curStat) => curStat.name === stat.name));
-      setStats([...stats, ...newDefaultStats]);
+      if (stats) {
+         const newDefaultStats = newStats.filter((stat) => !stats?.find((curStat) => curStat.name === stat.name));
+         setStats?.([...stats, ...newDefaultStats]);
+      }
    }, [activityName, stats]);
 
    const handleCreation = useCallback(() => {
       if (
-         activityName.length > 3 && stats.length !== 0 &&
+         activityName.length > 3 && stats && stats.length !== 0 &&
          userId
       ) {
          toast("Activity Added", {type: "success"})
@@ -70,7 +70,7 @@ export const ActivityAdder = () => {
          const generatedActivity: ActivityProps = {
             name: activityName,
             calendarEntries: {},
-            stats,
+            stats: stats,
             maxValue: 1,
             currentValue: 0,
             level: 0,
@@ -100,14 +100,12 @@ export const ActivityAdder = () => {
          {showAdderModal && (
             <Modal open={showAdderModal} onClose={handleClose}>
                <div className={cssClasses.modalWrapper}>{addAdditionalActivity ?
-                  <StatSelector onFieldSelectorClosed={handleSetAdditionalFields}
-                                alreadyChosenFields={stats}/> :
+                  <StatSelector onFieldSelectorClosed={handleSetAdditionalFields}/> :
                   <>{editStat ?
                      <EditStat/> :
                      <StatOverview setActivityName={setActivityName} activityName={activityName}
                                    onAddAdditionalStats={() => setAddAdditionalAcitivity(true)}
                                    onHandleStatDeletion={handleDeleteSelectedField}
-                                   stats={stats}
                                    onSetStats={handleSetAddedStats}
                                    onCreation={handleCreation}/>}</>
                }</div>

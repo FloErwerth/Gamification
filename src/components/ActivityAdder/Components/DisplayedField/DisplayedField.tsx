@@ -15,6 +15,7 @@ interface IField {
    disabled?: boolean;
 }
 
+//transfer ActivityAdder to complete context
 const editableChipClasses = getClasses(editableStyles);
 export const DisplayedField = ({
                                   stat,
@@ -28,7 +29,7 @@ export const DisplayedField = ({
    const unitOptions = useMemo(() => getUnitOptions(stat.name), [stat]);
 
    if (onDeletion && unitOptions && onEdit) {
-      return <Chip onClick={() => onEdit(stat)}
+      return <Chip sx={{outline: "1px solid lightgreen"}} onClick={() => onEdit(stat)}
                    classes={{root: editableChipClasses.root, label: editableChipClasses.editableChipLabel}} label={<>
          <div>Edit</div>
          <div>{stat.name}</div>
