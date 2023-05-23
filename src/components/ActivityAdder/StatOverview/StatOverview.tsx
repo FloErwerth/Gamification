@@ -12,6 +12,7 @@ import {activityAdderClasses} from "../styles";
 import {DisplayedField} from "../Components/DisplayedField/DisplayedField";
 import {ActivityAdderContext} from "../ActivityAdderContext/ActivityAdderContext";
 import {getDefaultStats, Stat} from "../../../activitiesAssembly/stats";
+import {SelectableChip} from "../../SelectableChip/SelectableChip";
 
 const cssClasses = getClasses(activityAdderClasses);
 export const StatOverview = ({
@@ -22,7 +23,14 @@ export const StatOverview = ({
                                 onSetStats,
                                 onHandleStatDeletion,
                              }: ActivityAdderModalContentProps) => {
-   const {stats, setEditedStat, setEditStat} = useContext(ActivityAdderContext);
+   const {
+      stats,
+      setEditedStat,
+      setEditStat,
+      defaultDays,
+      selectedDays,
+      setSelectedDays
+   } = useContext(ActivityAdderContext);
 
    const handleSetActivityName = useCallback((name: PredefinedActivities) => {
       setActivityName(name);
@@ -78,6 +86,15 @@ export const StatOverview = ({
                   stat</Button>{stats && stats.length > 0 &&
                 <Button onClick={handleClearStats} startIcon={<ClearAllRounded/>}>Clear all stats</Button>}
             </div>
+            <small>Select weekdays to do the activity
+               <div
+                  className={cssClasses.daysWrapper}>
+                  {defaultDays?.map((day) =>
+                     <SelectableChip
+                        selected={selectedDays?.includes(day) ?? false}
+                        value={day} onClick={(day) => setSelectedDays?.(day)}
+                        label={day}></SelectableChip>)}</div>
+            </small>
 
          </div>
          <Button variant={"contained"} onClick={onCreation}>Create Activity</Button></>

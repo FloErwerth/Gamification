@@ -15,6 +15,13 @@ export const activityAdderClasses = {
       width: 40,
       height: 40,
    },
+   daysWrapper: {
+      display: "flex",
+      flexDirection: "row",
+      marginInline: "auto",
+      marginTop: 5,
+      gap: 5,
+   },
    addIcon: {
       width: 30,
       height: 30,
@@ -40,7 +47,8 @@ export const activityAdderClasses = {
    },
    fieldsContainer: {
       display: "grid",
-      gridTemplateRows: "30px 360px 30px",
+      gap: 15,
+      gridTemplateRows: "auto auto auto auto",
    },
    inputWrapper: {
       display: "flex",
