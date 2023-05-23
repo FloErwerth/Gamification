@@ -1,10 +1,10 @@
 import {useCallback, useState} from "react";
-import {DisplayedField} from "../DisplayedField/DisplayedField";
-import {StatEnumType} from "../../activitiesAssembly/stats";
+import {DisplayedField} from "../ActivityAdder/Components/DisplayedField/DisplayedField";
+import {Stat} from "../../activitiesAssembly/stats";
 
 interface ISelectableButton {
-   onClick: (value: StatEnumType, selected: boolean) => void
-   selectableStat: StatEnumType;
+   onClick: (value: Stat, selected: boolean) => void
+   selectableStat: Stat;
 }
 
 export const SelectableField = ({onClick, selectableStat}: ISelectableButton) => {
@@ -23,6 +23,6 @@ export const SelectableField = ({onClick, selectableStat}: ISelectableButton) =>
             outline: "1px solid black"
          }
       }}
-      name={selectableStat}
+      stat={selectableStat}
       showDeleteButton={false}/>
 }

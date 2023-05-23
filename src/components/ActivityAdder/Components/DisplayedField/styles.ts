@@ -1,4 +1,4 @@
-import {style} from "../../utils/styleUtils";
+import {style} from "../../../../utils/styleUtils";
 
 export const styles = {
    fieldWrapper: {
@@ -19,19 +19,19 @@ export const styles = {
    icon: {
       width: 20,
       height: 20,
+   }, select: {
+      "& *": {
+         borderRadius: 0,
+      }
    },
+
 }
 
 export const editableStyles = style({
-   editableChip: {
-      width: "75%",
-      height: "100%",
-      cursor: "pointer",
-   },
    root: {
       gap: 10,
-
    },
+
    editableChipLabel: {
       display: "flex",
       alignItems: "center",
@@ -39,24 +39,25 @@ export const editableStyles = style({
       overflow: "hidden",
       height: "80%",
 
-      "& > div": {
+      "& > :first-child": {
          position: "absolute",
+         height: "100%",
+         width: "100%",
          top: -25,
          transition: "top 200ms",
       },
-      "& > span": {
+      "& > :last-child": {
          position: "relative",
          top: 0,
          transition: "top 200ms",
       },
 
       ":hover": {
-         "& > span": {
+         "& > :last-child": {
             top: 25,
             transitionDelay: "100ms",
-
          },
-         "& > div": {
+         "& > :first-child": {
             display: "flex",
             alignItems: "center",
             paddingLeft: 10,
@@ -64,10 +65,6 @@ export const editableStyles = style({
             left: 3,
             borderRadius: 20,
             transitionDelay: "100ms",
-
-            ":hover": {
-               backgroundColor: "rgba(0,0,0,0.1)",
-            }
          },
       },
    }

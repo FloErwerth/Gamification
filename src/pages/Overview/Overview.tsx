@@ -3,12 +3,12 @@ import {overStyles} from "./overStyles";
 import {usePropsFilter} from "../../utils/usePropsFilter";
 import {useAppDispatch, useAppSelector} from "../../store/store";
 import {getActivities} from "../../store/activities/activitiesSelectors";
-import {ActivityAdder} from "../../components/ActivityAdder/ActivityAdder";
 import {ActivityWrapper} from "../../components/activity/ActivityWrapper";
 import {Input} from "../../components/Input/Input";
 import {useEffect} from "react";
 import {setLastPage} from "../../store/router/routerActions";
 import {Pages} from "../../types/pages";
+import {ActivityAdderContextProvider} from "../../components/ActivityAdder/ActivityAdderContext/ActivityAdderContext";
 
 const cssClasses = getClasses(overStyles);
 
@@ -35,7 +35,7 @@ export const Overview = () => {
          <div className={cssClasses.statsWrapper}>{filteredArray.map((activityProps, index) =>
             <ActivityWrapper index={index} {...activityProps} />)}</div>
          <div className={cssClasses.activityAdderWrapper}>
-            <ActivityAdder/>
+            <ActivityAdderContextProvider/>
          </div>
       </>
    );

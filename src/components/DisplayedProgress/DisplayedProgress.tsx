@@ -11,7 +11,7 @@ interface IDisplayedStat {
 }
 
 const cssClasses = getClasses(styles);
-export const DisplayedStat = ({stat}: IDisplayedStat) => {
+export const DisplayedProgress = ({stat}: IDisplayedStat) => {
    const activeActivityInfo = useAppSelector(getActiveActivityInfo(stat.name));
    const getValue = useMemo(() => {
       if (isTimeType(activeActivityInfo?.type.input)) {

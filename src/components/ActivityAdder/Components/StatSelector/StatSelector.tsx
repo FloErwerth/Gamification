@@ -1,25 +1,25 @@
 import {useCallback, useMemo, useState} from "react";
-import {getClasses} from "../../utils/styleUtils";
+import {getClasses} from "../../../../utils/styleUtils";
 import {styles} from "./styles";
-import {SelectableField} from "../SelectableField/SelectableField";
-import {StatEnum, StatEnumType} from "../../activitiesAssembly/stats";
-import {ActivityCategory, MapCategoryToStats, TActivityCategory} from "../../activitiesAssembly/categories";
+import {SelectableField} from "../../../SelectableField/SelectableField";
+import {getDefaultStats, Stat, StatEnum} from "../../../../activitiesAssembly/stats";
+import {ActivityCategory, MapCategoryToStats, TActivityCategory} from "../../../../activitiesAssembly/categories";
 import {Button} from "@mui/material";
-import {AutoComplete} from "../AutocompleteItem/AutoComplete";
+import {AutoComplete} from "../../../AutocompleteItem/AutoComplete";
 import {DisplayedField} from "../DisplayedField/DisplayedField";
+import {getDefaultStat} from "../../../../activitiesAssembly/units";
 
 interface IFieldsSelector {
-   onFieldSelectorClosed: (fields: StatEnumType[]) => void;
-   alreadyChosenFields?: StatEnumType[];
+   onFieldSelectorClosed: (fields: Stat[]) => void;
+   alreadyChosenFields?: Stat[];
 }
 
-const getAvailableFields = (filter: TActivityCategory, alreadyAdded: StatEnumType[] | undefined, handleSelection: (value: StatEnumType, selected: boolean) => void): { shownElements: JSX.Element[], hiddenElements: JSX.Element[] } => {
-
-   const shownOptionsFields = MapCategoryToStats(filter).options.filter((option) => !alreadyAdded?.includes(option));
+const getAvailableFields = (filter: TActivityCategory, alreadyAdded: Stat[] | undefined, handleSelection: (value: Stat, selected: boolean) => void): { shownElements: JSX.Element[], hiddenElements: JSX.Element[] } => {
+   const shownOptionsFields = getDefaultStats(MapCategoryToStats(filter).options.filter((option) => !alreadyAdded?.find((stat) => stat.name === option)));
    const hiddenOptions = StatEnum.options.filter((option) => {
-      return !Array.from(shownOptionsFields).includes(option) || alreadyAdded?.includes(option)
+      return !Array.from(shownOptionsFields).find((stat) => stat.name !== option) || alreadyAdded?.find((stat) => stat.name === option)
    }).map((field) =>
-      <DisplayedField disabled={true} name={field}/>)
+      <DisplayedField disabled={true} stat={getDefaultStat(field)}/>)
    return {
       shownElements: shownOptionsFields.map((field) => <SelectableField onClick={handleSelection}
                                                                         selectableStat={field}/>),
@@ -29,10 +29,10 @@ const getAvailableFields = (filter: TActivityCategory, alreadyAdded: StatEnumTyp
 const cssClasses = getClasses(styles);
 
 export const StatSelector = ({onFieldSelectorClosed, alreadyChosenFields}: IFieldsSelector) => {
-   const [selectedFields, setSelectedFields] = useState<StatEnumType[]>([]);
+   const [selectedFields, setSelectedFields] = useState<Stat[]>([]);
 
    const [filter, setFilter] = useState<TActivityCategory>("All");
-   const handleSelection = useCallback((value: StatEnumType, selected: boolean) => {
+   const handleSelection = useCallback((value: Stat, selected: boolean) => {
       if (!selected) {
          setSelectedFields((fields) => {
             fields.splice(selectedFields.findIndex((field) => field === value))

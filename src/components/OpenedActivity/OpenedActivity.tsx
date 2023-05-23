@@ -4,7 +4,7 @@ import {styles} from "./styles";
 import {getGeneratedDisplayDate} from "../calendar/utils";
 import {useCallback, useMemo, useState} from "react";
 import produce from "immer";
-import {DisplayedStat} from "../DisplayedStat/DisplayedStat";
+import {DisplayedProgress} from "../DisplayedProgress/DisplayedProgress";
 import {Button} from "../../basicComponents/Button/Button";
 import {ConfirmButton} from "../ConfirmButton/ConfirmButton";
 import {useAppSelector} from "../../store/store";
@@ -49,8 +49,8 @@ export const OpenedActivity = ({
       <div>
          {cellMarked && cell.stats && <>
              <small>Here is the overview of your activity</small>
-             <div className={cssClasses.statsWrapper}>{cell.stats.map((stat) => <DisplayedStat key={stat.name}
-                                                                                               stat={stat}/>)}</div>
+             <div className={cssClasses.statsWrapper}>{cell.stats.map((stat) => <DisplayedProgress key={stat.name}
+                                                                                                   stat={stat}/>)}</div>
          </>}
          {!cellMarked && <div className={cssClasses.inputWrapper}>
             {stats.map((stat, index) =>

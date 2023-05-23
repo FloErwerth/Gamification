@@ -9,7 +9,7 @@ export type Unit = typeof Unit[number] | StatEnumLowercase;
 
 export type ActivityType<T extends ActivityInputTypes> = { input: ActivityInputTypes, format?: TimeFormat<T> }
 
-export const getDefaultStat = (stat: StatEnumType): Stat => {
+export const getDefaultStat = (stat?: StatEnumType): Stat => {
    switch (stat) {
       case "Duration":
          return {name: stat, type: {input: ActivityInputTypes.MINUTES, format: "mm:ss"}, preferedUnit: "minutes"};
@@ -32,5 +32,20 @@ export const getDefaultStat = (stat: StatEnumType): Stat => {
          return {name: stat, type: {input: ActivityInputTypes.NUMBER}, preferedUnit: "km/h"}
       case "Heart rate":
          return {name: stat, type: {input: ActivityInputTypes.NUMBER}, preferedUnit: "bpm"}
+      default:
+         return {name: "Duration", type: {input: ActivityInputTypes.NUMBER}, preferedUnit: "Duration".toLowerCase()}
+   }
+}
+
+export const getUnitOptions = (stat?: StatEnumType): Unit[] | undefined => {
+   switch (stat) {
+      case "Duration":
+         return ["seconds", "minutes", "hours"];
+      case "Distance":
+         return ["meter", "km"];
+      case "Speed":
+         return ["km/h", "min/km"];
+      default:
+         return undefined;
    }
 }

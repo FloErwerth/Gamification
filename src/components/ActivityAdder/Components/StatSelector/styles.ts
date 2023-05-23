@@ -1,4 +1,4 @@
-import {style} from "../../utils/styleUtils";
+import {style} from "../../../../utils/styleUtils";
 
 export const styles = style({
    filterWrapper: {
