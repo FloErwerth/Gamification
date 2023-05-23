@@ -10,8 +10,7 @@ export type StatEnumType = z.infer<typeof StatEnum>;
 const StatToLowerCase = StatEnum.transform((stat) => stat.toLowerCase());
 export type StatEnumLowercase = z.infer<typeof StatToLowerCase>;
 
-export type StatWithValue = { name: StatEnumType, value: number | string };
-export type Stat = { name: StatEnumType, preferedUnit: Unit, type: ActivityType };
+export type Stat = { name: StatEnumType, value: number | string, preferedUnit: Unit, type: ActivityType };
 
 export const getDefaultStats = (stats: StatEnumType[]) => {
    return stats.map((stat) => {

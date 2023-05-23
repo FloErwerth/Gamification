@@ -15,10 +15,10 @@ import {getClasses} from "../../utils/styleUtils";
 import {styles} from "./styles";
 import {ConfirmButton} from "../../components/ConfirmButton/ConfirmButton";
 import {toast} from "react-toastify";
-import {StatWithValue} from "../../activitiesAssembly/stats";
 import {setLastPage} from "../../store/router/routerActions";
 import {ActivityChart} from "../../components/Charts/ActivityChart/ActivityChart";
 import {ActivityStatistics} from "../../Statistics/ActivityStatistics";
+import {Stat} from "../../activitiesAssembly/stats";
 
 const cssClasses = getClasses(styles);
 export const ActivityPage = () => {
@@ -30,7 +30,7 @@ export const ActivityPage = () => {
    const dispatch = useAppDispatch();
    const navigate = useNavigate();
 
-   const handleConfirmProgress = useCallback((stats: StatWithValue[]) => {
+   const handleConfirmProgress = useCallback((stats: Stat[]) => {
       if (selectedDate) {
          dispatch(updateCell({
             activityIndex: activeActivity.index,

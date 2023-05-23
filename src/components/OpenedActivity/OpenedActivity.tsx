@@ -9,12 +9,12 @@ import {Button} from "../../basicComponents/Button/Button";
 import {ConfirmButton} from "../ConfirmButton/ConfirmButton";
 import {useAppSelector} from "../../store/store";
 import {getCell} from "../../store/activities/activitiesSelectors";
-import {StatWithValue} from "../../activitiesAssembly/stats";
 import {ActivityInput} from "../ActivityInput/ActivityInput";
+import {Stat} from "../../activitiesAssembly/stats";
 
 interface OpenedActivityProps {
    activeActivity: { index: number, activity: ActivityProps },
-   onConfirmProgress: (stats: StatWithValue[]) => void;
+   onConfirmProgress: (stats: Stat[]) => void;
    onDeleteProgress: () => void;
    onInfoChange?: (info: string) => void;
    date: DateType,
@@ -32,9 +32,7 @@ export const OpenedActivity = ({
    const cell = useAppSelector(getCell(activeActivity.index, date));
    const cellMarked = useMemo(() => cell && cell.marked, [cell]);
 
-   const [stats, setStats] = useState<StatWithValue[]>(activeActivity.activity.stats.map((stat) => {
-      return {name: stat.name, value: ""}
-   }));
+   const [stats, setStats] = useState<Stat[]>(activeActivity.activity.stats);
 
    const handleStatsChange = useCallback((value: string, index: number) => {
       if (!cellMarked) {

@@ -1,5 +1,4 @@
 import {TextField} from "@mui/material"
-import {StatWithValue} from "../../activitiesAssembly/stats";
 import {TimeField} from "@mui/x-date-pickers";
 import {useCallback, useMemo, useState} from "react";
 import {Dayjs} from "dayjs";
@@ -7,11 +6,12 @@ import {getIsNumberType, isTimeType, toSeconds} from "../../utils/getStringified
 import {useAppSelector} from "../../store/store";
 import {getActiveActivityInfo} from "../../store/activeActivity/activitySelector";
 import {z} from "zod";
+import {Stat} from "../../activitiesAssembly/stats";
 
 interface IActivityInput {
    label: string;
    onChange: (value: string) => void;
-   stat: StatWithValue;
+   stat: Stat;
 }
 
 export enum ActivityInputTypes {
