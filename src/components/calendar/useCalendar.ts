@@ -24,7 +24,7 @@ const getShowJump = (month: number) => {
 }
 
 const getDate = (day: number, year: number, month: number) => {
-   return generateISOString(gregorian.dateFromFields({day, year, month}).toLocaleString());
+   return generateISOString(gregorian.dateFromFields({day, year, month}).toLocaleString("de"));
 }
 
 function getDates(date: Temporal.ZonedDateTime) {
@@ -60,12 +60,11 @@ export const useCalendar = () => {
       const numberDatesInBack = fillableSpace - numberDatesInFront >= 7 ? fillableSpace - numberDatesInFront - 7 : fillableSpace - numberDatesInFront;
       const startDayIndex = gregorian.daysInMonth(previousMonth) - numberDatesInFront;
       const dates = getClampedDays(previousMonth, startDayIndex, numberDatesInFront).concat(getDates(shownDate)).concat(getClampedDays(nextMonth, 0, numberDatesInBack));
-
       for (let i = 0; i < dates.length; i++) {
          const existentCellInfos = calendarEntries[dates[i]];
-         const fNotInteract = i >= numberDatesInFront;
-         const bNotInteract = i < dates.length - numberDatesInBack;
-         const interactable = fNotInteract && bNotInteract;
+         const frontDisabled = i >= numberDatesInFront;
+         const appendDisabled = i < dates.length - numberDatesInBack;
+         const interactable = frontDisabled && appendDisabled;
          if (existentCellInfos) {
             calendar[dates[i]] = {...existentCellInfos, interactable};
          } else {

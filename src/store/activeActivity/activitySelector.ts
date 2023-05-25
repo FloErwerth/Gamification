@@ -73,7 +73,9 @@ export const getActivityChartData = (filter: StatEnumType, showAllMonths: boolea
                chartData.labels?.push(date as DateType);
             }
             chartData.datasets[chartData.datasets.findIndex((data) => data.label === stat.name)] = produce(dataset, newDataSet => {
-               newDataSet.data = [...dataset.data, stat.value];
+               if(stat.value) {
+                  newDataSet.data = [...dataset.data, stat.value];
+               }
                return newDataSet;
             });
          }
@@ -89,11 +91,13 @@ export const getCumulatedData = createSelector([getActiveActivity], ({activity})
       Object.values<CellInfo>(activity.calendarEntries).forEach((cellInfo) => cellInfo.stats?.filter((stat) => {
          return !disallowedNames.includes(stat.name)
       }).forEach((stat) => {
-         const index = dataObject.findIndex((data) => data.label === stat.name);
-         if (index === -1) {
-            dataObject.push({label: stat.name, data: stat.value});
-         } else {
-            dataObject[index].data += stat.value;
+         if(stat.value) {
+            const index = dataObject.findIndex((data) => data.label === stat.name);
+            if (index === -1) {
+               dataObject.push({label: stat.name, data: stat.value});
+            } else {
+               dataObject[index].data += stat.value;
+            }
          }
       }))
       return dataObject;

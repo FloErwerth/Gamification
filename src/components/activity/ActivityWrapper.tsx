@@ -22,6 +22,5 @@ export const ActivityWrapper = ({
       navigate(Pages.ACTIVITY);
    }, []);
 
-   return <ClickableCard titleFontSize={15} title={name} onClick={openActivity}>
-   </ClickableCard>
+   return <ClickableCard titleFontSize={15} title={name} onClick={openActivity} />
 };

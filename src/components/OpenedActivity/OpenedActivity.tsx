@@ -1,7 +1,11 @@
 import {ActivityProps, DateType} from "../../store/activities/types";
 import {getClasses} from "../../utils/styleUtils";
 import {styles} from "./styles";
-import {getGeneratedDisplayDate} from "../calendar/utils";
+import {
+   getAmericanDate,
+   getGeneratedDisplayDate,
+   getIsoDateWithLeadingZeros
+} from "../calendar/utils";
 import {useCallback, useMemo, useState} from "react";
 import produce from "immer";
 import {DisplayedProgress} from "../DisplayedProgress/DisplayedProgress";
@@ -11,6 +15,7 @@ import {useAppSelector} from "../../store/store";
 import {getCell} from "../../store/activities/activitiesSelectors";
 import {ActivityInput} from "../ActivityInput/ActivityInput";
 import {Stat} from "../../activitiesAssembly/stats";
+import {Temporal} from "@js-temporal/polyfill";
 
 interface OpenedActivityProps {
    activeActivity: { index: number, activity: ActivityProps },
@@ -38,7 +43,7 @@ export const OpenedActivity = ({
       if (!cellMarked) {
          setStats((old) => produce(old, newStats => {
             if (!value) {
-               newStats[index].value = "";
+               newStats[index].value = undefined;
             } else {
                newStats[index].value = parseFloat(value);
             }
@@ -53,7 +58,7 @@ export const OpenedActivity = ({
    }, [stats])
 
    return <div className={cssClasses.mainWrapper}>
-      <div className={cssClasses.title}>{getGeneratedDisplayDate(date)}</div>
+      <div className={cssClasses.title}>{getAmericanDate(date, { day: true, month: true})}</div>
       <div>
          {cellMarked && cell.stats && <>
              <small>Here is the overview of your activity</small>

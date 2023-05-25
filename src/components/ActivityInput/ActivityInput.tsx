@@ -23,6 +23,7 @@ const numberErrorMessage = "Please only type in numbers.";
 
 export const ActivityInput = ({stat, label, onChange}: IActivityInput) => {
    const activeActivityInfo = useAppSelector(getActiveActivityInfo(stat.name));
+   const [value, setValue] = useState<Dayjs | string>("");
    const [error, setError] = useState(false);
    const getFieldProps = useMemo(() => {
       return {
@@ -39,16 +40,18 @@ export const ActivityInput = ({stat, label, onChange}: IActivityInput) => {
       if (value) {
          if (typeof value === "string") {
             if (getIsNumberType(activeActivityInfo?.type.input)) {
-               if (number.safeParse(parseFloat(value)).success) {
-                  onChange(value);
+               const parse = number.safeParse(parseFloat(value));
+               if (parse.success) {
+                  setValue(parse.data.toString());
+                  onChange(parse.data.toString());
                }
-            } else {
-               onChange(value);
             }
          } else {
+            setValue(value);
             onChange(toSeconds(value.hour(), value.minute(), value.second(), activeActivityInfo?.type.input).toString());
          }
       } else {
+         setValue("");
          onChange("");
       }
    }, [activeActivityInfo]);
@@ -56,5 +59,5 @@ export const ActivityInput = ({stat, label, onChange}: IActivityInput) => {
    return <>{isTimeType(activeActivityInfo?.type.input) ? <TimeField onChange={handleChange} {...getFieldProps} /> :
       <TextField
          onChange={(e) => handleChange(e.target.value)}
-         value={stat.value} {...getFieldProps} />}</>
+         value={value} {...getFieldProps} />}</>
 }

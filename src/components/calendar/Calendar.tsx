@@ -3,7 +3,7 @@ import {cellStyles, styles} from "./styles";
 import {ActivityProps, CellInfo, DateType} from "../../store/activities/types";
 import {useCalendar} from "./useCalendar";
 import {useMemo} from "react";
-import {getDay, getDisplayMonth} from "./utils";
+import {getAmericanDate, getDay, getDisplayMonth} from "./utils";
 import {Button} from "../../basicComponents/Button/Button";
 import {Stat} from "../../activitiesAssembly/stats";
 
@@ -29,11 +29,11 @@ const CalendarCell = ({onClick, calendarObject, date}: CalendarCell) => {
 
 const weekDays = ["Mo", "Tues", "Wed", "Thur", "Fr", "Sa", "So"];
 const calendarClasses = getClasses(styles);
-
 export const Calendar = ({onClick, activity}: CalendarProps) => {
    const [currentCalendar, showPreviousMonth, showNextMonth, showJump, decreaseMonth, increaseMonth, showCurrentMonth, shownDate] = useCalendar();
    return <div className={calendarClasses.mainWrapper}>
-      <h2>{activity?.name}, {getDisplayMonth(shownDate.month)} {shownDate.year}</h2>
+      <div className={calendarClasses.header}><div className={calendarClasses.title}>{activity?.name}</div>
+         <div>{shownDate.toLocaleString("en-US", {month: "short", day: "2-digit"})}</div></div>
       <div className={calendarClasses.weekdaysWrapper}>{weekDays.map((weekday) => <div key={weekday}
                                                                                        className={calendarClasses.weekday}>{weekday}</div>)}</div>
       <div className={calendarClasses.calendarWrapper}>

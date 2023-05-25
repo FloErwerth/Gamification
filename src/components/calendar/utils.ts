@@ -33,27 +33,32 @@ export const getDisplayMonth = (month: number) => {
 export const getGeneratedDisplayDate = (date: DateType) => {
    const split = date.split("-");
    const month = getDisplayMonth(parseInt(split[1]));
-   return `${month}, ${split[1]}`
+   return `${month}, ${split[0]}`
 }
 
 export const getDay = (date: DateType) => {
-   return date.split("-")[0];
+   return date.split("-")[2];
+}
+
+export const getAmericanDate = (date: DateType, options: {month?: true, day?: true, year?: true}) => {
+   return Temporal.PlainDate.from(date.toString()).toLocaleString("en-US",{ calendar: 'gregory', year: options?.year && "numeric", month: options?.month && 'long', day: options?.day && 'numeric' })
 }
 
 export const getWholeDisplayDate = (date: DateType) => {
-   const temporalDate = Temporal.PlainDate.from(getIsoDateWithLeadingZeros(date));
-   return `${getDisplayMonth(temporalDate.month)} ${temporalDate.day}, ${temporalDate.year}`
+   const temporalDate = Temporal.PlainDate.from(date).toLocaleString("en-US", {day: "2-digit", month: "short", year: "numeric"});
+   return temporalDate;
 }
 
 export const getIsoDateWithLeadingZeros = (date: DateType) => {
-   const split = date.split("-");
+
+}
+
+export const generateISOString = (date: string): DateType => {
+   console.log(date);
+   const split = date.split(".");
    const year = parseInt(split[2]);
    const month = parseInt(split[1]);
    const day = parseInt(split[0]);
    return `${year}-${month < 10 ? `0${month}` : month}-${day < 10 ? `0${day}` : day}`
-}
-
-export const generateISOString = (date: string): DateType => {
-   return date.split(".").join("-") as DateType;
 }
 
