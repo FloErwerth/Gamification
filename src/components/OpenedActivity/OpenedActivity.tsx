@@ -75,7 +75,7 @@ export const OpenedActivity = ({
       <div className={cssClasses.buttons}>
          {!cellMarked ? <Button
                onClick={handleConfirm}>Confirm progress</Button> :
-            <ConfirmButton className={cssClasses.button} barColor={"rgb(255, 100, 100)"} confirmTime={500}
+            <ConfirmButton className={cssClasses.button} barColor={"red"} confirmTime={500}
                            onClick={onDeleteProgress}>Delete
                progress</ConfirmButton>}</div>
 

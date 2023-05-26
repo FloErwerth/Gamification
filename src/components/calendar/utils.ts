@@ -54,7 +54,6 @@ export const getIsoDateWithLeadingZeros = (date: DateType) => {
 }
 
 export const generateISOString = (date: string): DateType => {
-   console.log(date);
    const split = date.split(".");
    const year = parseInt(split[2]);
    const month = parseInt(split[1]);

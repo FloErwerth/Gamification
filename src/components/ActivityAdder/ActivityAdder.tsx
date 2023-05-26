@@ -1,21 +1,13 @@
-import {Dispatch, SetStateAction, useCallback, useContext, useState} from "react";
+import {useCallback, useContext, useMemo, useState} from "react";
 import {Modal} from "../../basicComponents/Modal/Modal";
 import {getClasses} from "../../utils/styleUtils";
 import {activityAdderClasses} from "./styles";
-import {addActivity} from "../../store/activities/activitiesActions";
-import {useAppDispatch, useAppSelector} from "../../store/store";
-import {addActivityInDatabase} from "../../../firebase";
-import {getIsLoggedIn, getUserId,} from "../../store/authentication/authSelectors";
-import {PredefinedActivities,} from "../../activitiesAssembly/predefinedActivities";
-import {ActivityProps} from "../../store/activities/types";
-import {getActivities} from "../../store/activities/activitiesSelectors";
-import {toast} from "react-toastify";
-import {StatSelector} from "./Components/StatSelector/StatSelector";
 import {Stat} from "../../activitiesAssembly/stats";
-import {Button} from "@mui/material";
-import {StatOverview} from "./StatOverview/StatOverview";
-import {EditStat} from "../EditStat/EditStat";
+import {Button, Step, StepLabel, Stepper} from "@mui/material";
 import {ActivityAdderContext} from "./ActivityAdderContext/ActivityAdderContext";
+import {Step1} from "./Steps/Step1/Step1";
+import {Step2} from "./Steps/Step2/Step2";
+import {Step3} from "./Steps/Step3/Step3";
 
 const cssClasses = getClasses(activityAdderClasses);
 
@@ -24,91 +16,60 @@ export interface ActivityAdderModalContentProps {
    onSetStats: (stats: Stat[]) => void;
    onHandleStatDeletion: (name: Stat) => void;
    onAddAdditionalStats: (value: boolean) => void;
-   setActivityName: Dispatch<SetStateAction<string>>
-   activityName?: string;
 }
 
-
+const steps = [{label:"Name and Days", Component: Step1}, {label:"Stats", Component: Step2}, {label: "Check and confirm", Component: Step3}];
 export const ActivityAdder = () => {
-   const [showAdderModal, setShowAdderModal] = useState(false);
-   const loggedIn = useAppSelector(getIsLoggedIn);
-   const [activityName, setActivityName] = useState<PredefinedActivities | string>("");
-   const userId = useAppSelector(getUserId);
-   const currentActivites = useAppSelector(getActivities);
-   const [addAdditionalActivity, setAddAdditionalAcitivity] = useState(false);
-   const {editStat, stats, setStats} = useContext(ActivityAdderContext);
-   const dispatch = useAppDispatch();
 
-   const handleSetAdditionalFields = useCallback((selectedFields: Stat[]) => {
-      setStats?.((stats) => [...stats, ...selectedFields]);
-      setAddAdditionalAcitivity(false);
-   }, [stats])
+   const {showAdder, setActiveStep, onCreation, activeStep,setShowAdder, activityName, handleConfirmEdit, handleCancelEdit,editStat, stats, onClose} = useContext(ActivityAdderContext);
 
-
-   const handleDeleteSelectedField = useCallback((deletedField: Stat) => {
-      setStats?.((prev) => prev.filter((field) => field.name !== deletedField.name));
-   }, [stats]);
-
-   const handleSetAddedStats = useCallback((newStats: Stat[]) => {
-      if (newStats.length === 0) {
-         setStats?.([]);
-         return;
+   const handleNextStep = useCallback(() => {
+      if((activeStep ?? 0) < 2) {
+         setActiveStep?.((step) => step + 1);
       }
-      if (stats) {
-         const newDefaultStats = newStats.filter((stat) => !stats?.find((curStat) => curStat.name === stat.name));
-         setStats?.([...stats, ...newDefaultStats]);
+      else if(activeStep === 2) {
+         onCreation?.();
       }
-   }, [activityName, stats]);
+   }, [activeStep,setActiveStep])
 
-   const handleCreation = useCallback(() => {
-      if (
-         activityName.length > 3 && stats && stats.length !== 0 &&
-         userId
-      ) {
-         toast("Activity Added", {type: "success"})
-         setShowAdderModal(false);
-         const generatedActivity: ActivityProps = {
-            name: activityName,
-            calendarEntries: {},
-            stats: stats,
-            maxValue: 1,
-            currentValue: 0,
-            level: 0,
-         };
-         addActivityInDatabase(userId, currentActivites, generatedActivity).then(() => {
-            dispatch(addActivity(generatedActivity));
-         });
+   const handlePreviousStep = useCallback(() => {
+      setActiveStep?.((step) => step - 1);
+   }, [setActiveStep])
+
+   const disabled = useMemo(() => {
+      if(activeStep === 0) {
+         return !activityName
       }
-   }, [userId, activityName, stats]);
-
-   if (!loggedIn) {
-      return null;
-   }
-
-   const handleClose = useCallback(() => {
-      setShowAdderModal(false);
-      setAddAdditionalAcitivity(false);
-   }, []);
+      else if(activeStep === 1) {
+         return !stats || (stats && stats.length === 0);
+      }
+      else {
+         return false;
+      }
+   },[stats, activityName])
 
    return (
       <><Button
          className={cssClasses.addButton}
-         onClick={() => setShowAdderModal(true)}
+         onClick={() => setShowAdder?.(true)}
       >
          Add Activity
       </Button>
-         {showAdderModal && (
-            <Modal open={showAdderModal} onClose={handleClose}>
-               <div className={cssClasses.modalWrapper}>{addAdditionalActivity ?
-                  <StatSelector onFieldSelectorClosed={handleSetAdditionalFields}/> :
-                  <>{editStat ?
-                     <EditStat/> :
-                     <StatOverview setActivityName={setActivityName} activityName={activityName}
-                                   onAddAdditionalStats={() => setAddAdditionalAcitivity(true)}
-                                   onHandleStatDeletion={handleDeleteSelectedField}
-                                   onSetStats={handleSetAddedStats}
-                                   onCreation={handleCreation}/>}</>
-               }</div>
+         {showAdder && (
+            <Modal open={showAdder} onClose={onClose}>
+               <div className={cssClasses.modalWrapper}>
+                  <Stepper activeStep={activeStep} alternativeLabel>
+                     {steps.map(({label, Component}, index) => <Step><StepLabel>{label}</StepLabel></Step>)}
+                  </Stepper>
+                  <>{steps.map(({Component}, index) => { return index === activeStep && <Component />})}</>
+                      <div className={cssClasses.buttons}>
+                         {editStat ?
+                             <><Button onClick={handleCancelEdit}>Cancel edit</Button><Button onClick={handleConfirmEdit}>Confirm edit</Button></>:
+                             <>{activeStep && activeStep > 0 ?
+                                 <Button onClick={handlePreviousStep}>Previous step</Button> : <div></div>}
+                                <Button disabled={disabled} onClick={handleNextStep}>{activeStep === 2 ? "Create activity" : "Next step"}</Button></>}
+                      </div>
+               </div>
             </Modal>
          )}
       </>

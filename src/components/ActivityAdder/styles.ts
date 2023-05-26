@@ -1,10 +1,10 @@
 export const activityAdderClasses = {
    modalWrapper: {
       display: "grid",
-      gridTemplateRows: "30px 440px 30px",
+      gridTemplateRows: "auto 400px auto",
       padding: 20,
-      width: 500,
       gap: 20,
+      width: 550,
    },
    buttons: {
       marginTop: 10,
@@ -15,22 +15,12 @@ export const activityAdderClasses = {
       width: 40,
       height: 40,
    },
-   daysWrapper: {
-      display: "flex",
-      flexDirection: "row",
-      marginInline: "auto",
-      marginTop: 5,
-      gap: 5,
-   },
    addIcon: {
       width: 30,
       height: 30,
    },
    nameInput: {
       marginBottom: 10,
-   },
-   statsTitle: {
-      paddingBlock: 15,
    },
    fieldsWrapper: {
       marginTop: 10,
@@ -48,7 +38,7 @@ export const activityAdderClasses = {
    fieldsContainer: {
       display: "grid",
       gap: 15,
-      gridTemplateRows: "auto auto auto auto",
+      gridTemplateRows: "auto auto auto",
    },
    inputWrapper: {
       display: "flex",
