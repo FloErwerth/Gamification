@@ -7,6 +7,7 @@ import {getCalendarEntries} from "../../store/activities/activitiesSelectors";
 import {generateISOString} from "./utils";
 import {CalendarType, DateType} from "../../store/activities/types";
 import {setCurrentlySelectedMonth, setDaysInMonth} from "../../store/calendar/calendarActions";
+import {Day, WeekInterval} from "../ActivityAdder/ActivityAdderContext/ActivityAdderContext";
 
 
 const gregorian = Temporal.Calendar.from('gregory');
@@ -27,6 +28,54 @@ const getDate = (day: number, year: number, month: number) => {
    return generateISOString(gregorian.dateFromFields({day, year, month}).toLocaleString("de"));
 }
 
+const getWeeksInMonth = (weekInterval: WeekInterval[]): number[] => {
+   const getWeek = (weekInterval: WeekInterval) => {
+      switch (weekInterval) {
+         case "First week": {
+            return 1;
+         }
+         case "Second week": {
+            return 2;
+         }
+         case "Third week": {
+            return 3;
+         }
+         case "Fourth week": {
+            return 4;
+         }
+         default:
+            return 0;
+
+      }
+   }
+   return weekInterval.map((week) => getWeek(week));
+}
+
+const getDaysInWeek = (days: Day[]): number[] => {
+   const getDay = (day: Day) => {
+      switch (day) {
+         case "Monday":
+            return 1;
+         case "Tuesday":
+            return 2;
+         case "Wednesday":
+            return 3;
+         case "Thursday":
+            return 4;
+         case "Friday":
+            return 5;
+         case "Saturday":
+            return 6;
+         case "Sunday":
+            return 7;
+         default:
+            return 0;
+      }
+   }
+   return days.map((day) => getDay(day));
+
+}
+
 function getDates(date: Temporal.ZonedDateTime) {
    let day = 1;
    const daysInMonth = gregorian.daysInMonth(date);
@@ -43,8 +92,8 @@ export const useCalendar = () => {
    const [producedCalendar, setProducedCalendar] = useState<CalendarType>({});
    const creationDate = useAppSelector(getCreationDate);
    const [showNextMonth, setShowNextMonth] = useState(getShowNextMonth(shownDate.month));
-   const activtiyIndex = useAppSelector(getActiveActivity).index;
-   const calendarEntries = useAppSelector(getCalendarEntries(activtiyIndex));
+   const activity = useAppSelector(getActiveActivity);
+   const calendarEntries = useAppSelector(getCalendarEntries(activity.index));
    const [showPreviousMonth, setShowPreviousMonth] = useState(getShowPreviousMonth(shownDate.month, creationDate));
    const [showJump, setShowJump] = useState(getShowJump(shownDate.month));
    const dispatch = useAppDispatch();
@@ -60,11 +109,16 @@ export const useCalendar = () => {
       const numberDatesInBack = fillableSpace - numberDatesInFront >= 7 ? fillableSpace - numberDatesInFront - 7 : fillableSpace - numberDatesInFront;
       const startDayIndex = gregorian.daysInMonth(previousMonth) - numberDatesInFront;
       const dates = getClampedDays(previousMonth, startDayIndex, numberDatesInFront).concat(getDates(shownDate)).concat(getClampedDays(nextMonth, 0, numberDatesInBack));
+      const daysInWeek = getDaysInWeek(activity.activity.weekdays);
+      const weeksInMonth = getWeeksInMonth(activity.activity.weeklyInterval);
       for (let i = 0; i < dates.length; i++) {
+         const temporalDate = Temporal.PlainDate.from(dates[i]);
+         const _weekInMonth = Math.ceil(temporalDate.day / 7);
+         const weekInMonth = _weekInMonth === 5 ? 1 : _weekInMonth;
          const existentCellInfos = calendarEntries[dates[i]];
          const frontDisabled = i >= numberDatesInFront;
          const appendDisabled = i < dates.length - numberDatesInBack;
-         const interactable = frontDisabled && appendDisabled;
+         const interactable = frontDisabled && appendDisabled && daysInWeek.includes(temporalDate.dayOfWeek) && weeksInMonth.includes(weekInMonth);
          if (existentCellInfos) {
             calendar[dates[i]] = {...existentCellInfos, interactable};
          } else {

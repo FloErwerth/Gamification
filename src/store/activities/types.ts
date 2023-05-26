@@ -1,4 +1,5 @@
 import {Stat} from "../../activitiesAssembly/stats";
+import {Day, WeekInterval} from "../../components/ActivityAdder/ActivityAdderContext/ActivityAdderContext";
 
 export type DateType = `${string}-${string}-${string}`;
 export type CalendarType = { [date: DateType]: CellInfo };
@@ -11,5 +12,7 @@ export type ActivityProps = {
    maxValue: number;
    name: string;
    level: number;
+   weekdays: Day[];
+   weeklyInterval: WeekInterval[];
    calendarEntries: CalendarType;
 };
