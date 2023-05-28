@@ -8,7 +8,7 @@ import {getUnitOptions} from "../../../../activitiesAssembly/units";
 
 const cssClasses = getClasses(styles);
 export const EditStat = () => {
-   const {editedStat,handleEditedStat} = useContext(ActivityAdderContext);
+   const {editedStat, handleEditedStat} = useContext(ActivityAdderContext);
    const options = getUnitOptions(editedStat?.name);
 
 
