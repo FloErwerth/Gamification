@@ -5,6 +5,8 @@ export const styles = style({
       fontSize: 25,
       marginBottom: 20,
       fontWeight: "bold",
+      display: "flex",
+      justifyContent: "space-between",
    },
    wrapper: {}
 })

@@ -19,6 +19,8 @@ import {setLastPage} from "../../store/router/routerActions";
 import {ActivityChart} from "../../components/Charts/ActivityChart/ActivityChart";
 import {ActivityStatistics} from "../../Statistics/ActivityStatistics";
 import {Stat} from "../../activitiesAssembly/stats";
+import {Button} from "@mui/material";
+import {Edit} from "@mui/icons-material";
 
 const cssClasses = getClasses(styles);
 export const ActivityPage = () => {
@@ -82,7 +84,8 @@ export const ActivityPage = () => {
    }, [])
 
    return <div className={cssClasses.wrapper}>
-      <div className={cssClasses.title}>{activeActivity.activity?.name}</div>
+      <div className={cssClasses.title}>{activeActivity.activity?.name}<Button startIcon={<Edit/>}>Edit
+         activity</Button></div>
       {activeActivity.activity && <Calendar activity={activeActivity.activity} onClick={handleCalendarClick}/>}
       <ActivityChart/>
       <ActivityStatistics/>
