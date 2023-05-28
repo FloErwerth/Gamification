@@ -37,7 +37,7 @@ export const Overview = () => {
          <div className={cssClasses.statsWrapper}>{filteredArray.map((activityProps, index) =>
             <ActivityWrapper index={index} {...activityProps} />)}</div>
          <div className={cssClasses.activityAdderWrapper}>
-            <ActivityAdderContextProvider/>
+            <ActivityAdderContextProvider buttonLabel={"Add activity"}/>
          </div>
       </>
    );

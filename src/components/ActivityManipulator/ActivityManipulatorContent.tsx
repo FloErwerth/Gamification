@@ -10,12 +10,16 @@ import {ActivityManipulatorContext} from "./ActivityManipulatorContext/ActivityM
 
 const cssClasses = getClasses(activityAdderClasses);
 
+interface ActivityManipulatorContentProps {
+   label: string;
+}
+
 const steps = [
    {label: "Name and Days", Component: Step1},
    {label: "Stats", Component: Step2},
    {label: "Check and confirm", Component: Step3},
 ];
-export const ActivityManipulatorContent = () => {
+export const ActivityManipulatorContent = ({label}: ActivityManipulatorContentProps) => {
    const {
       showAdder,
       setActiveStep,
@@ -58,7 +62,7 @@ export const ActivityManipulatorContent = () => {
             className={cssClasses.addButton}
             onClick={() => setShowAdder?.(true)}
          >
-            Add Activity
+            {label}
          </Button>
          {showAdder && (
             <Modal open={showAdder} onClose={onClose}>

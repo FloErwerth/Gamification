@@ -61,7 +61,11 @@ type ActivityAdderContextType =
    & GeneralContext & WeekIntervalContext;
 export const ActivityManipulatorContext = createContext<ActivityAdderContextType>({defaultDays: defaultDays.options});
 
-export const ActivityAdderContextProvider = () => {
+interface ActivityAdderContextProvider {
+   buttonLabel: string;
+}
+
+export const ActivityAdderContextProvider = ({buttonLabel}: ActivityAdderContextProvider) => {
 
    const userId = useAppSelector(getUserId);
    const currentActivites = useAppSelector(getActivities);
@@ -207,5 +211,5 @@ export const ActivityAdderContextProvider = () => {
          handleEditedStat,
          handleConfirmEdit,
          handleCancelEdit
-      }}><ActivityManipulatorContent/></ActivityManipulatorContext.Provider>
+      }}><ActivityManipulatorContent label={buttonLabel}/></ActivityManipulatorContext.Provider>
 }
