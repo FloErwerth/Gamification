@@ -14,6 +14,7 @@ export const getDefaultStat = (stat?: StatEnumType): Stat => {
       case "Duration":
          return {name: stat, type: {input: ActivityInputTypes.MINUTES, format: "mm:ss"}, preferedUnit: "minutes"};
       case "Calories burned":
+         return {name: stat, type: {input: ActivityInputTypes.NUMBER}, preferedUnit: "kCal"};
       case "Pages read":
       case "Pages written":
       case "Pictures drawn":
