@@ -1,6 +1,6 @@
 import {createContext, Dispatch, SetStateAction, useCallback, useState} from "react";
 import {getDefaultStats, Stat} from "../../../activitiesAssembly/stats";
-import {ActivityAdder} from "../ActivityAdder";
+import {ActivityManipulatorContent} from "../ActivityManipulatorContent";
 import {z} from "zod";
 import {toast} from "react-toastify";
 import {ActivityProps} from "../../../store/activities/types";
@@ -59,7 +59,7 @@ type ActivityAdderContextType =
    & AdderContext
    & ActivityNameContext
    & GeneralContext & WeekIntervalContext;
-export const ActivityAdderContext = createContext<ActivityAdderContextType>({defaultDays: defaultDays.options});
+export const ActivityManipulatorContext = createContext<ActivityAdderContextType>({defaultDays: defaultDays.options});
 
 export const ActivityAdderContextProvider = () => {
 
@@ -175,7 +175,7 @@ export const ActivityAdderContextProvider = () => {
       setAddAdditionalStats(false);
    }, [stats])
 
-   return <ActivityAdderContext.Provider
+   return <ActivityManipulatorContext.Provider
       value={{
          selectedWeekInterval,
          defaultWeekInterval: weekInterval.options,
@@ -207,5 +207,5 @@ export const ActivityAdderContextProvider = () => {
          handleEditedStat,
          handleConfirmEdit,
          handleCancelEdit
-      }}><ActivityAdder/></ActivityAdderContext.Provider>
+      }}><ActivityManipulatorContent/></ActivityManipulatorContext.Provider>
 }

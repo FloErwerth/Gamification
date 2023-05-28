@@ -1,6 +1,5 @@
 import {DisplayedField} from "../../Components/DisplayedField/DisplayedField";
 import React, {useContext, useState} from "react";
-import {ActivityAdderContext} from "../../ActivityAdderContext/ActivityAdderContext";
 import {ActivityCategory, MapCategoryToStats, TActivityCategory} from "../../../../activitiesAssembly/categories";
 import {AutoComplete} from "../../../AutocompleteItem/AutoComplete";
 import {SelectableField} from "../../../SelectableField/SelectableField";
@@ -10,6 +9,7 @@ import {styles} from "./styles";
 import {EditStat} from "../../Components/EditStat/EditStat";
 import {usePropsFilter} from "../../../../utils/usePropsFilter";
 import {Input} from "../../../Input/Input";
+import {ActivityManipulatorContext} from "../../ActivityManipulatorContext/ActivityManipulatorContext";
 
 const useAvailableFields = (filter: TActivityCategory, alreadyAdded: Stat[] | undefined) => {
    const availableStats = getDefaultStats(MapCategoryToStats(filter).options.filter((option) => !alreadyAdded?.find((stat) => stat.name === option)));
@@ -28,7 +28,7 @@ export const Step2 = () => {
       handleSetAdditionalStats,
       handleStatDeletion,
       handleStatEdit
-   } = useContext(ActivityAdderContext);
+   } = useContext(ActivityManipulatorContext);
    const [categoryFilter, setCategoryFilter] = useState<TActivityCategory>("All");
    const {
       setStatFilter,

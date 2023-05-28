@@ -1,8 +1,8 @@
 import {useContext} from "react";
-import {ActivityAdderContext} from "../../ActivityAdderContext/ActivityAdderContext";
 import {Chip} from "@mui/material";
 import {getClasses} from "../../../../utils/styleUtils";
 import {styles} from "./styles";
+import {ActivityManipulatorContext} from "../../ActivityManipulatorContext/ActivityManipulatorContext";
 
 const cssClasses = getClasses(styles);
 export const Step3 = () => {
@@ -13,7 +13,7 @@ export const Step3 = () => {
       selectedWeekInterval,
       defaultWeekInterval,
       stats
-   } = useContext(ActivityAdderContext);
+   } = useContext(ActivityManipulatorContext);
    return <div className={cssClasses.wrapper}>
       <strong>The following activity will be created</strong>
       <div>

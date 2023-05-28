@@ -2,28 +2,20 @@ import {useCallback, useContext, useMemo} from "react";
 import {Modal} from "../../basicComponents/Modal/Modal";
 import {getClasses} from "../../utils/styleUtils";
 import {activityAdderClasses} from "./styles";
-import {Stat} from "../../activitiesAssembly/stats";
 import {Button, Step, StepLabel, Stepper} from "@mui/material";
 import {Step1} from "./Steps/Step1/Step1";
 import {Step2} from "./Steps/Step2/Step2";
 import {Step3} from "./Steps/Step3/Step3";
-import {ActivityAdderContext} from "./ActivityManipulatorContext/ActivityAdderContext";
+import {ActivityManipulatorContext} from "./ActivityManipulatorContext/ActivityManipulatorContext";
 
 const cssClasses = getClasses(activityAdderClasses);
-
-export interface ActivitiyManipulatorModalContentProps {
-   onCreation: () => void;
-   onSetStats: (stats: Stat[]) => void;
-   onHandleStatDeletion: (name: Stat) => void;
-   onAddAdditionalStats: (value: boolean) => void;
-}
 
 const steps = [
    {label: "Name and Days", Component: Step1},
    {label: "Stats", Component: Step2},
    {label: "Check and confirm", Component: Step3},
 ];
-export const ActivityManipulator = () => {
+export const ActivityManipulatorContent = () => {
    const {
       showAdder,
       setActiveStep,
@@ -36,7 +28,7 @@ export const ActivityManipulator = () => {
       editStat,
       stats,
       onClose,
-   } = useContext(ActivityAdderContext);
+   } = useContext(ActivityManipulatorContext);
 
    const handleNextStep = useCallback(() => {
       if ((activeStep ?? 0) < 2) {

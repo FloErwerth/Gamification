@@ -3,10 +3,10 @@ import {PredefinedActivities} from "../../../../activitiesAssembly/predefinedAct
 import {AutoComplete} from "../../../AutocompleteItem/AutoComplete";
 import {getCategory} from "../../../../activitiesAssembly/categories";
 import {WithHelpText} from "../../../../hoc/WithHelpText/WithHelpText";
-import {ActivityAdderContext} from "../../ActivityAdderContext/ActivityAdderContext";
 import {getClasses} from "../../../../utils/styleUtils";
 import {styles} from "./styles";
 import {SelectableChip} from "../../../SelectableChip/SelectableChip";
+import {ActivityManipulatorContext} from "../../ActivityManipulatorContext/ActivityManipulatorContext";
 
 const cssClasses = getClasses(styles);
 export const Step1 = () => {
@@ -17,7 +17,7 @@ export const Step1 = () => {
       selectedDays,
       defaultWeekInterval, selectedWeekInterval, setWeekInterval,
       setSelectedDays
-   } = useContext(ActivityAdderContext);
+   } = useContext(ActivityManipulatorContext);
 
    return <div className={cssClasses.wrapper}>
       <WithHelpText position={"end"} placement={"right"}

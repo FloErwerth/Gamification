@@ -1,5 +1,8 @@
 import {Stat} from "../../activitiesAssembly/stats";
-import {Day, WeekInterval} from "../../components/ActivityAdder/ActivityAdderContext/ActivityAdderContext";
+import {
+   Day,
+   WeekInterval
+} from "../../components/ActivityManipulator/ActivityManipulatorContext/ActivityManipulatorContext";
 
 export type DateType = `${string}-${string}-${string}`;
 export type CalendarType = { [date: DateType]: CellInfo };

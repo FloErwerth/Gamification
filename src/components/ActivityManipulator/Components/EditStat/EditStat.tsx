@@ -2,13 +2,13 @@ import {FormControl, InputLabel, MenuItem, Select} from "@mui/material";
 import {getClasses} from "../../../../utils/styleUtils";
 import {styles} from "./styles";
 import {useContext} from "react";
-import {ActivityAdderContext} from "../../ActivityAdderContext/ActivityAdderContext";
 import {getUnitOptions} from "../../../../activitiesAssembly/units";
+import {ActivityManipulatorContext} from "../../ActivityManipulatorContext/ActivityManipulatorContext";
 
 
 const cssClasses = getClasses(styles);
 export const EditStat = () => {
-   const {editedStat, handleEditedStat} = useContext(ActivityAdderContext);
+   const {editedStat, handleEditedStat} = useContext(ActivityManipulatorContext);
    const options = getUnitOptions(editedStat?.name);
 
 

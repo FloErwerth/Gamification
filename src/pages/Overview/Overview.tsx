@@ -8,7 +8,9 @@ import {Input} from "../../components/Input/Input";
 import {useEffect} from "react";
 import {setLastPage} from "../../store/router/routerActions";
 import {Pages} from "../../types/pages";
-import {ActivityAdderContextProvider} from "../../components/ActivityAdder/ActivityAdderContext/ActivityAdderContext";
+import {
+   ActivityAdderContextProvider
+} from "../../components/ActivityManipulator/ActivityManipulatorContext/ActivityManipulatorContext";
 
 const cssClasses = getClasses(overStyles);
 

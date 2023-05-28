@@ -1,5 +1,5 @@
-import {DisplayedField} from "../ActivityAdder/Components/DisplayedField/DisplayedField";
 import {Stat} from "../../activitiesAssembly/stats";
+import {DisplayedField} from "../ActivityManipulator/Components/DisplayedField/DisplayedField";
 
 interface ISelectableButton {
    onClick: (value: Stat) => void

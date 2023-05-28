@@ -7,7 +7,7 @@ import {getCalendarEntries} from "../../store/activities/activitiesSelectors";
 import {generateISOString} from "./utils";
 import {CalendarType, DateType} from "../../store/activities/types";
 import {setCurrentlySelectedMonth, setDaysInMonth} from "../../store/calendar/calendarActions";
-import {Day, WeekInterval} from "../ActivityAdder/ActivityAdderContext/ActivityAdderContext";
+import {Day, WeekInterval} from "../ActivityManipulator/ActivityManipulatorContext/ActivityManipulatorContext";
 
 
 const gregorian = Temporal.Calendar.from('gregory');
