@@ -11,9 +11,11 @@ const getBackgroundColor = (marked: boolean, interactable: boolean) => {
 export const cellStyles = (marked: boolean, interactable: boolean) => style({
    calendarCell: {
       all: "unset",
+      display: "flex",
+      alignItems: "flex-start",
+      flexDirection: "column",
       padding: 5,
       borderRadius: 5,
-      textAlign: "left",
       backgroundColor: getBackgroundColor(marked, interactable),
       outline: interactable ? "1px solid black" : "",
       color: interactable ? "black" : "rgb(180,180,180)",
@@ -47,7 +49,7 @@ export const styles = style({
       gap: 5,
       padding: 10,
       marginBlock: 5,
-      gridTemplateColumns: "repeat(7, auto)",
+      gridTemplateColumns: "repeat(7, 1fr)",
       textAlign: "left",
    },
    calendarButtons: {

@@ -23,7 +23,7 @@ const CalendarCell = ({onClick, calendarObject, date}: CalendarCell) => {
    return <button disabled={!calendarObject?.interactable && calendarObject?.interactable === false}
                   onClick={() => onClick(date, calendarObject.marked ?? false, calendarObject?.stats ?? [], calendarObject.info)}
                   className={cssClasses.calendarCell}>
-      <div>{getDay(date)}</div>
+      {getDay(date)}
    </button>;
 }
 
