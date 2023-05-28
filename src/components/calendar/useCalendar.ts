@@ -51,6 +51,11 @@ const getWeeksInMonth = (weekInterval: WeekInterval[]): number[] => {
    return weekInterval.map((week) => getWeek(week));
 }
 
+const weekDays = [1, 2, 3, 4, 5, 6, 7];
+const dayLabels = (shownDate: Temporal.ZonedDateTime) => {
+   return weekDays.map((day) => shownDate.with({day, month: 5, year: 2023}).toLocaleString("en-US", {weekday: "long"}));
+}
+
 const getDaysInWeek = (days: Day[]): number[] => {
    const getDay = (day: Day) => {
       switch (day) {
@@ -164,5 +169,5 @@ export const useCalendar = () => {
       setShownDate(Temporal.Now.zonedDateTime(gregorian));
    }, []);
 
-   return [producedCalendar, showPreviousMonth, showNextMonth, showJump, decreaseMonth, increaseMonth, thisMonth, shownDate] as const;
+   return [producedCalendar, showPreviousMonth, showNextMonth, showJump, decreaseMonth, increaseMonth, thisMonth, dayLabels(shownDate)] as const;
 }

@@ -3,7 +3,7 @@ import {cellStyles, styles} from "./styles";
 import {ActivityProps, CellInfo, DateType} from "../../store/activities/types";
 import {useCalendar} from "./useCalendar";
 import {useMemo} from "react";
-import {getAmericanDate, getDay, getDisplayMonth} from "./utils";
+import {getDay} from "./utils";
 import {Button} from "../../basicComponents/Button/Button";
 import {Stat} from "../../activitiesAssembly/stats";
 
@@ -27,21 +27,19 @@ const CalendarCell = ({onClick, calendarObject, date}: CalendarCell) => {
    </button>;
 }
 
-const weekDays = ["Mo", "Tues", "Wed", "Thur", "Fr", "Sa", "So"];
 const calendarClasses = getClasses(styles);
-export const Calendar = ({onClick, activity}: CalendarProps) => {
-   const [currentCalendar, showPreviousMonth, showNextMonth, showJump, decreaseMonth, increaseMonth, showCurrentMonth, shownDate] = useCalendar();
+export const Calendar = ({onClick}: CalendarProps) => {
+   const [currentCalendar, showPreviousMonth, showNextMonth, showJump, decreaseMonth, increaseMonth, showCurrentMonth, dayLabels] = useCalendar();
    return <div className={calendarClasses.mainWrapper}>
-      <div className={calendarClasses.header}><div className={calendarClasses.title}>{activity?.name}</div>
-         <div>{shownDate.toLocaleString("en-US", {month: "short", day: "2-digit"})}</div></div>
-      <div className={calendarClasses.weekdaysWrapper}>{weekDays.map((weekday) => <div key={weekday}
-                                                                                       className={calendarClasses.weekday}>{weekday}</div>)}</div>
+
       <div className={calendarClasses.calendarWrapper}>
-         {Object.keys(currentCalendar).map((date) => {
-            const typedDate = date as DateType;
-            return <CalendarCell key={date}
-                                 date={typedDate} calendarObject={currentCalendar[typedDate]} onClick={onClick}/>
-         })}
+         <>{dayLabels.map((label) => <div key={label}
+                                          className={calendarClasses.weekday}>{label}</div>)}
+            {Object.keys(currentCalendar).map((date) => {
+               const typedDate = date as DateType;
+               return <CalendarCell key={date}
+                                    date={typedDate} calendarObject={currentCalendar[typedDate]} onClick={onClick}/>
+            })}</>
       </div>
 
       <div className={calendarClasses.calendarButtons}><Button

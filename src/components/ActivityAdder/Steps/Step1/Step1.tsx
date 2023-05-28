@@ -32,8 +32,7 @@ export const Step1 = () => {
          />
       </WithHelpText>
       {activityName &&
-          <div className={cssClasses.outerWrapper}><small>Select weekdays to do the activity. <br/>Note: If no weekday
-              is selected, the activity counts for every weekday.</small>
+          <div className={cssClasses.outerWrapper}><small>Select weekdays to do the activity</small>
               <div className={cssClasses.daysWrapper}>{defaultDays?.map((day) =>
                  <SelectableChip
                     selected={selectedDays?.includes(day) ?? false}

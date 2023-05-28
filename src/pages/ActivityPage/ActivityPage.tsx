@@ -82,6 +82,7 @@ export const ActivityPage = () => {
    }, [])
 
    return <div className={cssClasses.wrapper}>
+      <div className={cssClasses.title}>{activeActivity.activity?.name}</div>
       {activeActivity.activity && <Calendar activity={activeActivity.activity} onClick={handleCalendarClick}/>}
       <ActivityChart/>
       <ActivityStatistics/>

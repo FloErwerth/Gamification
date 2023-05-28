@@ -4,7 +4,7 @@ const getBackgroundColor = (marked: boolean, interactable: boolean) => {
    if (marked) {
       return interactable ? "lightcoral" : "rgb(220, 180, 180)";
    } else {
-      return interactable ? "" : "rgb(232,232,232)";
+      return interactable ? "white" : "rgb(192,192,192)";
    }
 }
 
@@ -15,8 +15,9 @@ export const cellStyles = (marked: boolean, interactable: boolean) => style({
       borderRadius: 5,
       textAlign: "left",
       backgroundColor: getBackgroundColor(marked, interactable),
-      color: interactable ? "black" : "rgb(200,200,200)",
-      height: 30,
+      outline: interactable ? "1px solid black" : "",
+      color: interactable ? "black" : "rgb(180,180,180)",
+      height: 60,
       ":hover": {
          backgroundColor: interactable ? "coral" : "",
          cursor: interactable ? "pointer" : "",
@@ -26,15 +27,11 @@ export const cellStyles = (marked: boolean, interactable: boolean) => style({
 
 export const styles = style({
    mainWrapper: {
-      width: "fit-content",
-      margin: "auto",
+      marginInline: "auto",
+      marginBlock: 50,
    },
    header: {
-     marginBottom:20,
-   },
-   title: {
-     fontSize: 25,
-      fontWeight: "bold",
+      marginBottom: 20,
    },
    weekdaysWrapper: {
       display: "grid",
@@ -46,7 +43,6 @@ export const styles = style({
    },
    calendarWrapper: {
       display: "grid",
-      outline: "1px solid black",
       borderRadius: 5,
       gap: 5,
       padding: 10,
