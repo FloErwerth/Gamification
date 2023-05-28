@@ -123,22 +123,35 @@ export const useCalendar = () => {
          const existentCellInfos = calendarEntries[dates[i]];
          const frontDisabled = i >= numberDatesInFront;
          const appendDisabled = i < dates.length - numberDatesInBack;
-         const interactable = frontDisabled && appendDisabled && daysInWeek.includes(temporalDate.dayOfWeek) && weeksInMonth.includes(weekInMonth);
+         const isDisabled = frontDisabled && appendDisabled;
+         const isIncludedInDays = daysInWeek.includes(temporalDate.dayOfWeek) && weeksInMonth.includes(weekInMonth);
+         const hasStats = existentCellInfos && existentCellInfos.stats && existentCellInfos.stats.length > 0;
+         const getIsInteractable = () => {
+            if (isDisabled && !isIncludedInDays && !hasStats) {
+               return false;
+            } else {
+               if (hasStats && !isIncludedInDays) {
+                  return true;
+               }
+               return isIncludedInDays;
+            }
+         }
+
          if (existentCellInfos) {
-            calendar[dates[i]] = {...existentCellInfos, interactable};
+            calendar[dates[i]] = {...existentCellInfos, interactable: getIsInteractable()};
          } else {
             calendar[dates[i]] = {
                marked: false,
-               interactable,
+               interactable: getIsInteractable(),
             }
          }
       }
       setProducedCalendar(calendar);
-   }, [shownDate, calendarEntries])
+   }, [activity, shownDate, calendarEntries])
 
    useEffect(() => {
       constructCalendar();
-   }, [calendarEntries])
+   }, [activity.activity.weeklyInterval, activity.activity.weekdays, calendarEntries])
 
    useEffect(() => {
       dispatch(setDaysInMonth({daysInMonth: shownDate.daysInMonth}));

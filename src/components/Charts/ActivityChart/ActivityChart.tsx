@@ -1,4 +1,4 @@
-import {useCallback, useMemo, useRef, useState} from "react";
+import {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {Line} from "react-chartjs-2";
 import {
    CategoryScale,
@@ -17,7 +17,7 @@ import {isTimeType, toTimeFormat} from "../../../utils/getStringifiedTime";
 import {useAppSelector} from "../../../store/store";
 import {FormControlLabel, Switch} from "@mui/material";
 import {useMinMax} from "../hooks/useMinMax";
-import {StatEnumType} from "../../../activitiesAssembly/stats";
+import {Stat, StatEnumType} from "../../../activitiesAssembly/stats";
 
 
 Chart.register(
@@ -42,7 +42,6 @@ const stepCount = 6;
 export const ActivityChart = () => {
 
    const [showAllMonths, setShowAllMonths] = useState(false);
-   const [showChart, setShowChart] = useState(true);
    const activeActivity = useAppSelector(getActiveActivity).activity;
    const [stat, setStat] = useState(activeActivity.stats[0]);
    const chartData = useAppSelector(getActivityChartData(stat.name, showAllMonths));
@@ -54,6 +53,12 @@ export const ActivityChart = () => {
    const {min, max} = useMinMax(chartData.datasets);
    const chartRef = useRef<Chart<"line", number[], string>>(null);
    const showChartSheet = useMemo(() => (chartData.labels.length ?? 0) > 1, [chartData.labels]);
+
+   useEffect(() => {
+      if (!showChartSheet && activeActivity.stats.length > 0) {
+         setStat(activeActivity.stats[0]);
+      }
+   }, [showChartSheet])
 
    const getLabel = useCallback((tooltipItem: TooltipItem<"line">) => {
       const data = tooltipItem.dataset.data[tooltipItem.dataIndex]
@@ -113,7 +118,12 @@ export const ActivityChart = () => {
    }, [min, max, stat, chartData]);
 
    const handleSetFilter = useCallback((label: StatEnumType) => {
-      const foundStat = activeActivity.stats.find((stat) => stat.name === label);
+      let foundStat: Stat | undefined;
+      Object.values(activeActivity.calendarEntries).forEach(({stats}) => stats?.forEach((stat) => {
+         if (stat.name === label) {
+            foundStat = stat;
+         }
+      }));
       if (foundStat) {
          setStat(foundStat);
       }
@@ -127,10 +137,8 @@ export const ActivityChart = () => {
                                                                                               theme={stat.name === data.label ? "contained" : "outlined"}
                                                                                               onClick={() => handleSetFilter(data.label)}>{data.label}</Button>)}</div>
        </div>
-      {stat ? showChartSheet && showChart ? <Line ref={chartRef} options={options} data={chartData}/> :
+      {stat ? showChartSheet ? <Line ref={chartRef} options={options} data={chartData}/> :
          <div>Please add more data.</div> : <div>Please select data to show</div>}
-      {showChartSheet &&
-          <Button onClick={() => setShowChart(!showChart)}>{!showChart ? "Show Chart" : "Hide Chart"}</Button>}
    </div>}</>
 
 }

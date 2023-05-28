@@ -2,6 +2,7 @@ import {ActivityProps, CellInfo, DateType} from "./types";
 import {generateAction} from "../utils";
 
 type UpdateCell = { activityIndex: number, date: DateType, content: CellInfo };
+type UpdateActivityPayload = { index: number, activity: ActivityProps };
 type DeleteCell = { activityIndex: number, date: DateType };
 type DeleteActivityPayload = { activityIndex: number };
 
@@ -11,6 +12,7 @@ export enum ActivitiesActionType {
    SET_ACTIVITIES = "gamification/activity/set",
    UPDATE_CELL = "gamification/cells/update",
    DELETE_CELL = "gamification/cells/delte",
+   UPDATE_ACTIVITY = "gamification/activity/update",
 }
 
 export type ActivitiesActions =
@@ -19,10 +21,15 @@ export type ActivitiesActions =
    | { type: ActivitiesActionType.UPDATE_CELL, payload: UpdateCell }
    | { type: ActivitiesActionType.DELETE_CELL, payload: DeleteCell }
    | { type: ActivitiesActionType.DELETE_ACTIVITY, payload: DeleteActivityPayload }
+   | { type: ActivitiesActionType.UPDATE_ACTIVITY, payload: UpdateActivityPayload }
 
 
 export function addActivity(payload: ActivityProps) {
    return generateAction(ActivitiesActionType.ADD_ACTIVITY, payload);
+}
+
+export function updateActivity(payload: UpdateActivityPayload) {
+   return generateAction(ActivitiesActionType.UPDATE_ACTIVITY, payload);
 }
 
 export function setActivities(payload: ActivityProps[]) {

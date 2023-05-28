@@ -53,11 +53,22 @@ const sortObject = (chartData: ChartData): ChartData => {
 
 export const getActivityChartData = (filter: StatEnumType, showAllMonths: boolean = false) => createSelector([getCurrentlySelectedMonth, getActiveActivity], (month, {activity}): ChartData | undefined => {
    if (activity && activity.stats && activity.calendarEntries) {
+      const cellLabels: { numEntries: number, label: StatEnumType }[] = [];
+      Object.values<CellInfo>(activity.calendarEntries).forEach((entry) => {
+         entry.stats?.forEach(({name}) => {
+            const index = cellLabels.findIndex(({label}) => label === name);
+            if (index === -1) {
+               cellLabels.push({numEntries: 1, label: name});
+            } else {
+               cellLabels[index].numEntries += 1;
+            }
+         })
+      })
       const chartData: ChartData = {
          labels: [],
-         datasets: activity.stats.map((stat) => {
+         datasets: cellLabels.filter(({numEntries}) => numEntries >= 2).map(({label}) => {
             return {
-               label: stat.name,
+               label: label,
                data: [],
                cubicInterpolationMode: "monotone",
                pointStyle: "circle",
@@ -68,12 +79,12 @@ export const getActivityChartData = (filter: StatEnumType, showAllMonths: boolea
 
       Object.entries<CellInfo>(activity.calendarEntries).forEach(([date, cellInfo]) => cellInfo.stats?.forEach((stat) => {
          const dataset = chartData.datasets[chartData.datasets.findIndex((data) => data.label === stat.name)];
-         if ((month === getDayMonth(date as DateType).month || showAllMonths) && stat.name === filter) {
+         if (dataset && dataset.data && (month === getDayMonth(date as DateType).month || showAllMonths) && stat.name === filter) {
             if (!chartData.labels?.includes(date as DateType)) {
                chartData.labels?.push(date as DateType);
             }
             chartData.datasets[chartData.datasets.findIndex((data) => data.label === stat.name)] = produce(dataset, newDataSet => {
-               if(stat.value) {
+               if (stat.value) {
                   newDataSet.data = [...dataset.data, stat.value];
                }
                return newDataSet;
@@ -91,7 +102,7 @@ export const getCumulatedData = createSelector([getActiveActivity], ({activity})
       Object.values<CellInfo>(activity.calendarEntries).forEach((cellInfo) => cellInfo.stats?.filter((stat) => {
          return !disallowedNames.includes(stat.name)
       }).forEach((stat) => {
-         if(stat.value) {
+         if (stat.value) {
             const index = dataObject.findIndex((data) => data.label === stat.name);
             if (index === -1) {
                dataObject.push({label: stat.name, data: stat.value});

@@ -37,12 +37,12 @@ export const DisplayedField = ({
                    onDelete={() => onDeletion(stat)}/>
    }
 
-   if(onEdit && unitOptions) {
-       return <Chip sx={{outline: "1px solid pink"}} onClick={() => onEdit(stat)}
-                    classes={{root: editableChipClasses.root, label: editableChipClasses.editableChipLabel}} label={<>
-           <div>Edit</div>
-           <div>{stat.name}</div>
-       </>}/>
+   if (onEdit && unitOptions) {
+      return <Chip sx={{outline: "1px solid pink"}} onClick={() => onEdit(stat)}
+                   classes={{root: editableChipClasses.root, label: editableChipClasses.editableChipLabel}} label={<>
+         <div>Edit</div>
+         <div>{stat.name}</div>
+      </>}/>
    }
 
    if (onDeletion) {

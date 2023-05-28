@@ -10,22 +10,19 @@ import {ActivityManipulatorContext} from "./ActivityManipulatorContext/ActivityM
 
 const cssClasses = getClasses(activityAdderClasses);
 
-interface ActivityManipulatorContentProps {
-   label: string;
-}
-
 const steps = [
    {label: "Name and Days", Component: Step1},
    {label: "Stats", Component: Step2},
    {label: "Check and confirm", Component: Step3},
 ];
-export const ActivityManipulatorContent = ({label}: ActivityManipulatorContentProps) => {
+export const ActivityManipulatorContent = () => {
    const {
+      onEditActivity,
+      withState,
       showAdder,
       setActiveStep,
       onCreation,
       activeStep,
-      setShowAdder,
       activityName,
       handleConfirmEdit,
       handleCancelEdit,
@@ -38,9 +35,13 @@ export const ActivityManipulatorContent = ({label}: ActivityManipulatorContentPr
       if ((activeStep ?? 0) < 2) {
          setActiveStep?.((step) => step + 1);
       } else if (activeStep === 2) {
-         onCreation?.();
+         if (!withState) {
+            onCreation?.();
+         } else {
+            onEditActivity?.();
+         }
       }
-   }, [activeStep, setActiveStep]);
+   }, [withState, activeStep, setActiveStep]);
 
    const handlePreviousStep = useCallback(() => {
       setActiveStep?.((step) => step - 1);
@@ -56,51 +57,39 @@ export const ActivityManipulatorContent = ({label}: ActivityManipulatorContentPr
       }
    }, [stats, activityName]);
 
-   return (
-      <>
-         <Button
-            className={cssClasses.addButton}
-            onClick={() => setShowAdder?.(true)}
-         >
-            {label}
-         </Button>
-         {showAdder && (
-            <Modal open={showAdder} onClose={onClose}>
-               <div className={cssClasses.modalWrapper}>
-                  <Stepper activeStep={activeStep} alternativeLabel>
-                     {steps.map(({label}) => (
-                        <Step>
-                           <StepLabel>{label}</StepLabel>
-                        </Step>
-                     ))}
-                  </Stepper>
-                  <>
-                     {steps.map(({Component}, index) => {
-                        return index === activeStep && <Component/>;
-                     })}
-                  </>
-                  <div className={cssClasses.buttons}>
-                     {editStat ? (
-                        <>
-                           <Button onClick={handleCancelEdit}>Cancel edit</Button>
-                           <Button onClick={handleConfirmEdit}>Confirm edit</Button>
-                        </>
-                     ) : (
-                        <>
-                           {activeStep && activeStep > 0 ? (
-                              <Button onClick={handlePreviousStep}>Previous step</Button>
-                           ) : (
-                              <div></div>
-                           )}
-                           <Button disabled={disabled} onClick={handleNextStep}>
-                              {activeStep === 2 ? "Create activity" : "Next step"}
-                           </Button>
-                        </>
-                     )}
-                  </div>
-               </div>
-            </Modal>
-         )}
-      </>
-   );
+   return <Modal open={showAdder ?? false} onClose={onClose}>
+      <div className={cssClasses.modalWrapper}>
+         <Stepper activeStep={activeStep} alternativeLabel>
+            {steps.map(({label}) => (
+               <Step>
+                  <StepLabel>{label}</StepLabel>
+               </Step>
+            ))}
+         </Stepper>
+         <>
+            {steps.map(({Component}, index) => {
+               return index === activeStep && <Component/>;
+            })}
+         </>
+         <div className={cssClasses.buttons}>
+            {editStat ? (
+               <>
+                  <Button onClick={handleCancelEdit}>Cancel edit</Button>
+                  <Button onClick={handleConfirmEdit}>Confirm edit</Button>
+               </>
+            ) : (
+               <>
+                  {activeStep && activeStep > 0 ? (
+                     <Button onClick={handlePreviousStep}>Previous step</Button>
+                  ) : (
+                     <div></div>
+                  )}
+                  <Button disabled={disabled} onClick={handleNextStep}>
+                     {activeStep === 2 ? withState ? "Confirm edit" : "Create activity" : "Next step"}
+                  </Button>
+               </>
+            )}
+         </div>
+      </div>
+   </Modal>
 };

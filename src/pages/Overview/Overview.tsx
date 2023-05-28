@@ -5,11 +5,12 @@ import {useAppDispatch, useAppSelector} from "../../store/store";
 import {getActivities} from "../../store/activities/activitiesSelectors";
 import {ActivityWrapper} from "../../components/activity/ActivityWrapper";
 import {Input} from "../../components/Input/Input";
-import {useEffect} from "react";
+import {useContext, useEffect} from "react";
 import {setLastPage} from "../../store/router/routerActions";
 import {Pages} from "../../types/pages";
+import Button from "@mui/material/Button";
 import {
-   ActivityAdderContextProvider
+   ActivityManipulatorContext
 } from "../../components/ActivityManipulator/ActivityManipulatorContext/ActivityManipulatorContext";
 
 const cssClasses = getClasses(overStyles);
@@ -18,6 +19,7 @@ export const Overview = () => {
    const activities = useAppSelector(getActivities);
    const {filteredArray, setFilter, filter} = usePropsFilter(activities, "name");
    const dispatch = useAppDispatch();
+   const {openActivityManipulator} = useContext(ActivityManipulatorContext);
 
    useEffect(() => {
       dispatch(setLastPage(Pages.OVERVIEW));
@@ -37,7 +39,7 @@ export const Overview = () => {
          <div className={cssClasses.statsWrapper}>{filteredArray.map((activityProps, index) =>
             <ActivityWrapper index={index} {...activityProps} />)}</div>
          <div className={cssClasses.activityAdderWrapper}>
-            <ActivityAdderContextProvider buttonLabel={"Add activity"}/>
+            <Button onClick={() => openActivityManipulator?.(false)}>Add activity</Button>
          </div>
       </>
    );

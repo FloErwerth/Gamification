@@ -1,25 +1,26 @@
-import {createContext, Dispatch, SetStateAction, useCallback, useState} from "react";
+import {createContext, Dispatch, PropsWithChildren, SetStateAction, useCallback, useState} from "react";
 import {getDefaultStats, Stat} from "../../../activitiesAssembly/stats";
-import {ActivityManipulatorContent} from "../ActivityManipulatorContent";
 import {z} from "zod";
 import {toast} from "react-toastify";
 import {ActivityProps} from "../../../store/activities/types";
 import {addActivityInDatabase} from "../../../../firebase";
-import {addActivity} from "../../../store/activities/activitiesActions";
+import {addActivity, updateActivity} from "../../../store/activities/activitiesActions";
 import {useAppDispatch, useAppSelector} from "../../../store/store";
 import {getUserId} from "../../../store/authentication/authSelectors";
 import {getActivities} from "../../../store/activities/activitiesSelectors";
 import {PredefinedActivities} from "../../../activitiesAssembly/predefinedActivities";
 import {ActivityAssembly} from "../../../activitiesAssembly/activityAssembly";
 import {getTypeFromUnit, Unit} from "../../../activitiesAssembly/units";
+import {ActivityManipulatorContent} from "../ActivityManipulatorContent";
+import {getActiveActivity} from "../../../store/activeActivity/activitySelector";
 
 const weekInterval = z.enum(["First week", "Second week", "Third week", "Fourth week"])
 const defaultDays = z.enum(["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]);
 export type Day = z.infer<typeof defaultDays>;
 export type WeekInterval = z.infer<typeof weekInterval>;
 
-type GeneralContext = { onClose?: () => void, onCreation?: () => void, activeStep?: number, setActiveStep?: Dispatch<SetStateAction<number>>, errorInfo?: { hasError: boolean, errorMessage?: string } }
-type ActivityNameContext = { activityName?: string, setActivitiyName?: (name: string) => void }
+
+type ActivityNameContext = { activityName?: string, setActivityName?: (name: string) => void }
 type AdderContext = { showAdder?: boolean, setShowAdder?: Dispatch<SetStateAction<boolean>> }
 type DaysContext = {
    defaultDays: Day[],
@@ -42,6 +43,7 @@ type StatsContext = {
    handleStatDeletion?: (stat: Stat) => void
 }
 type EditContext = {
+   onEditActivity?: () => void;
    editStat?: boolean,
    handleEditedStat?: (unit: Unit) => void;
    handleConfirmEdit?: () => void;
@@ -51,6 +53,7 @@ type EditContext = {
    setEditedStat?: Dispatch<SetStateAction<Stat | undefined>>,
    editedStat?: Stat
 }
+type GeneralContext = { withState?: boolean, openActivityManipulator?: (withState: boolean) => void, onClose?: () => void; onCreation?: () => void, activeStep?: number, setActiveStep?: Dispatch<SetStateAction<number>>, errorInfo?: { hasError: boolean, errorMessage?: string } }
 
 type ActivityAdderContextType =
    DaysContext
@@ -60,15 +63,11 @@ type ActivityAdderContextType =
    & ActivityNameContext
    & GeneralContext & WeekIntervalContext;
 export const ActivityManipulatorContext = createContext<ActivityAdderContextType>({defaultDays: defaultDays.options});
-
-interface ActivityAdderContextProvider {
-   buttonLabel: string;
-}
-
-export const ActivityAdderContextProvider = ({buttonLabel}: ActivityAdderContextProvider) => {
+export const ActivityAdderContextProvider = ({children}: PropsWithChildren) => {
 
    const userId = useAppSelector(getUserId);
-   const currentActivites = useAppSelector(getActivities);
+   const currentActivities = useAppSelector(getActivities);
+   const activeActivity = useAppSelector(getActiveActivity)
    const dispatch = useAppDispatch();
    const [activityName, setActivityName] = useState("");
    const [showAdderModal, setShowAdderModal] = useState(false);
@@ -79,11 +78,16 @@ export const ActivityAdderContextProvider = ({buttonLabel}: ActivityAdderContext
    const [selectedWeekInterval, setSelectedWeekInterval] = useState<WeekInterval[]>([]);
    const [addAdditionalStats, setAddAdditionalStats] = useState(false);
    const [activeStep, setActiveStep] = useState(0);
-
+   const [withState, setWithState] = useState(false);
 
    const handleClose = useCallback(() => {
       setShowAdderModal(false);
       setAddAdditionalStats(false);
+      setEditedStat(undefined);
+      setSelectedWeekInterval([]);
+      setSelectedDays([]);
+      setActiveStep(0);
+      setActivityName("");
    }, []);
 
    const handleConfirmEdit = useCallback(() => {
@@ -138,16 +142,18 @@ export const ActivityAdderContextProvider = ({buttonLabel}: ActivityAdderContext
 
    const handleSetActivityName = useCallback((name: PredefinedActivities) => {
       setActivityName(name);
-      if (!name) {
-         setStats([]);
-      }
-      if (stats?.length === 0 || name !== activityName) {
-         const parsedStats = getDefaultStats(ActivityAssembly(name));
-         if (stats) {
-            setStats(parsedStats)
+      if (!withState) {
+         if (!name) {
+            setStats([]);
+         }
+         if (stats?.length === 0 || name !== activityName) {
+            const parsedStats = getDefaultStats(ActivityAssembly(name));
+            if (stats) {
+               setStats(parsedStats)
+            }
          }
       }
-   }, [activityName, stats, ActivityAssembly])
+   }, [withState, activityName, stats, ActivityAssembly])
 
    const handleClearStats = useCallback(() => {
       setStats([]);
@@ -169,7 +175,7 @@ export const ActivityAdderContextProvider = ({buttonLabel}: ActivityAdderContext
          currentValue: 0,
          level: 0,
       };
-      addActivityInDatabase(userId, currentActivites, generatedActivity).then(() => {
+      addActivityInDatabase(userId, currentActivities, generatedActivity).then(() => {
          dispatch(addActivity(generatedActivity));
       });
    }, [selectedDays, selectedWeekInterval, userId, activityName, stats]);
@@ -179,20 +185,49 @@ export const ActivityAdderContextProvider = ({buttonLabel}: ActivityAdderContext
       setAddAdditionalStats(false);
    }, [stats])
 
+   const handleOpenActivityManipulator = useCallback((withState: boolean) => {
+      if (withState) {
+         console.log(activeActivity.activity.stats);
+         setStats(activeActivity.activity.stats);
+         setActivityName(activeActivity.activity.name);
+         setSelectedWeekInterval(activeActivity.activity.weeklyInterval);
+         setSelectedDays(activeActivity.activity.weekdays);
+      }
+      setWithState(withState);
+      setShowAdderModal(true);
+   }, [activeActivity]);
+
+   const handleActivityEdit = useCallback(() => {
+      dispatch(updateActivity({
+         index: activeActivity.index,
+         activity: {
+            ...activeActivity.activity,
+            name: activityName,
+            stats,
+            weekdays: selectedDays,
+            weeklyInterval: selectedWeekInterval
+         }
+      }))
+      handleClose();
+   }, [activeActivity, activityName, stats, selectedDays, selectedWeekInterval]);
+
    return <ActivityManipulatorContext.Provider
       value={{
+         withState,
+         onEditActivity: handleActivityEdit,
          selectedWeekInterval,
          defaultWeekInterval: weekInterval.options,
          setWeekInterval: handleSelectedWeek,
          setActiveStep,
          activeStep,
          onCreation,
+         openActivityManipulator: handleOpenActivityManipulator,
          onClose: handleClose,
          setAddAdditionalStats,
          addAdditionalStats,
          handleSetAdditionalStats,
          clearDays: () => setSelectedDays([]),
-         setActivitiyName: handleSetActivityName,
+         setActivityName: handleSetActivityName,
          activityName,
          showAdder: showAdderModal,
          setShowAdder: setShowAdderModal,
@@ -211,5 +246,8 @@ export const ActivityAdderContextProvider = ({buttonLabel}: ActivityAdderContext
          handleEditedStat,
          handleConfirmEdit,
          handleCancelEdit
-      }}><ActivityManipulatorContent label={buttonLabel}/></ActivityManipulatorContext.Provider>
+      }}>
+      <ActivityManipulatorContent/>
+      {children}
+   </ActivityManipulatorContext.Provider>
 }

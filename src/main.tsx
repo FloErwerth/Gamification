@@ -16,6 +16,9 @@ import "react-toastify/dist/ReactToastify.css";
 import {LandingPage} from "./pages/LandingPage/LandingPage";
 import {LocalizationProvider} from "@mui/x-date-pickers";
 import {AdapterDayjs} from "@mui/x-date-pickers/AdapterDayjs";
+import {
+   ActivityAdderContextProvider
+} from "./components/ActivityManipulator/ActivityManipulatorContext/ActivityManipulatorContext";
 
 const cssClasses = getClasses(mainStyles);
 
@@ -51,7 +54,9 @@ const Body = ({children}: PropsWithChildren) => {
 createRoot(document.getElementById("root") as HTMLElement).render(
    <React.StrictMode>
       <Provider store={store}>
-         <App/>
+         <ActivityAdderContextProvider>
+            <App/>
+         </ActivityAdderContextProvider>
       </Provider>
    </React.StrictMode>
 );

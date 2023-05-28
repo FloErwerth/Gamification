@@ -23,9 +23,9 @@ export const DisplayedProgress = ({stat}: IDisplayedStat) => {
    }, [stat])
 
    return <div className={cssClasses.statWrapper}>
-      <div className={cssClasses.name}>{activeActivityInfo?.name}:</div>
+      <div className={cssClasses.name}>{stat?.name}:</div>
       <div
          className={cssClasses.value}>{getValue}</div>
-      <div className={cssClasses.unit}>{activeActivityInfo?.preferedUnit}</div>
+      <div className={cssClasses.unit}>{stat?.preferedUnit}</div>
    </div>
 }

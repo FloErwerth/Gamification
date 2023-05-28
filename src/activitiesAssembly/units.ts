@@ -12,7 +12,11 @@ export type ActivityType = { input: ActivityInputTypes, format?: TimeFormat<Acti
 export const getDefaultStat = (stat?: StatEnumType): Stat => {
    switch (stat) {
       case "Duration":
-         return {name: stat, type: {input: ActivityInputTypes.MINUTES, format: "mm:ss"}, preferedUnit: "minutes"};
+         return {
+            name: stat,
+            type: {input: ActivityInputTypes.MINUTES, format: "mm:ss"},
+            preferedUnit: "minutes"
+         };
       case "Calories burned":
          return {name: stat, type: {input: ActivityInputTypes.NUMBER}, preferedUnit: "kCal"};
       case "Pages read":
@@ -34,7 +38,11 @@ export const getDefaultStat = (stat?: StatEnumType): Stat => {
       case "Heart rate":
          return {name: stat, type: {input: ActivityInputTypes.NUMBER}, preferedUnit: "bpm"}
       default:
-         return {name: "Duration", type: {input: ActivityInputTypes.NUMBER}, preferedUnit: "Duration".toLowerCase()}
+         return {
+            name: "Duration",
+            type: {input: ActivityInputTypes.NUMBER},
+            preferedUnit: "Duration".toLowerCase()
+         }
    }
 }
 

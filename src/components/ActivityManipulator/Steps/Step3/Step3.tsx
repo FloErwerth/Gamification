@@ -30,7 +30,8 @@ export const Step3 = () => {
       <div>
          <div className={cssClasses.title}>Stats</div>
          {stats?.map((stat) => <Chip sx={{height: 35, borderRadius: 35}}
-                                     label={<div>{stat.name} <br/><small><i>{stat.preferedUnit}</i></small></div>}/>)}
+                                     label={<div>{stat.name} <br/><small><i>{stat.preferedUnit}</i></small>
+                                     </div>}/>)}
       </div>
 
    </div>

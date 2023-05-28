@@ -1,4 +1,4 @@
-import {useCallback, useEffect, useState} from "react";
+import {useCallback, useContext, useEffect, useState} from "react";
 import {useAppDispatch, useAppSelector} from "../../store/store";
 import {deleteActivity, deleteCell, updateCell} from "../../store/activities/activitiesActions";
 import {useNavigate} from "react-router-dom";
@@ -21,9 +21,13 @@ import {ActivityStatistics} from "../../Statistics/ActivityStatistics";
 import {Stat} from "../../activitiesAssembly/stats";
 import {Button} from "@mui/material";
 import {Edit} from "@mui/icons-material";
+import {
+   ActivityManipulatorContext
+} from "../../components/ActivityManipulator/ActivityManipulatorContext/ActivityManipulatorContext";
 
 const cssClasses = getClasses(styles);
 export const ActivityPage = () => {
+
    const [editProgress, setEditProgress] = useState(false);
    const [selectedDate, setSelectedDate] = useState<DateType>("00-00-00");
    const uid = useAppSelector(getUserId);
@@ -31,6 +35,7 @@ export const ActivityPage = () => {
    const activities = useAppSelector(getActivities);
    const dispatch = useAppDispatch();
    const navigate = useNavigate();
+   const {openActivityManipulator} = useContext(ActivityManipulatorContext);
 
    const handleConfirmProgress = useCallback((stats: Stat[]) => {
       if (selectedDate) {
@@ -83,8 +88,13 @@ export const ActivityPage = () => {
       }
    }, [])
 
+   const handleActivityEdit = useCallback(() => {
+      openActivityManipulator?.(true);
+   }, []);
+
    return <div className={cssClasses.wrapper}>
-      <div className={cssClasses.title}>{activeActivity.activity?.name}<Button startIcon={<Edit/>}>Edit
+      <div className={cssClasses.title}>{activeActivity.activity?.name}<Button onClick={handleActivityEdit}
+                                                                               startIcon={<Edit/>}>Edit
          activity</Button></div>
       {activeActivity.activity && <Calendar activity={activeActivity.activity} onClick={handleCalendarClick}/>}
       <ActivityChart/>

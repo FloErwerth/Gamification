@@ -11,7 +11,7 @@ import {ActivityManipulatorContext} from "../../ActivityManipulatorContext/Activ
 const cssClasses = getClasses(styles);
 export const Step1 = () => {
    const {
-      setActivitiyName,
+      setActivityName,
       activityName,
       defaultDays,
       selectedDays,
@@ -23,12 +23,12 @@ export const Step1 = () => {
       <WithHelpText position={"end"} placement={"right"}
                     helpText={"By choosing an predefinied activity stats will automatically be added. You can delete or edit them in the next step."}>
          <AutoComplete
-            onInputChange={(input) => setActivitiyName?.(input)}
+            onInputChange={(input) => setActivityName?.(input)}
             label={"Activity Name"}
             value={activityName}
             options={PredefinedActivities.options}
             groupBy={(option) => getCategory(option)}
-            onActivityChange={(value) => setActivitiyName?.(value)}
+            onActivityChange={(value) => setActivityName?.(value)}
          />
       </WithHelpText>
       {activityName &&

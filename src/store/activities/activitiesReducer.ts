@@ -34,6 +34,11 @@ export const activitiesReducer = (oldActivities = InitialGamificiationState.acti
          activities.splice(action.payload.activityIndex, 1);
       })
    }
+   if (action.type === ActivitiesActionType.UPDATE_ACTIVITY) {
+      return produce(oldActivities, newActivities => {
+         newActivities[action.payload.index] = action.payload.activity;
+      })
+   }
    if (action.type === ActivitiesActionType.DELETE_CELL) {
       return produce(oldActivities, newActivities => {
          delete newActivities[action.payload.activityIndex].calendarEntries[action.payload.date];

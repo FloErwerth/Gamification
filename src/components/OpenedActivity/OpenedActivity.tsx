@@ -1,11 +1,7 @@
 import {ActivityProps, DateType} from "../../store/activities/types";
 import {getClasses} from "../../utils/styleUtils";
 import {styles} from "./styles";
-import {
-   getAmericanDate,
-   getGeneratedDisplayDate,
-   getIsoDateWithLeadingZeros
-} from "../calendar/utils";
+import {getAmericanDate} from "../calendar/utils";
 import {useCallback, useMemo, useState} from "react";
 import produce from "immer";
 import {DisplayedProgress} from "../DisplayedProgress/DisplayedProgress";
@@ -15,7 +11,6 @@ import {useAppSelector} from "../../store/store";
 import {getCell} from "../../store/activities/activitiesSelectors";
 import {ActivityInput} from "../ActivityInput/ActivityInput";
 import {Stat} from "../../activitiesAssembly/stats";
-import {Temporal} from "@js-temporal/polyfill";
 
 interface OpenedActivityProps {
    activeActivity: { index: number, activity: ActivityProps },
@@ -58,7 +53,7 @@ export const OpenedActivity = ({
    }, [stats])
 
    return <div className={cssClasses.mainWrapper}>
-      <div className={cssClasses.title}>{getAmericanDate(date, { day: true, month: true})}</div>
+      <div className={cssClasses.title}>{getAmericanDate(date, {day: true, month: true})}</div>
       <div>
          {cellMarked && cell.stats && <>
              <small>Here is the overview of your activity</small>
@@ -66,7 +61,7 @@ export const OpenedActivity = ({
                                                                                                    stat={stat}/>)}</div>
          </>}
          {!cellMarked && <div className={cssClasses.inputWrapper}>
-            {stats.map((stat, index) =>
+            {activeActivity.activity.stats.map((stat, index) =>
                <ActivityInput key={stat.name} label={stat.name}
                               onChange={(value) => handleStatsChange(value, index)}
                               stat={stat}/>
