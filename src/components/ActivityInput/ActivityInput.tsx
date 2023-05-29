@@ -15,7 +15,7 @@ interface IActivityInput {
 }
 
 export enum ActivityInputTypes {
-   NUMBER = "number", SECONDS = "seconds", MINUTES = "minutes", HOURS = "hours", TEXT = "text", MIN_PER_KM = "min/km"
+   NUMBER = "number", SECONDS = "seconds", MINUTES = "minutes", HOURS = "hours", MIN_PER_KM = "min/km"
 }
 
 const number = z.number();

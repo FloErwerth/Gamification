@@ -22,14 +22,15 @@ export const Step3 = () => {
       <div>
          <div className={cssClasses.title}>Weekdays</div>
          {(selectedDays && selectedDays.length > 0 ? selectedDays : defaultDays)?.map((day) =>
-            <Chip label={day}/>)}</div>
+            <Chip key={`ActivityManipulatorChipForSelectedDay${day}`} label={day}/>)}</div>
       <div>
          <div className={cssClasses.title}>Weekly interval</div>
-         {(selectedWeekInterval && selectedWeekInterval.length > 0 ? selectedWeekInterval : defaultWeekInterval)?.map((day) =>
-            <Chip label={day}/>)}</div>
+         {(selectedWeekInterval && selectedWeekInterval.length > 0 ? selectedWeekInterval : defaultWeekInterval)?.map((weekInterval) =>
+            <Chip key={`ActivityManipulatorChipForSelectedWeeklyInterval${weekInterval}`} label={weekInterval}/>)}</div>
       <div>
          <div className={cssClasses.title}>Stats</div>
-         {stats?.map((stat) => <Chip sx={{height: 35, borderRadius: 35}}
+         {stats?.map((stat) => <Chip key={`ActivityManipulatorChipForStat${stat.name}`}
+                                     sx={{height: 35, borderRadius: 35}}
                                      label={<div>{stat.name} <br/><small><i>{stat.preferedUnit}</i></small>
                                      </div>}/>)}
       </div>

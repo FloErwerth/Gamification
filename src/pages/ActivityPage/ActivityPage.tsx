@@ -90,7 +90,7 @@ export const ActivityPage = () => {
 
    const handleActivityEdit = useCallback(() => {
       openActivityManipulator?.(true);
-   }, []);
+   }, [openActivityManipulator]);
 
    return <div className={cssClasses.wrapper}>
       <div className={cssClasses.title}>{activeActivity.activity?.name}<Button onClick={handleActivityEdit}

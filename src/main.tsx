@@ -34,11 +34,13 @@ const App = () => {
                   <Routes>
                      <Route element={isLoggedIn ? <Navigate to={Pages.OVERVIEW}/> : <LandingPage/>} path={Pages.HOME}/>
                      <Route
-                        element={isLoggedIn ? <Overview/> : <Navigate to={Pages.HOME}/>}
+                        element={isLoggedIn ? <Overview/> :
+                           <Navigate to={Pages.HOME}/>}
                         path={Pages.OVERVIEW}
                      />
                      <Route element={<Dashboard/>} path={Pages.DASHBOARD}/>
-                     <Route element={<ActivityPage/>} path={Pages.ACTIVITY}/>
+                     <Route element={<ActivityPage/>}
+                            path={Pages.ACTIVITY}/>
                   </Routes>
                </Body>
             </BrowserRouter>

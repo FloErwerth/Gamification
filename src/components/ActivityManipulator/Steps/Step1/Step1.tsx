@@ -7,9 +7,12 @@ import {getClasses} from "../../../../utils/styleUtils";
 import {styles} from "./styles";
 import {SelectableChip} from "../../../SelectableChip/SelectableChip";
 import {ActivityManipulatorContext} from "../../ActivityManipulatorContext/ActivityManipulatorContext";
+import {useAppSelector} from "../../../../store/store";
+import {getActiveActivity} from "../../../../store/activeActivity/activitySelector";
 
 const cssClasses = getClasses(styles);
 export const Step1 = () => {
+
    const {
       setActivityName,
       activityName,
@@ -18,6 +21,8 @@ export const Step1 = () => {
       defaultWeekInterval, selectedWeekInterval, setWeekInterval,
       setSelectedDays
    } = useContext(ActivityManipulatorContext);
+   const activeActivity = useAppSelector(getActiveActivity);
+   console.log(activeActivity, selectedDays);
 
    return <div className={cssClasses.wrapper}>
       <WithHelpText position={"end"} placement={"right"}
@@ -35,6 +40,7 @@ export const Step1 = () => {
           <div className={cssClasses.outerWrapper}><small>Select weekdays to do the activity</small>
               <div className={cssClasses.daysWrapper}>{defaultDays?.map((day) =>
                  <SelectableChip
+                    key={`ActivityManipulatorStep1${day}`}
                     selected={selectedDays?.includes(day) ?? false}
                     value={day} onClick={(day) => setSelectedDays?.(day)}
                     label={day}></SelectableChip>)}</div>
@@ -43,6 +49,7 @@ export const Step1 = () => {
           <div className={cssClasses.outerWrapper}><small>Select a week interval for the activity</small>
               <div className={cssClasses.daysWrapper}>{defaultWeekInterval?.map((week) =>
                  <SelectableChip
+                    key={`ActivityManipulatorStep1${week}`}
                     selected={selectedWeekInterval?.includes(week) ?? false}
                     value={week} onClick={(week) => setWeekInterval?.(week)}
                     label={week}></SelectableChip>)}</div>

@@ -4,7 +4,9 @@ import {ActivityProps, DateType} from "./types";
 import {getDaysSinceCreation} from "../authentication/authSelectors";
 import {getWholeDisplayDate} from "../../components/calendar/utils";
 
-export const getActivities = ({activities}: GamificationModel) => Object.values<ActivityProps>(activities);
+export const getActivities = ({activities}: GamificationModel) => {
+   return Object.values<ActivityProps>(activities);
+}
 export const getCalendarEntries = (index: number) => createSelector([getActivities], (activities) => {
    if (activities.length > 0) {
       return activities[index]?.calendarEntries
@@ -28,7 +30,7 @@ export const getMaxActivitiesDoneADay = createSelector([getActivities], activiti
    const dates: { date: DateType, numberOfActivities: number }[] = []
 
    activities.forEach((activity) => {
-      Object.entries(activity.calendarEntries).forEach(([date, calendarEntries], index) => {
+      Object.keys(activity.calendarEntries).forEach((date) => {
          const foundEntry = Object.values(dates).find((entry) => entry.date === date);
          if (!foundEntry) {
             dates.push({date: date as DateType, numberOfActivities: 1});

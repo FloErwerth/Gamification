@@ -24,7 +24,8 @@ export const ActivityStatistics = () => {
       return info?.preferedUnit;
    }, [cumulatedData])
    return <>
-      {cumulatedData?.map(({label, data}) => <div style={{display: "flex", gap: 10, alignItems: "baseline"}}>
+      {cumulatedData?.map(({label, data}) => <div key={`DataFor${label}`}
+                                                  style={{display: "flex", gap: 10, alignItems: "baseline"}}>
          <strong>{label}</strong><i>{getData(label, data)}</i><small>{getUnit(label, data)}</small><br/></div>)}
    </>
 }

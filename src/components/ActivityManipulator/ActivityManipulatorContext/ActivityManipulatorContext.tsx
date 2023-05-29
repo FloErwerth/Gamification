@@ -19,7 +19,6 @@ const defaultDays = z.enum(["Monday", "Tuesday", "Wednesday", "Thursday", "Frida
 export type Day = z.infer<typeof defaultDays>;
 export type WeekInterval = z.infer<typeof weekInterval>;
 
-
 type ActivityNameContext = { activityName?: string, setActivityName?: (name: string) => void }
 type AdderContext = { showAdder?: boolean, setShowAdder?: Dispatch<SetStateAction<boolean>> }
 type DaysContext = {
@@ -43,7 +42,7 @@ type StatsContext = {
    handleStatDeletion?: (stat: Stat) => void
 }
 type EditContext = {
-   onEditActivity?: () => void;
+   handleConfirmActivityEdit?: () => void;
    editStat?: boolean,
    handleEditedStat?: (unit: Unit) => void;
    handleConfirmEdit?: () => void;
@@ -62,12 +61,12 @@ type ActivityAdderContextType =
    & AdderContext
    & ActivityNameContext
    & GeneralContext & WeekIntervalContext;
+
 export const ActivityManipulatorContext = createContext<ActivityAdderContextType>({defaultDays: defaultDays.options});
 export const ActivityAdderContextProvider = ({children}: PropsWithChildren) => {
-
+   const activeActivity = useAppSelector(getActiveActivity)
    const userId = useAppSelector(getUserId);
    const currentActivities = useAppSelector(getActivities);
-   const activeActivity = useAppSelector(getActiveActivity)
    const dispatch = useAppDispatch();
    const [activityName, setActivityName] = useState("");
    const [showAdderModal, setShowAdderModal] = useState(false);
@@ -162,6 +161,8 @@ export const ActivityAdderContextProvider = ({children}: PropsWithChildren) => {
       }
    }, [activityName])
 
+   //fix bug where weekday selection is not transfered (disselect monday, confirm, reopen edit, monday still selected)
+
    const onCreation = useCallback(() => {
       toast("Activity Added", {type: "success"})
       setShowAdderModal(false);
@@ -186,18 +187,18 @@ export const ActivityAdderContextProvider = ({children}: PropsWithChildren) => {
    }, [stats])
 
    const handleOpenActivityManipulator = useCallback((withState: boolean) => {
+      console.log("open");
+      setWithState(withState);
+      setShowAdderModal(true);
       if (withState) {
-         console.log(activeActivity.activity.stats);
          setStats(activeActivity.activity.stats);
          setActivityName(activeActivity.activity.name);
          setSelectedWeekInterval(activeActivity.activity.weeklyInterval);
          setSelectedDays(activeActivity.activity.weekdays);
       }
-      setWithState(withState);
-      setShowAdderModal(true);
-   }, [activeActivity]);
+   }, [activeActivity.activity.stats, activeActivity.activity.name, activeActivity.activity.weeklyInterval, activeActivity.activity.weekdays]);
 
-   const handleActivityEdit = useCallback(() => {
+   const handleConfirmActivityEdit = useCallback(() => {
       dispatch(updateActivity({
          index: activeActivity.index,
          activity: {
@@ -214,7 +215,7 @@ export const ActivityAdderContextProvider = ({children}: PropsWithChildren) => {
    return <ActivityManipulatorContext.Provider
       value={{
          withState,
-         onEditActivity: handleActivityEdit,
+         handleConfirmActivityEdit,
          selectedWeekInterval,
          defaultWeekInterval: weekInterval.options,
          setWeekInterval: handleSelectedWeek,

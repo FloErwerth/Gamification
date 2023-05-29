@@ -40,17 +40,17 @@ export const getDay = (date: DateType) => {
    return date.split("-")[2];
 }
 
-export const getAmericanDate = (date: DateType, options: {month?: true, day?: true, year?: true}) => {
-   return Temporal.PlainDate.from(date.toString()).toLocaleString("en-US",{ calendar: 'gregory', year: options?.year && "numeric", month: options?.month && 'long', day: options?.day && 'numeric' })
+export const getAmericanDate = (date: DateType, options: { month?: true, day?: true, year?: true }) => {
+   return Temporal.PlainDate.from(date.toString()).toLocaleString("en-US", {
+      calendar: 'gregory',
+      year: options?.year && "numeric",
+      month: options?.month && 'long',
+      day: options?.day && 'numeric'
+   })
 }
 
 export const getWholeDisplayDate = (date: DateType) => {
-   const temporalDate = Temporal.PlainDate.from(date).toLocaleString("en-US", {day: "2-digit", month: "short", year: "numeric"});
-   return temporalDate;
-}
-
-export const getIsoDateWithLeadingZeros = (date: DateType) => {
-
+   return Temporal.PlainDate.from(date).toLocaleString("en-US", {day: "2-digit", month: "short", year: "numeric"});
 }
 
 export const generateISOString = (date: string): DateType => {

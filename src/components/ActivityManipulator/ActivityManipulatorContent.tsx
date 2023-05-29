@@ -1,5 +1,4 @@
 import {useCallback, useContext, useMemo} from "react";
-import {Modal} from "../../basicComponents/Modal/Modal";
 import {getClasses} from "../../utils/styleUtils";
 import {activityAdderClasses} from "./styles";
 import {Button, Step, StepLabel, Stepper} from "@mui/material";
@@ -7,6 +6,7 @@ import {Step1} from "./Steps/Step1/Step1";
 import {Step2} from "./Steps/Step2/Step2";
 import {Step3} from "./Steps/Step3/Step3";
 import {ActivityManipulatorContext} from "./ActivityManipulatorContext/ActivityManipulatorContext";
+import {Modal} from "../../basicComponents/Modal/Modal";
 
 const cssClasses = getClasses(activityAdderClasses);
 
@@ -15,9 +15,10 @@ const steps = [
    {label: "Stats", Component: Step2},
    {label: "Check and confirm", Component: Step3},
 ];
+
 export const ActivityManipulatorContent = () => {
    const {
-      onEditActivity,
+      handleConfirmActivityEdit,
       withState,
       showAdder,
       setActiveStep,
@@ -38,7 +39,7 @@ export const ActivityManipulatorContent = () => {
          if (!withState) {
             onCreation?.();
          } else {
-            onEditActivity?.();
+            handleConfirmActivityEdit?.();
          }
       }
    }, [withState, activeStep, setActiveStep]);
@@ -47,7 +48,7 @@ export const ActivityManipulatorContent = () => {
       setActiveStep?.((step) => step - 1);
    }, [setActiveStep]);
 
-   const disabled = useMemo(() => {
+   const isNextStepButtonDisabled = useMemo(() => {
       if (activeStep === 0) {
          return !activityName;
       } else if (activeStep === 1) {
@@ -84,7 +85,7 @@ export const ActivityManipulatorContent = () => {
                   ) : (
                      <div></div>
                   )}
-                  <Button disabled={disabled} onClick={handleNextStep}>
+                  <Button disabled={isNextStepButtonDisabled} onClick={handleNextStep}>
                      {activeStep === 2 ? withState ? "Confirm edit" : "Create activity" : "Next step"}
                   </Button>
                </>
