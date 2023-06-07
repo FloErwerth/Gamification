@@ -10,7 +10,7 @@ export type ChartData = { labels: string[], datasets: { label: StatEnumType, dat
 const getActivityIndex = ({activeActivityIndex}: GamificationModel) => activeActivityIndex;
 
 export const getActiveActivity = createSelector([getActivities, getActivityIndex], (activities, index) => {
-   return {index, activity: activities[index]};
+   return {index, activity: activities?.[index]};
 });
 
 const getDayMonth = (date: string) => {
@@ -118,9 +118,9 @@ export const getCumulatedData = createSelector([getActiveActivity], ({activity})
 })
 
 export const getActiveActivityInfo = (stat: StatEnumType) => createSelector([getActiveActivity], (activeActivity) => {
-   return activeActivity.activity.stats.find((activityStat) => activityStat.name === stat);
+   return activeActivity.activity?.stats.find((activityStat) => activityStat.name === stat);
 });
 
 export const getActiveActivityInfos = createSelector([getActiveActivity], (activeActivitiy) => {
-   return activeActivitiy.activity.stats;
+   return activeActivitiy.activity?.stats;
 })

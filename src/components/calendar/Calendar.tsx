@@ -1,14 +1,14 @@
 import {getClasses} from "../../utils/styleUtils";
 import {cellStyles, styles} from "./styles";
-import {ActivityProps, CellInfo, DateType} from "../../store/activities/types";
+import {CellInfo, DateType} from "../../store/activities/types";
 import {useCalendar} from "./useCalendar";
 import {useMemo} from "react";
 import {getDay} from "./utils";
 import {Button} from "../../basicComponents/Button/Button";
 import {Stat} from "../../activitiesAssembly/stats";
+import {Temporal} from "@js-temporal/polyfill";
 
 interface CalendarProps {
-   activity: ActivityProps,
    onClick: (date: DateType, marked: boolean, stats: Stat[], info?: string) => void;
 }
 
@@ -17,9 +17,13 @@ interface CalendarCell extends Omit<CalendarProps, "activity"> {
    calendarObject: CellInfo
 }
 
-
+const currentDay = Temporal.Now.plainDate("gregory");
+const isEqualDay = (date1: Temporal.PlainDate, date2: Temporal.PlainDate) => {
+   return date1.day === date2.day && date1.month === date2.month && date1.year === date2.year;
+}
 const CalendarCell = ({onClick, calendarObject, date}: CalendarCell) => {
-   const cssClasses = useMemo(() => getClasses(cellStyles(calendarObject?.marked ?? false, calendarObject?.interactable ?? true)), [calendarObject, calendarObject?.marked]);
+   const isCurrentDay = useMemo(() => isEqualDay(currentDay, Temporal.PlainDate.from(date)), [date]);
+   const cssClasses = useMemo(() => getClasses(cellStyles(calendarObject?.marked ?? false, calendarObject?.interactable ?? true, isCurrentDay)), [calendarObject, calendarObject?.marked]);
    return <button disabled={!calendarObject?.interactable && calendarObject?.interactable === false}
                   onClick={() => onClick(date, calendarObject.marked ?? false, calendarObject?.stats ?? [], calendarObject.info)}
                   className={cssClasses.calendarCell}>
@@ -30,8 +34,8 @@ const CalendarCell = ({onClick, calendarObject, date}: CalendarCell) => {
 const calendarClasses = getClasses(styles);
 export const Calendar = ({onClick}: CalendarProps) => {
    const [currentCalendar, showPreviousMonth, showNextMonth, showJump, decreaseMonth, increaseMonth, showCurrentMonth, dayLabels] = useCalendar();
-   return <div className={calendarClasses.mainWrapper}>
 
+   return <div className={calendarClasses.mainWrapper}>
       <div className={calendarClasses.calendarWrapper}>
          <>{dayLabels.map((label) => <div key={label}
                                           className={calendarClasses.weekday}>{label}</div>)}

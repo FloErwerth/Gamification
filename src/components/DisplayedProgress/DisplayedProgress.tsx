@@ -2,8 +2,6 @@ import {getClasses} from "../../utils/styleUtils";
 import {styles} from "./styles";
 import {useMemo} from "react";
 import {isTimeType, toTimeFormat} from "../../utils/getStringifiedTime";
-import {useAppSelector} from "../../store/store";
-import {getActiveActivityInfo} from "../../store/activeActivity/activitySelector";
 import {Stat} from "../../activitiesAssembly/stats";
 
 interface IDisplayedStat {
@@ -12,11 +10,10 @@ interface IDisplayedStat {
 
 const cssClasses = getClasses(styles);
 export const DisplayedProgress = ({stat}: IDisplayedStat) => {
-   const activeActivityInfo = useAppSelector(getActiveActivityInfo(stat.name));
    const getValue = useMemo(() => {
-      if (isTimeType(activeActivityInfo?.type.input)) {
+      if (isTimeType(stat?.type.input)) {
          if (typeof stat.value === "number") {
-            return toTimeFormat(stat.value, activeActivityInfo?.type.format ?? "mm:ss");
+            return toTimeFormat(stat.value, stat?.type.input);
          }
       }
       return stat.value;

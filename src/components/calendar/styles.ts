@@ -1,14 +1,14 @@
 import {style} from "../../utils/styleUtils";
 
-const getBackgroundColor = (marked: boolean, interactable: boolean) => {
+const getBackgroundColor = (marked: boolean, interactable: boolean, isCurrentDay: boolean) => {
    if (marked) {
-      return interactable ? "lightcoral" : "rgb(220, 180, 180)";
+      return interactable ? isCurrentDay ? "rgb(200,200,255)" : "lightcoral" : "rgb(220, 180, 180)";
    } else {
-      return interactable ? "white" : "rgb(192,192,192)";
+      return interactable ? isCurrentDay ? "lightblue" : "white" : "rgb(192,192,192)";
    }
 }
 
-export const cellStyles = (marked: boolean, interactable: boolean) => style({
+export const cellStyles = (marked: boolean, interactable: boolean, isCurrentDay: boolean) => style({
    calendarCell: {
       all: "unset",
       display: "flex",
@@ -16,7 +16,7 @@ export const cellStyles = (marked: boolean, interactable: boolean) => style({
       flexDirection: "column",
       padding: 5,
       borderRadius: 5,
-      backgroundColor: getBackgroundColor(marked, interactable),
+      backgroundColor: getBackgroundColor(marked, interactable, isCurrentDay),
       outline: interactable ? "1px solid black" : "",
       color: interactable ? "black" : "rgb(180,180,180)",
       height: 60,

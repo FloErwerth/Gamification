@@ -22,7 +22,9 @@ export const Overview = () => {
    const {openActivityManipulator} = useContext(ActivityManipulatorContext);
 
    useEffect(() => {
-      dispatch(setLastPage(Pages.OVERVIEW));
+      return () => {
+         dispatch(setLastPage(Pages.OVERVIEW));
+      }
    }, [])
 
    return (
@@ -37,7 +39,7 @@ export const Overview = () => {
          </div>
 
          <div className={cssClasses.statsWrapper}>{filteredArray.map((activityProps, index) =>
-            <ActivityWrapper index={index} {...activityProps} />)}</div>
+            <ActivityWrapper key={activityProps.name} index={index} {...activityProps} />)}</div>
          <div className={cssClasses.activityAdderWrapper}>
             <Button onClick={() => openActivityManipulator?.(false)}>Add activity</Button>
          </div>

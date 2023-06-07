@@ -24,6 +24,7 @@ import {Edit} from "@mui/icons-material";
 import {
    ActivityManipulatorContext
 } from "../../components/ActivityManipulator/ActivityManipulatorContext/ActivityManipulatorContext";
+import {isTimeType, toSeconds} from "../../utils/getStringifiedTime";
 
 const cssClasses = getClasses(styles);
 export const ActivityPage = () => {
@@ -39,12 +40,20 @@ export const ActivityPage = () => {
 
    const handleConfirmProgress = useCallback((stats: Stat[]) => {
       if (selectedDate) {
+         const mappedStats = stats.map((stat) => {
+            if (isTimeType(stat.type.input)) {
+               return {...stat, value: toSeconds(stat.value, stat.type.input)}
+            }
+            return stat;
+         });
          dispatch(updateCell({
             activityIndex: activeActivity.index,
             date: selectedDate,
-            content: {marked: true, stats}
+            content: {
+               marked: true, stats: mappedStats
+            }
          }));
-         updateActivityCell(uid, activeActivity.index, selectedDate, {marked: true, stats});
+         updateActivityCell(uid, activeActivity.index, selectedDate, {marked: true, stats: mappedStats});
          toast("Updated Progress!", {type: "success"})
       }
       setEditProgress(false);
@@ -96,7 +105,7 @@ export const ActivityPage = () => {
       <div className={cssClasses.title}>{activeActivity.activity?.name}<Button onClick={handleActivityEdit}
                                                                                startIcon={<Edit/>}>Edit
          activity</Button></div>
-      {activeActivity.activity && <Calendar activity={activeActivity.activity} onClick={handleCalendarClick}/>}
+      <Calendar onClick={handleCalendarClick}/>
       <ActivityChart/>
       <ActivityStatistics/>
       <ConfirmButton

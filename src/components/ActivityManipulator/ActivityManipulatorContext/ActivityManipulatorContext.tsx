@@ -13,6 +13,7 @@ import {ActivityAssembly} from "../../../activitiesAssembly/activityAssembly";
 import {getTypeFromUnit, Unit} from "../../../activitiesAssembly/units";
 import {ActivityManipulatorContent} from "../ActivityManipulatorContent";
 import {getActiveActivity} from "../../../store/activeActivity/activitySelector";
+import produce from "immer";
 
 const weekInterval = z.enum(["First week", "Second week", "Third week", "Fourth week"])
 const defaultDays = z.enum(["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]);
@@ -91,10 +92,11 @@ export const ActivityAdderContextProvider = ({children}: PropsWithChildren) => {
 
    const handleConfirmEdit = useCallback(() => {
       if (editedStat) {
-         setStats?.((stats) => {
-            stats.splice(stats.findIndex((stat) => stat.name === editedStat.name), 1, editedStat)
-            return stats;
+         const newStats = produce(stats, newStats => {
+            const index = stats.findIndex((stat) => stat.name === editedStat.name);
+            newStats[index] = editedStat
          });
+         setStats?.(newStats);
       }
       setEditStat?.(false);
    }, [editedStat, setEditStat]);
@@ -103,6 +105,7 @@ export const ActivityAdderContextProvider = ({children}: PropsWithChildren) => {
       setEditStat?.(false);
    }, [setEditStat]);
 
+   //convert stats if possible
    const handleEditedStat = useCallback((unit: Unit) => {
       if (editedStat) {
          const newStat: Stat = {
@@ -161,11 +164,7 @@ export const ActivityAdderContextProvider = ({children}: PropsWithChildren) => {
       }
    }, [activityName])
 
-   //fix bug where weekday selection is not transfered (disselect monday, confirm, reopen edit, monday still selected)
-
    const onCreation = useCallback(() => {
-      toast("Activity Added", {type: "success"})
-      setShowAdderModal(false);
       const generatedActivity: ActivityProps = {
          name: activityName,
          calendarEntries: {},
@@ -178,7 +177,9 @@ export const ActivityAdderContextProvider = ({children}: PropsWithChildren) => {
       };
       addActivityInDatabase(userId, currentActivities, generatedActivity).then(() => {
          dispatch(addActivity(generatedActivity));
-      });
+         toast("Activity Added", {type: "success"})
+      }).catch(() => toast("Error", {type: "error"}));
+      handleClose();
    }, [selectedDays, selectedWeekInterval, userId, activityName, stats]);
 
    const handleSetAdditionalStats = useCallback((stat: Stat) => {
@@ -187,7 +188,6 @@ export const ActivityAdderContextProvider = ({children}: PropsWithChildren) => {
    }, [stats])
 
    const handleOpenActivityManipulator = useCallback((withState: boolean) => {
-      console.log("open");
       setWithState(withState);
       setShowAdderModal(true);
       if (withState) {
@@ -196,7 +196,7 @@ export const ActivityAdderContextProvider = ({children}: PropsWithChildren) => {
          setSelectedWeekInterval(activeActivity.activity.weeklyInterval);
          setSelectedDays(activeActivity.activity.weekdays);
       }
-   }, [activeActivity.activity.stats, activeActivity.activity.name, activeActivity.activity.weeklyInterval, activeActivity.activity.weekdays]);
+   }, [activeActivity.activity]);
 
    const handleConfirmActivityEdit = useCallback(() => {
       dispatch(updateActivity({

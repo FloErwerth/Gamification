@@ -25,12 +25,10 @@ export const useMinMaxSingle = (data?: ChartData["datasets"][number]["data"], st
 }
 
 export const useMinMax = (datasets?: ChartData["datasets"], stepCount: number = 6) => {
-
-   if (!datasets) {
-      return {min: undefined, max: undefined}
-   }
-
    return useMemo(() => {
+      if (!datasets) {
+         return {min: undefined, max: undefined}
+      }
       let min = Infinity;
       let max = 0;
       datasets.forEach((dataset) => dataset.data.forEach((value) => {

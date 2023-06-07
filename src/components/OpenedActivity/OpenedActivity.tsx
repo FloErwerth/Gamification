@@ -40,7 +40,7 @@ export const OpenedActivity = ({
             if (!value) {
                newStats[index].value = undefined;
             } else {
-               newStats[index].value = parseFloat(value);
+               newStats[index].value = parseFloat(value.replace(",", "."));
             }
          }));
       }

@@ -22,7 +22,6 @@ export const Step1 = () => {
       setSelectedDays
    } = useContext(ActivityManipulatorContext);
    const activeActivity = useAppSelector(getActiveActivity);
-   console.log(activeActivity, selectedDays);
 
    return <div className={cssClasses.wrapper}>
       <WithHelpText position={"end"} placement={"right"}

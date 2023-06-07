@@ -18,7 +18,9 @@ import {useAppSelector} from "../../../store/store";
 import {FormControlLabel, Switch} from "@mui/material";
 import {useMinMax} from "../hooks/useMinMax";
 import {Stat, StatEnumType} from "../../../activitiesAssembly/stats";
-
+import {Temporal} from "@js-temporal/polyfill";
+import {ActivityInputTypes} from "../../ActivityInput/ActivityInput";
+import {Unit} from "../../../activitiesAssembly/units";
 
 Chart.register(
    CategoryScale,
@@ -37,47 +39,67 @@ const commonOptions: ChartOptions<"line"> = {
    },
 }
 
+const getXAxisLabel = (date?: string) => {
+   if (date) {
+      return Temporal.PlainDate.from(date).toLocaleString("en-US", {day: "2-digit", month: "2-digit"})
+   }
+   return undefined;
+}
+
 const stepCount = 6;
 
 export const ActivityChart = () => {
+   const chartRef = useRef<Chart<"line", number[], string>>(null);
+   const activeActivity = useAppSelector(getActiveActivity).activity;
+   const [stat, setStat] = useState(activeActivity?.stats[0]);
 
    const [showAllMonths, setShowAllMonths] = useState(false);
-   const activeActivity = useAppSelector(getActiveActivity).activity;
-   const [stat, setStat] = useState(activeActivity.stats[0]);
-   const chartData = useAppSelector(getActivityChartData(stat.name, showAllMonths));
+   const chartData = useAppSelector(getActivityChartData(stat?.name, showAllMonths));
+   const {min, max} = useMinMax(chartData?.datasets);
 
-   if (!chartData) {
-      return <div>Not enough data.</div>
-   }
+   const showChartSheet = useMemo(() => (chartData?.labels.length ?? 0) > 1, [chartData]);
 
-   const {min, max} = useMinMax(chartData.datasets);
-   const chartRef = useRef<Chart<"line", number[], string>>(null);
-   const showChartSheet = useMemo(() => (chartData.labels.length ?? 0) > 1, [chartData.labels]);
+   const getHasMultipleUnits = useMemo(() => {
+      let lastUnit: Unit | undefined;
+      Object.values(activeActivity?.calendarEntries).forEach((cell) => cell.stats?.forEach((stat) => {
+         if (!lastUnit) {
+            lastUnit = stat.preferedUnit;
+         } else {
+            if (stat.preferedUnit !== lastUnit) {
+               return true;
+            }
+         }
+      }))
+      return false;
+   }, [activeActivity?.calendarEntries]);
 
    useEffect(() => {
       if (!showChartSheet && activeActivity.stats.length > 0) {
-         setStat(activeActivity.stats[0]);
+         setStat(activeActivity?.stats[0]);
       }
    }, [showChartSheet])
 
    const getLabel = useCallback((tooltipItem: TooltipItem<"line">) => {
       const data = tooltipItem.dataset.data[tooltipItem.dataIndex]
       if (stat.type && isTimeType(stat.type.input) && typeof data === "number") {
-         return `${toTimeFormat(data, stat.type.format)} ${stat?.preferedUnit ?? ""}`
+         return `${toTimeFormat(data, stat?.type.input)} ${stat?.preferedUnit ?? ""}`
       }
       return `${data} ${stat?.preferedUnit ?? ""}`
    }, [stat])
 
    const getValue = useCallback((value: number | string) => {
-      if (typeof value === "number") {
-         if (stat.type && isTimeType(stat.type.input)) {
-            return `${toTimeFormat(value)} ${stat.preferedUnit}`
-         } else {
-            return `${value} ${stat.preferedUnit}`;
-
-         }
+      if (stat?.type && isTimeType(stat.type.input)) {
+         let val = typeof value === "string" ? parseFloat(value) : value;
+         return `${toTimeFormat(val, ActivityInputTypes.HOURS, {
+            show: {
+               minutes: false,
+               seconds: false,
+               hours: true,
+            }
+         })} ${stat?.preferedUnit}`
+      } else {
+         return `${value} ${stat?.preferedUnit}`;
       }
-      return value;
    }, [stat])
 
    const options: ChartOptions<"line"> = useMemo(() => {
@@ -85,7 +107,7 @@ export const ActivityChart = () => {
          scales: {
             x: {
                ticks: {
-                  callback: (tickValue, index) => chartData.labels[index]?.split("-").slice(0, 2).join(".") ?? tickValue
+                  callback: (tickValue, index) => getXAxisLabel(chartData?.labels[index]) ?? tickValue
                }
             },
             y: {
@@ -117,9 +139,11 @@ export const ActivityChart = () => {
       }
    }, [min, max, stat, chartData]);
 
+   //if user removes stat, remove the current entries for the stat
+
    const handleSetFilter = useCallback((label: StatEnumType) => {
       let foundStat: Stat | undefined;
-      Object.values(activeActivity.calendarEntries).forEach(({stats}) => stats?.forEach((stat) => {
+      Object.values(activeActivity?.calendarEntries).forEach(({stats}) => stats?.forEach((stat) => {
          if (stat.name === label) {
             foundStat = stat;
          }

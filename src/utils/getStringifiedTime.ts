@@ -1,33 +1,75 @@
 import {ActivityInputTypes} from "../components/ActivityInput/ActivityInput";
-import {TimeFormat} from "../activitiesAssembly/units";
 
-export const getStringifiedTime = (seconds: number, minutes: number, hours: number) => {
-   const hourString = hours >= 0 ? hours < 10 ? `0${hours}` : hours.toString() : "";
-   const minuteString = minutes >= 0 ? minutes < 10 ? `0${minutes}` : minutes.toString() : "";
-   const secondString = seconds >= 0 ? seconds < 10 ? `0${seconds}` : seconds.toString() : "";
-
-   return {secondString, minuteString, hourString}
+const withLeadingZero = (number: string | number) => {
+   return number.toString().padStart(2, "0");
 }
-
-export const toTimeFormat = (seconds: number, timeFormat?: TimeFormat<ActivityInputTypes>) => {
-   const hours = Math.floor(seconds / 3600);
-   const minutes = Math.floor((seconds - (hours * 3600)) / 60);
-   const remainingSeconds = seconds - (hours * 3600) - (minutes * 60);
-   const {secondString, minuteString, hourString} = getStringifiedTime(remainingSeconds, minutes, hours);
-   if (timeFormat === "ss") {
-      return secondString;
+type TimeFormatOptions = {
+   show: {
+      hours?: boolean;
+      minutes?: boolean;
+      seconds?: boolean;
    }
-   if (timeFormat === "mm:ss") {
-      return `${minuteString}:${secondString}`
+}
+const concatTime = (timeString: string, toConcat: string, concat?: boolean) => {
+   if (concat === undefined || concat) {
+      return timeString.concat(":", toConcat);
+   } else {
+      return timeString;
    }
-   return `${hourString}:${minuteString}:${secondString}`
+}
+export const toTimeFormat = (seconds: number, timeFormat?: ActivityInputTypes, options?: TimeFormatOptions) => {
+   switch (timeFormat) {
+      case "seconds": {
+         return withLeadingZero(seconds);
+      }
+      case "minutes": {
+         const minutes = seconds / 60;
+         const remainingSeconds = seconds - (minutes * 60);
+         const minutesString = withLeadingZero(minutes);
+         const secondString = withLeadingZero(remainingSeconds.toFixed(0));
+         if (remainingSeconds > 0) {
+            return concatTime(minutesString, secondString, options?.show.seconds);
+         } else {
+            return minutesString;
+         }
+      }
+      case "hours": {
+         const hours = Math.floor(seconds / 3600);
+         const minutes = Math.floor((seconds - (hours * 3600)) / 60);
+         const remainingSeconds = seconds - (hours * 3600) - (minutes * 60);
+         const hourString = hours.toString();
+         const minuteString = withLeadingZero(minutes);
+         const secondString = withLeadingZero(remainingSeconds.toFixed(0));
+         if (minutes === 0 && remainingSeconds === 0) {
+            return hourString;
+         }
+         if (minutes > 0 && remainingSeconds === 0) {
+            if (!options?.show.minutes) {
+               return hourString;
+            }
+            return concatTime(hourString, minuteString, options?.show.minutes);
+         }
+         return concatTime(hourString, concatTime(minuteString, secondString, options?.show.seconds), options?.show.minutes);
+      }
+   }
 }
 
-export const toSeconds = (hour: number, minutes: number, seconds: number, type?: ActivityInputTypes) => {
-   const hoursSeconds = type && type === ActivityInputTypes.HOURS ? hour * 60 * 60 : 0;
-   const minutesSeconds = minutes * 60;
-   return hoursSeconds + minutesSeconds + seconds;
+export const toSeconds = (value?: number, type?: ActivityInputTypes) => {
+   if (value) {
+      switch (type) {
+         case "seconds":
+            return value;
+         case "minutes":
+            return value * 60;
+         case "hours":
+            return value * 60 * 60;
+         default:
+            return value;
+      }
+   }
+   return value;
 }
+
 export const getIsNumberType = (input?: ActivityInputTypes) => {
    return input && input === ActivityInputTypes.NUMBER || input === ActivityInputTypes.SECONDS || input === ActivityInputTypes.MINUTES || input === ActivityInputTypes.HOURS || input === ActivityInputTypes.MIN_PER_KM
 };

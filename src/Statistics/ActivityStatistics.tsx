@@ -11,7 +11,7 @@ export const ActivityStatistics = () => {
       const info = infos.find((info) => info.name === name);
       if (info) {
          if (isTimeType(info.type.input)) {
-            return toTimeFormat(data, info.type.format);
+            return toTimeFormat(data, info.type.input);
          }
       }
       return data.toFixed(2);

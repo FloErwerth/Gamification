@@ -28,7 +28,7 @@ const getDate = (day: number, year: number, month: number) => {
    return generateISOString(gregorian.dateFromFields({day, year, month}).toLocaleString("de"));
 }
 
-const getWeeksInMonth = (weekInterval: WeekInterval[]): number[] => {
+const getWeeksInMonth = (weekInterval: WeekInterval[]): number[] | undefined => {
    const getWeek = (weekInterval: WeekInterval) => {
       switch (weekInterval) {
          case "First week": {
@@ -43,12 +43,9 @@ const getWeeksInMonth = (weekInterval: WeekInterval[]): number[] => {
          case "Fourth week": {
             return 4;
          }
-         default:
-            return 0;
-
       }
    }
-   return weekInterval.map((week) => getWeek(week));
+   return weekInterval?.map((week) => getWeek(week));
 }
 
 const weekDays = [1, 2, 3, 4, 5, 6, 7];
@@ -56,7 +53,7 @@ const dayLabels = (shownDate: Temporal.ZonedDateTime) => {
    return weekDays.map((day) => shownDate.with({day, month: 5, year: 2023}).toLocaleString("en-US", {weekday: "long"}));
 }
 
-const getDaysInWeek = (days: Day[]): number[] => {
+const getDaysInWeek = (days: Day[]): number[] | undefined => {
    const getDay = (day: Day) => {
       switch (day) {
          case "Monday":
@@ -73,11 +70,9 @@ const getDaysInWeek = (days: Day[]): number[] => {
             return 6;
          case "Sunday":
             return 7;
-         default:
-            return 0;
       }
    }
-   return days.map((day) => getDay(day));
+   return days?.map((day) => getDay(day));
 
 }
 
@@ -114,8 +109,8 @@ export const useCalendar = () => {
       const numberDatesInBack = fillableSpace - numberDatesInFront >= 7 ? fillableSpace - numberDatesInFront - 7 : fillableSpace - numberDatesInFront;
       const startDayIndex = gregorian.daysInMonth(previousMonth) - numberDatesInFront;
       const dates = getClampedDays(previousMonth, startDayIndex, numberDatesInFront).concat(getDates(shownDate)).concat(getClampedDays(nextMonth, 0, numberDatesInBack));
-      const daysInWeek = getDaysInWeek(activity.activity.weekdays);
-      const weeksInMonth = getWeeksInMonth(activity.activity.weeklyInterval);
+      const daysInWeek = getDaysInWeek(activity.activity?.weekdays);
+      const weeksInMonth = getWeeksInMonth(activity.activity?.weeklyInterval);
       for (let i = 0; i < dates.length; i++) {
          const temporalDate = Temporal.PlainDate.from(dates[i]);
          const _weekInMonth = Math.ceil(temporalDate.day / 7);
@@ -124,7 +119,7 @@ export const useCalendar = () => {
          const frontDisabled = i >= numberDatesInFront;
          const appendDisabled = i < dates.length - numberDatesInBack;
          const isDisabled = frontDisabled && appendDisabled;
-         const isIncludedInDays = daysInWeek.includes(temporalDate.dayOfWeek) && weeksInMonth.includes(weekInMonth);
+         const isIncludedInDays = daysInWeek?.includes(temporalDate.dayOfWeek) && weeksInMonth?.includes(weekInMonth);
          const hasStats = existentCellInfos && existentCellInfos.stats && existentCellInfos.stats.length > 0;
          const getIsInteractable = () => {
             if (isDisabled && !isIncludedInDays && !hasStats) {
@@ -151,7 +146,7 @@ export const useCalendar = () => {
 
    useEffect(() => {
       constructCalendar();
-   }, [activity.activity.weeklyInterval, activity.activity.weekdays, calendarEntries])
+   }, [activity.activity?.weeklyInterval, activity.activity?.weekdays, calendarEntries])
 
    useEffect(() => {
       dispatch(setDaysInMonth({daysInMonth: shownDate.daysInMonth}));
