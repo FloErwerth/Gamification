@@ -2,27 +2,29 @@ import {getClasses} from "../../utils/styleUtils";
 import {styles} from "./styles";
 import {useMemo} from "react";
 import {isTimeType, toTimeFormat} from "../../utils/getStringifiedTime";
-import {Stat} from "../../activitiesAssembly/stats";
+import {Unit} from "../../activitiesAssembly/units";
+import {ActivityInputTypes} from "../ActivityInput/ActivityInput";
 
 interface IDisplayedStat {
-   stat: Stat
+   value: number;
+   unit: Unit;
+   name: string;
+   inputType: ActivityInputTypes
 }
 
 const cssClasses = getClasses(styles);
-export const DisplayedProgress = ({stat}: IDisplayedStat) => {
+export const DisplayedProgress = ({value, inputType, name, unit}: IDisplayedStat) => {
    const getValue = useMemo(() => {
-      if (isTimeType(stat?.type.input)) {
-         if (typeof stat.value === "number") {
-            return toTimeFormat(stat.value, stat?.type.input);
-         }
+      if (isTimeType(inputType)) {
+         return toTimeFormat(value, inputType);
       }
-      return stat.value;
-   }, [stat])
+      return value;
+   }, [inputType, value])
 
    return <div className={cssClasses.statWrapper}>
-      <div className={cssClasses.name}>{stat?.name}:</div>
+      <div className={cssClasses.name}>{name}:</div>
       <div
          className={cssClasses.value}>{getValue}</div>
-      <div className={cssClasses.unit}>{stat?.preferedUnit}</div>
+      <div className={cssClasses.unit}>{unit}</div>
    </div>
 }

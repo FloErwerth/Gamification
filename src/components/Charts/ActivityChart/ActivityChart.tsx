@@ -17,10 +17,9 @@ import {isTimeType, toTimeFormat} from "../../../utils/getStringifiedTime";
 import {useAppSelector} from "../../../store/store";
 import {FormControlLabel, Switch} from "@mui/material";
 import {useMinMax} from "../hooks/useMinMax";
-import {Stat, StatEnumType} from "../../../activitiesAssembly/stats";
+import {StatEnumType} from "../../../activitiesAssembly/stats";
 import {Temporal} from "@js-temporal/polyfill";
 import {ActivityInputTypes} from "../../ActivityInput/ActivityInput";
-import {Unit} from "../../../activitiesAssembly/units";
 
 Chart.register(
    CategoryScale,
@@ -54,24 +53,10 @@ export const ActivityChart = () => {
    const [stat, setStat] = useState(activeActivity?.stats[0]);
 
    const [showAllMonths, setShowAllMonths] = useState(false);
-   const chartData = useAppSelector(getActivityChartData(stat?.name, showAllMonths));
+   const chartData = useAppSelector(getActivityChartData(stat?.statName, showAllMonths));
    const {min, max} = useMinMax(chartData?.datasets);
 
    const showChartSheet = useMemo(() => (chartData?.labels.length ?? 0) > 1, [chartData]);
-
-   const getHasMultipleUnits = useMemo(() => {
-      let lastUnit: Unit | undefined;
-      Object.values(activeActivity?.calendarEntries).forEach((cell) => cell.stats?.forEach((stat) => {
-         if (!lastUnit) {
-            lastUnit = stat.preferedUnit;
-         } else {
-            if (stat.preferedUnit !== lastUnit) {
-               return true;
-            }
-         }
-      }))
-      return false;
-   }, [activeActivity?.calendarEntries]);
 
    useEffect(() => {
       if (!showChartSheet && activeActivity.stats.length > 0) {
@@ -81,14 +66,14 @@ export const ActivityChart = () => {
 
    const getLabel = useCallback((tooltipItem: TooltipItem<"line">) => {
       const data = tooltipItem.dataset.data[tooltipItem.dataIndex]
-      if (stat.type && isTimeType(stat.type.input) && typeof data === "number") {
-         return `${toTimeFormat(data, stat?.type.input)} ${stat?.preferedUnit ?? ""}`
+      if (stat.type && isTimeType(stat?.type) && typeof data === "number") {
+         return `${toTimeFormat(data, stat?.type)} ${stat?.unit ?? ""}`
       }
-      return `${data} ${stat?.preferedUnit ?? ""}`
+      return `${data} ${stat?.unit ?? ""}`
    }, [stat])
 
    const getValue = useCallback((value: number | string) => {
-      if (stat?.type && isTimeType(stat.type.input)) {
+      if (stat?.type && isTimeType(stat.type)) {
          let val = typeof value === "string" ? parseFloat(value) : value;
          return `${toTimeFormat(val, ActivityInputTypes.HOURS, {
             show: {
@@ -96,9 +81,9 @@ export const ActivityChart = () => {
                seconds: false,
                hours: true,
             }
-         })} ${stat?.preferedUnit}`
+         })} ${stat?.unit}`
       } else {
-         return `${value} ${stat?.preferedUnit}`;
+         return `${value} ${stat?.unit}`;
       }
    }, [stat])
 
@@ -142,12 +127,7 @@ export const ActivityChart = () => {
    //if user removes stat, remove the current entries for the stat
 
    const handleSetFilter = useCallback((label: StatEnumType) => {
-      let foundStat: Stat | undefined;
-      Object.values(activeActivity?.calendarEntries).forEach(({stats}) => stats?.forEach((stat) => {
-         if (stat.name === label) {
-            foundStat = stat;
-         }
-      }));
+      let foundStat = Object.values(activeActivity?.stats).find((stat) => stat.statName === label);
       if (foundStat) {
          setStat(foundStat);
       }
@@ -158,7 +138,7 @@ export const ActivityChart = () => {
                          label={"Show all data"}/>
        <div>Show Stat:
            <div style={{display: "flex", gap: 10,}}>{chartData.datasets.map((data) => <Button key={data.label}
-                                                                                              theme={stat.name === data.label ? "contained" : "outlined"}
+                                                                                              theme={stat?.statName === data.label ? "contained" : "outlined"}
                                                                                               onClick={() => handleSetFilter(data.label)}>{data.label}</Button>)}</div>
        </div>
       {stat ? showChartSheet ? <Line ref={chartRef} options={options} data={chartData}/> :

@@ -1,4 +1,4 @@
-import {Stat} from "../../activitiesAssembly/stats";
+import {Stat, StatEnumType} from "../../activitiesAssembly/stats";
 import {
    Day,
    WeekInterval
@@ -7,15 +7,13 @@ import {
 export type DateType = `${string}-${string}-${string}`;
 export type CalendarType = { [date: DateType]: CellInfo };
 export type CellInfo =
-   { marked?: boolean, stats?: Stat[], info?: string, interactable?: boolean };
+   { statValuePairs?: StatValuePair[], interactable?: boolean };
+export type StatValuePair = { statName: StatEnumType, value: number }
 
 export type ActivityProps = {
    stats: Stat[];
-   currentValue: number;
-   maxValue: number;
-   name: string;
-   level: number;
-   weekdays: Day[];
-   weeklyInterval: WeekInterval[];
+   activityName: string;
+   daysToPerform: Day[];
+   weeksToPerform: WeekInterval[];
    calendarEntries: CalendarType;
 };

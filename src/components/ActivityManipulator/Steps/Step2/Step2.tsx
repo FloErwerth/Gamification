@@ -12,8 +12,8 @@ import {Input} from "../../../Input/Input";
 import {ActivityManipulatorContext} from "../../ActivityManipulatorContext/ActivityManipulatorContext";
 
 const useAvailableFields = (filter: TActivityCategory, alreadyAdded: Stat[] | undefined) => {
-   const availableStats = getDefaultStats(MapCategoryToStats(filter).options.filter((option) => !alreadyAdded?.find((stat) => stat.name === option)));
-   const {filteredArray, setFilter} = usePropsFilter(availableStats, "name");
+   const availableStats = getDefaultStats(MapCategoryToStats(filter).options.filter((option) => !alreadyAdded?.find((stat) => stat.statName === option)));
+   const {filteredArray, setFilter} = usePropsFilter(availableStats, "statName");
    return {
       setStatFilter: setFilter,
       availableStats: filteredArray,
@@ -22,7 +22,7 @@ const useAvailableFields = (filter: TActivityCategory, alreadyAdded: Stat[] | un
 
 const cssClasses = getClasses(styles);
 export const Step2 = () => {
-   
+
    const {
       stats,
       editStat,
@@ -52,7 +52,7 @@ export const Step2 = () => {
                {availableStats.length > 0 && <small className={cssClasses.info}>Available stats</small>}
                <div className={cssClasses.selectedStats}>
                   {availableStats.map((field) =>
-                     <SelectableField key={`ActivityManipulatorStep2FieldFor${field.name}`} selectableStat={field}
+                     <SelectableField key={`ActivityManipulatorStep2FieldFor${field.statName}`} selectableStat={field}
                                       onClick={(stat) => handleSetAdditionalStats?.(stat)}/>)}
                </div>
             </>
@@ -60,7 +60,8 @@ export const Step2 = () => {
                {stats && stats.length > 0 && <small className={cssClasses.info}>Selected stats</small>}
                <div className={cssClasses.selectedStats}>
                   {stats?.map((field) =>
-                     <DisplayedField key={`ActivityManipulatorStep2Stat${field.name}`} onDeletion={handleStatDeletion}
+                     <DisplayedField key={`ActivityManipulatorStep2Stat${field.statName}`}
+                                     onDeletion={handleStatDeletion}
                                      onEdit={handleStatEdit} stat={field}
                      />)}
                </div>

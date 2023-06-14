@@ -47,7 +47,10 @@ export const activitiesReducer = (oldActivities = InitialGamificiationState.acti
    if (action.type === ActivitiesActionType.UPDATE_CELL) {
       return produce(oldActivities, newActivities => {
          const cell = newActivities[action.payload.activityIndex].calendarEntries[action.payload.date];
-         newActivities[action.payload.activityIndex].calendarEntries[action.payload.date] = {...cell, ...action.payload.content};
+         newActivities[action.payload.activityIndex].calendarEntries[action.payload.date] = {
+            ...cell,
+            statValuePairs: cell.statValuePairs
+         };
       })
    }
    return oldActivities;

@@ -8,20 +8,20 @@ export const ActivityStatistics = () => {
    const cumulatedData = useAppSelector(getCumulatedData);
    const infos = useAppSelector(getActiveActivityInfos);
    const getData = useCallback((name: StatEnumType, data: number) => {
-      const info = infos.find((info) => info.name === name);
+      const info = infos.find((info) => info.statName === name);
       if (info) {
-         if (isTimeType(info.type.input)) {
-            return toTimeFormat(data, info.type.input);
+         if (isTimeType(info.type)) {
+            return toTimeFormat(data, info.type);
          }
       }
       return data.toFixed(2);
    }, [cumulatedData])
    const getUnit = useCallback((name: StatEnumType, data: number) => {
-      const info = infos.find((info) => info.name === name);
-      if (isTimeType(info?.type.input)) {
+      const info = infos.find((info) => info.statName === name);
+      if (isTimeType(info?.type)) {
          return data > 3600 ? "Hours" : "Minutes"
       }
-      return info?.preferedUnit;
+      return info?.unit;
    }, [cumulatedData])
    return <>
       {cumulatedData?.map(({label, data}) => <div key={`DataFor${label}`}

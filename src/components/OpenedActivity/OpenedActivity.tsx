@@ -1,4 +1,4 @@
-import {ActivityProps, DateType} from "../../store/activities/types";
+import {ActivityProps, DateType, StatValuePair} from "../../store/activities/types";
 import {getClasses} from "../../utils/styleUtils";
 import {styles} from "./styles";
 import {getAmericanDate} from "../calendar/utils";
@@ -10,13 +10,11 @@ import {ConfirmButton} from "../ConfirmButton/ConfirmButton";
 import {useAppSelector} from "../../store/store";
 import {getCell} from "../../store/activities/activitiesSelectors";
 import {ActivityInput} from "../ActivityInput/ActivityInput";
-import {Stat} from "../../activitiesAssembly/stats";
 
 interface OpenedActivityProps {
    activeActivity: { index: number, activity: ActivityProps },
-   onConfirmProgress: (stats: Stat[]) => void;
+   onConfirmProgress: (statValuePairs: StatValuePair[]) => void;
    onDeleteProgress: () => void;
-   onInfoChange?: (info: string) => void;
    date: DateType,
 }
 
@@ -30,39 +28,41 @@ export const OpenedActivity = ({
                                }: OpenedActivityProps) => {
 
    const cell = useAppSelector(getCell(activeActivity.index, date));
-   const cellMarked = useMemo(() => cell && cell.marked, [cell]);
+   const cellMarked = useMemo(() => Boolean(cell), [cell]);
 
-   const [stats, setStats] = useState<Stat[]>(activeActivity.activity.stats);
+   const [values, setValues] = useState<StatValuePair[]>([]);
 
-   const handleStatsChange = useCallback((value: string, index: number) => {
+   const handleStatsChange = useCallback((pair: StatValuePair, index: number) => {
       if (!cellMarked) {
-         setStats((old) => produce(old, newStats => {
-            if (!value) {
-               newStats[index].value = undefined;
-            } else {
-               newStats[index].value = parseFloat(value.replace(",", "."));
-            }
+         setValues((old) => produce(old, newStats => {
+            newStats[index] = pair;
          }));
       }
-   }, [stats]);
+   }, [values]);
 
    const handleConfirm = useCallback(() => {
-      if (stats.every((stat) => Boolean(stat.value))) {
-         onConfirmProgress(stats);
+      if (!values.every((value) => value !== undefined)) {
+         //todo: fehlermeldung einbauen, wenn value nicht vorhanden
+         return;
+      } else {
+         onConfirmProgress(values);
       }
-   }, [stats])
+   }, [values])
 
    return <div className={cssClasses.mainWrapper}>
       <div className={cssClasses.title}>{getAmericanDate(date, {day: true, month: true})}</div>
       <div>
-         {cellMarked && cell.stats && <>
+         {cellMarked && cell.statValuePairs && <>
              <small>Here is the overview of your activity</small>
-             <div className={cssClasses.statsWrapper}>{cell.stats.map((stat) => <DisplayedProgress key={stat.name}
-                                                                                                   stat={stat}/>)}</div>
+             <div className={cssClasses.statsWrapper}>{cell.statValuePairs.map((pair, index) => {
+                const {unit, statName, type} = activeActivity.activity.stats[index];
+                return <DisplayedProgress value={pair.value} unit={unit} name={statName} inputType={type}/>
+             })}
+             </div>
          </>}
          {!cellMarked && <div className={cssClasses.inputWrapper}>
             {activeActivity.activity.stats.map((stat, index) =>
-               <ActivityInput key={stat.name} label={stat.name}
+               <ActivityInput key={stat.statName} label={stat.statName}
                               onChange={(value) => handleStatsChange(value, index)}
                               stat={stat}/>
             )}</div>}

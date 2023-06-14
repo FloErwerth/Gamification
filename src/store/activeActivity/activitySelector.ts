@@ -4,9 +4,18 @@ import {GamificationModel} from "../types";
 import {CellInfo, DateType} from "../activities/types";
 import produce from "immer";
 import {getCurrentlySelectedMonth} from "../calendar/calendarSelectors";
-import {StatEnumType} from "../../activitiesAssembly/stats";
+import {Stat, StatEnumType} from "../../activitiesAssembly/stats";
 
-export type ChartData = { labels: string[], datasets: { label: StatEnumType, data: number[], cubicInterpolationMode: "monotone", pointStyle: "circle", pointRadius: 5, }[] };
+export type ChartData = {
+   labels: string[],
+   datasets: {
+      label: StatEnumType,
+      data: number[],
+      cubicInterpolationMode: "monotone",
+      pointStyle: "circle",
+      pointRadius: 5,
+   }[]
+};
 const getActivityIndex = ({activeActivityIndex}: GamificationModel) => activeActivityIndex;
 
 export const getActiveActivity = createSelector([getActivities, getActivityIndex], (activities, index) => {
@@ -55,10 +64,9 @@ export const getActivityChartData = (filter: StatEnumType, showAllMonths: boolea
    if (activity && activity.stats && activity.calendarEntries) {
       const cellLabels: { numEntries: number, label: StatEnumType }[] = [];
       Object.values<CellInfo>(activity.calendarEntries).forEach((entry) => {
-         entry.stats?.forEach(({name}) => {
-            const index = cellLabels.findIndex(({label}) => label === name);
-            if (index === -1) {
-               cellLabels.push({numEntries: 1, label: name});
+         entry.statValuePairs?.forEach((value, index) => {
+            if (index > cellLabels.length) {
+               cellLabels.push({numEntries: 1, label: activity.stats[index].statName});
             } else {
                cellLabels[index].numEntries += 1;
             }
@@ -77,20 +85,23 @@ export const getActivityChartData = (filter: StatEnumType, showAllMonths: boolea
          })
       };
 
-      Object.entries<CellInfo>(activity.calendarEntries).forEach(([date, cellInfo]) => cellInfo.stats?.forEach((stat) => {
-         const dataset = chartData.datasets[chartData.datasets.findIndex((data) => data.label === stat.name)];
-         if (dataset && dataset.data && (month === getDayMonth(date as DateType).month || showAllMonths) && stat.name === filter) {
-            if (!chartData.labels?.includes(date as DateType)) {
-               chartData.labels?.push(date as DateType);
-            }
-            chartData.datasets[chartData.datasets.findIndex((data) => data.label === stat.name)] = produce(dataset, newDataSet => {
-               if (stat.value) {
-                  newDataSet.data = [...dataset.data, stat.value];
+      Object.values<Stat>(activity.stats).forEach((stat, index) => {
+         const dataset = chartData.datasets[index];
+         const cellInfos = Object.entries(activity.calendarEntries).filter((_, cellIndex) => cellIndex === index);
+         cellInfos.forEach(([date, info]) => {
+            if (dataset && (month === getDayMonth(date).month || showAllMonths) && stat.statName === filter) {
+               if (!chartData.labels?.includes(date as DateType)) {
+                  chartData.labels?.push(date as DateType);
                }
-               return newDataSet;
-            });
-         }
-      }));
+               chartData.datasets[index] = produce(dataset, newDataSet => {
+                  if (info.statValuePairs?.[index]) {
+                     newDataSet.data = [...dataset.data, info.statValuePairs[index].value];
+                  }
+                  return newDataSet;
+               });
+            }
+         })
+      });
       return sortObject(chartData);
    } else return undefined;
 })
@@ -99,13 +110,13 @@ const disallowedNames: StatEnumType[] = ["Speed"];
 export const getCumulatedData = createSelector([getActiveActivity], ({activity}) => {
    if (activity && activity.stats && activity.calendarEntries) {
       const dataObject: { label: StatEnumType, data: number }[] = [];
-      Object.values<CellInfo>(activity.calendarEntries).forEach((cellInfo) => cellInfo.stats?.filter((stat) => {
-         return !disallowedNames.includes(stat.name)
+      Object.values<CellInfo>(activity.calendarEntries).forEach((cellInfo) => cellInfo.statValuePairs?.filter((stat) => {
+         return !disallowedNames.includes(stat.statName)
       }).forEach((stat) => {
          if (stat.value) {
-            const index = dataObject.findIndex((data) => data.label === stat.name);
+            const index = dataObject.findIndex((data) => data.label === stat.statName);
             if (index === -1) {
-               dataObject.push({label: stat.name, data: stat.value});
+               dataObject.push({label: stat.statName, data: stat.value});
             } else {
                dataObject[index].data += stat.value;
             }
@@ -118,7 +129,7 @@ export const getCumulatedData = createSelector([getActiveActivity], ({activity})
 })
 
 export const getActiveActivityInfo = (stat: StatEnumType) => createSelector([getActiveActivity], (activeActivity) => {
-   return activeActivity.activity?.stats.find((activityStat) => activityStat.name === stat);
+   return activeActivity.activity?.stats.find((activityStat) => activityStat.statName === stat);
 });
 
 export const getActiveActivityInfos = createSelector([getActiveActivity], (activeActivitiy) => {

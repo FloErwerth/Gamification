@@ -3,10 +3,10 @@ import {useAppDispatch, useAppSelector} from "../../store/store";
 import {deleteActivity, deleteCell, updateCell} from "../../store/activities/activitiesActions";
 import {useNavigate} from "react-router-dom";
 import {Pages} from "../../types/pages";
-import {deleteActivityCell, updateActivitiesInDatabase, updateActivityCell} from "../../../firebase";
+import {deleteActivityCell, updateActivitiesInDatabase} from "../../../firebase";
 import {getUserId} from "../../store/authentication/authSelectors";
 import {Calendar} from "../../components/calendar/Calendar";
-import {DateType} from "../../store/activities/types";
+import {DateType, StatValuePair} from "../../store/activities/types";
 import {Modal} from "../../basicComponents/Modal/Modal";
 import {OpenedActivity} from "../../components/OpenedActivity/OpenedActivity";
 import {getActiveActivity} from "../../store/activeActivity/activitySelector";
@@ -18,7 +18,6 @@ import {toast} from "react-toastify";
 import {setLastPage} from "../../store/router/routerActions";
 import {ActivityChart} from "../../components/Charts/ActivityChart/ActivityChart";
 import {ActivityStatistics} from "../../Statistics/ActivityStatistics";
-import {Stat} from "../../activitiesAssembly/stats";
 import {Button} from "@mui/material";
 import {Edit} from "@mui/icons-material";
 import {
@@ -38,22 +37,20 @@ export const ActivityPage = () => {
    const navigate = useNavigate();
    const {openActivityManipulator} = useContext(ActivityManipulatorContext);
 
-   const handleConfirmProgress = useCallback((stats: Stat[]) => {
+   const handleConfirmProgress = useCallback((stats: StatValuePair[]) => {
       if (selectedDate) {
-         const mappedStats = stats.map((stat) => {
-            if (isTimeType(stat.type.input)) {
-               return {...stat, value: toSeconds(stat.value, stat.type.input)}
+         const values = stats.map((pair) => {
+            const currentType = activeActivity.activity?.stats.find(({statName}) => statName === pair.statName)?.type;
+            if (isTimeType(currentType)) {
+               return toSeconds(pair.value, currentType) ?? pair.value;
             }
-            return stat;
-         });
+            return pair.value;
+         })
          dispatch(updateCell({
             activityIndex: activeActivity.index,
             date: selectedDate,
-            content: {
-               marked: true, stats: mappedStats
-            }
+            values,
          }));
-         updateActivityCell(uid, activeActivity.index, selectedDate, {marked: true, stats: mappedStats});
          toast("Updated Progress!", {type: "success"})
       }
       setEditProgress(false);
@@ -87,10 +84,6 @@ export const ActivityPage = () => {
       setEditProgress(true);
    }, [editProgress]);
 
-   const handleInfoChange = useCallback((info: string) => {
-      dispatch(updateCell({activityIndex: activeActivity.index, date: selectedDate, content: {info}}))
-   }, [selectedDate]);
-
    useEffect(() => {
       return () => {
          dispatch(setLastPage(Pages.ACTIVITY));
@@ -102,8 +95,8 @@ export const ActivityPage = () => {
    }, [openActivityManipulator]);
 
    return <div className={cssClasses.wrapper}>
-      <div className={cssClasses.title}>{activeActivity.activity?.name}<Button onClick={handleActivityEdit}
-                                                                               startIcon={<Edit/>}>Edit
+      <div className={cssClasses.title}>{activeActivity.activity?.activityName}<Button onClick={handleActivityEdit}
+                                                                                       startIcon={<Edit/>}>Edit
          activity</Button></div>
       <Calendar onClick={handleCalendarClick}/>
       <ActivityChart/>
@@ -116,7 +109,7 @@ export const ActivityPage = () => {
       {editProgress && <Modal onClose={() => setEditProgress(false)} open={editProgress}>
           <OpenedActivity activeActivity={activeActivity} date={selectedDate}
                           onConfirmProgress={handleConfirmProgress}
-                          onDeleteProgress={handleDeleteProgress} onInfoChange={handleInfoChange}/>
+                          onDeleteProgress={handleDeleteProgress}/>
 
       </Modal>}
    </div>

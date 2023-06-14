@@ -5,11 +5,10 @@ import {useCalendar} from "./useCalendar";
 import {useMemo} from "react";
 import {getDay} from "./utils";
 import {Button} from "../../basicComponents/Button/Button";
-import {Stat} from "../../activitiesAssembly/stats";
 import {Temporal} from "@js-temporal/polyfill";
 
 interface CalendarProps {
-   onClick: (date: DateType, marked: boolean, stats: Stat[], info?: string) => void;
+   onClick: (date: DateType) => void;
 }
 
 interface CalendarCell extends Omit<CalendarProps, "activity"> {
@@ -23,9 +22,10 @@ const isEqualDay = (date1: Temporal.PlainDate, date2: Temporal.PlainDate) => {
 }
 const CalendarCell = ({onClick, calendarObject, date}: CalendarCell) => {
    const isCurrentDay = useMemo(() => isEqualDay(currentDay, Temporal.PlainDate.from(date)), [date]);
-   const cssClasses = useMemo(() => getClasses(cellStyles(calendarObject?.marked ?? false, calendarObject?.interactable ?? true, isCurrentDay)), [calendarObject, calendarObject?.marked]);
+   const cssClasses = useMemo(() => getClasses(cellStyles(Boolean(calendarObject) ?? false, calendarObject?.interactable ?? true, isCurrentDay)), [calendarObject, isCurrentDay]);
+
    return <button disabled={!calendarObject?.interactable && calendarObject?.interactable === false}
-                  onClick={() => onClick(date, calendarObject.marked ?? false, calendarObject?.stats ?? [], calendarObject.info)}
+                  onClick={() => onClick(date)}
                   className={cssClasses.calendarCell}>
       {getDay(date)}
    </button>;

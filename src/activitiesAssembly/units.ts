@@ -4,21 +4,18 @@ import {ActivityInputTypes} from "../components/ActivityInput/ActivityInput";
 export const Unit = ["meter", "km", "min/km", "km/h", "times", "bpm", "minutes", "hours", "seconds", "kCal"] as const;
 
 
-export type TimeFormat<T extends ActivityInputTypes> = T extends ActivityInputTypes.SECONDS ? "ss" : T extends ActivityInputTypes.MINUTES ? "mm:ss" : "hh:mm:ss";
 export type Unit = typeof Unit[number] | StatEnumLowercase;
-
-export type ActivityType = { input: ActivityInputTypes, format?: TimeFormat<ActivityInputTypes> }
 
 export const getDefaultStat = (stat?: StatEnumType): Stat => {
    switch (stat) {
       case "Duration":
          return {
-            name: stat,
-            type: {input: ActivityInputTypes.MINUTES, format: "mm:ss"},
-            preferedUnit: "minutes"
+            statName: stat,
+            type: ActivityInputTypes.MINUTES,
+            unit: "minutes"
          };
       case "Calories burned":
-         return {name: stat, type: {input: ActivityInputTypes.NUMBER}, preferedUnit: "kCal"};
+         return {statName: stat, type: ActivityInputTypes.NUMBER, unit: "kCal"};
       case "Pages read":
       case "Pages written":
       case "Pictures drawn":
@@ -28,41 +25,34 @@ export const getDefaultStat = (stat?: StatEnumType): Stat => {
       case "Laps":
       case "Goals":
       case "Sets":
-         return {name: stat, type: {input: ActivityInputTypes.NUMBER}, preferedUnit: stat.toLowerCase()}
+         return {statName: stat, type: ActivityInputTypes.NUMBER, unit: stat.toLowerCase()}
       case "Done":
-         return {name: stat, type: {input: ActivityInputTypes.NUMBER}, preferedUnit: "times"}
+         return {statName: stat, type: ActivityInputTypes.NUMBER, unit: "times"}
       case "Distance":
-         return {name: stat, type: {input: ActivityInputTypes.NUMBER}, preferedUnit: "meter"}
+         return {statName: stat, type: ActivityInputTypes.NUMBER, unit: "meter"}
       case "Speed":
-         return {name: stat, type: {input: ActivityInputTypes.NUMBER}, preferedUnit: "km/h"}
+         return {statName: stat, type: ActivityInputTypes.NUMBER, unit: "km/h"}
       case "Heart rate":
-         return {name: stat, type: {input: ActivityInputTypes.NUMBER}, preferedUnit: "bpm"}
+         return {statName: stat, type: ActivityInputTypes.NUMBER, unit: "bpm"}
       default:
          return {
-            name: "Duration",
-            type: {input: ActivityInputTypes.NUMBER},
-            preferedUnit: "Duration".toLowerCase()
+            statName: "Duration",
+            type: ActivityInputTypes.NUMBER,
+            unit: "Duration".toLowerCase()
          }
    }
 }
 
-export const getTypeFromUnit = (unit: Unit): ActivityType | undefined => {
+export const getTypeFromUnit = (unit: Unit): ActivityInputTypes | undefined => {
    switch (unit) {
       case "seconds":
-         return {
-            input: ActivityInputTypes.SECONDS,
-            format: "ss",
-         }
+         return ActivityInputTypes.SECONDS;
+
       case "minutes":
-         return {
-            input: ActivityInputTypes.MINUTES,
-            format: "mm:ss",
-         }
+         return ActivityInputTypes.MINUTES;
+
       case "hours":
-         return {
-            input: ActivityInputTypes.HOURS,
-            format: "hh:mm:ss",
-         }
+         return ActivityInputTypes.HOURS;
       default:
          return undefined
    }

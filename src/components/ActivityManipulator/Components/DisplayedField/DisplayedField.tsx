@@ -26,13 +26,13 @@ export const DisplayedField = ({
                                   disabled = false
                                }: IField) => {
 
-   const unitOptions = useMemo(() => getUnitOptions(stat.name), [stat]);
+   const unitOptions = useMemo(() => getUnitOptions(stat.statName), [stat]);
 
    if (onDeletion && unitOptions && onEdit) {
       return <Chip sx={{outline: "1px solid pink"}} onClick={() => onEdit(stat)}
                    classes={{root: editableChipClasses.root, label: editableChipClasses.editableChipLabel}} label={<>
          <div>Edit</div>
-         <div>{stat.name}</div>
+         <div>{stat.statName}</div>
       </>}
                    onDelete={() => onDeletion(stat)}/>
    }
@@ -41,15 +41,15 @@ export const DisplayedField = ({
       return <Chip sx={{outline: "1px solid pink"}} onClick={() => onEdit(stat)}
                    classes={{root: editableChipClasses.root, label: editableChipClasses.editableChipLabel}} label={<>
          <div>Edit</div>
-         <div>{stat.name}</div>
+         <div>{stat.statName}</div>
       </>}/>
    }
 
    if (onDeletion) {
       return <Chip sx={wrapperClasses}
-                   label={stat.name}
+                   label={stat.statName}
                    onDelete={() => onDeletion(stat)}/>
    }
 
-   return <Chip disabled={disabled} sx={wrapperClasses} onClick={onClick} label={stat.name}/>
+   return <Chip disabled={disabled} sx={wrapperClasses} onClick={onClick} label={stat.statName}/>
 }

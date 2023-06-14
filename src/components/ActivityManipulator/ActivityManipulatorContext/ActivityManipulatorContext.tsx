@@ -53,7 +53,15 @@ type EditContext = {
    setEditedStat?: Dispatch<SetStateAction<Stat | undefined>>,
    editedStat?: Stat
 }
-type GeneralContext = { withState?: boolean, openActivityManipulator?: (withState: boolean) => void, onClose?: () => void; onCreation?: () => void, activeStep?: number, setActiveStep?: Dispatch<SetStateAction<number>>, errorInfo?: { hasError: boolean, errorMessage?: string } }
+type GeneralContext = {
+   withState?: boolean,
+   openActivityManipulator?: (withState: boolean) => void,
+   onClose?: () => void;
+   onCreation?: () => void,
+   activeStep?: number,
+   setActiveStep?: Dispatch<SetStateAction<number>>,
+   errorInfo?: { hasError: boolean, errorMessage?: string }
+}
 
 type ActivityAdderContextType =
    DaysContext
@@ -93,7 +101,7 @@ export const ActivityAdderContextProvider = ({children}: PropsWithChildren) => {
    const handleConfirmEdit = useCallback(() => {
       if (editedStat) {
          const newStats = produce(stats, newStats => {
-            const index = stats.findIndex((stat) => stat.name === editedStat.name);
+            const index = stats.findIndex((stat) => stat.statName === editedStat.statName);
             newStats[index] = editedStat
          });
          setStats?.(newStats);
@@ -109,8 +117,8 @@ export const ActivityAdderContextProvider = ({children}: PropsWithChildren) => {
    const handleEditedStat = useCallback((unit: Unit) => {
       if (editedStat) {
          const newStat: Stat = {
-            name: editedStat.name,
-            preferedUnit: unit,
+            statName: editedStat.statName,
+            unit: unit,
             type: getTypeFromUnit(unit) ?? editedStat.type
          };
          setEditedStat?.(newStat);
@@ -118,7 +126,7 @@ export const ActivityAdderContextProvider = ({children}: PropsWithChildren) => {
    }, [editedStat, setEditedStat]);
 
    const handleStatDeletion = useCallback((deletedField: Stat) => {
-      setStats?.((prev) => prev.filter((field) => field.name !== deletedField.name));
+      setStats?.((prev) => prev.filter((field) => field.statName !== deletedField.statName));
    }, [stats]);
 
    const handleStatEdit = useCallback((stat: Stat) => {
@@ -166,14 +174,11 @@ export const ActivityAdderContextProvider = ({children}: PropsWithChildren) => {
 
    const onCreation = useCallback(() => {
       const generatedActivity: ActivityProps = {
-         name: activityName,
+         activityName: activityName,
          calendarEntries: {},
          stats: stats,
-         maxValue: 1,
-         weekdays: selectedDays.length === 0 ? defaultDays.options : selectedDays,
-         weeklyInterval: selectedWeekInterval.length === 0 ? weekInterval.options : selectedWeekInterval,
-         currentValue: 0,
-         level: 0,
+         daysToPerform: selectedDays.length === 0 ? defaultDays.options : selectedDays,
+         weeksToPerform: selectedWeekInterval.length === 0 ? weekInterval.options : selectedWeekInterval,
       };
       addActivityInDatabase(userId, currentActivities, generatedActivity).then(() => {
          dispatch(addActivity(generatedActivity));
@@ -192,9 +197,9 @@ export const ActivityAdderContextProvider = ({children}: PropsWithChildren) => {
       setShowAdderModal(true);
       if (withState) {
          setStats(activeActivity.activity.stats);
-         setActivityName(activeActivity.activity.name);
-         setSelectedWeekInterval(activeActivity.activity.weeklyInterval);
-         setSelectedDays(activeActivity.activity.weekdays);
+         setActivityName(activeActivity.activity?.activityName);
+         setSelectedWeekInterval(activeActivity.activity?.weeksToPerform);
+         setSelectedDays(activeActivity.activity?.daysToPerform);
       }
    }, [activeActivity.activity]);
 
@@ -203,10 +208,10 @@ export const ActivityAdderContextProvider = ({children}: PropsWithChildren) => {
          index: activeActivity.index,
          activity: {
             ...activeActivity.activity,
-            name: activityName,
+            activityName: activityName,
             stats,
-            weekdays: selectedDays,
-            weeklyInterval: selectedWeekInterval
+            daysToPerform: selectedDays,
+            weeksToPerform: selectedWeekInterval
          }
       }))
       handleClose();

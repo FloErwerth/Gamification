@@ -10,7 +10,7 @@ import {ClickableCard} from "../../basicComponents/Card/Card";
 
 const wrapperClasses = getClasses(wrapperStyles);
 export const ActivityWrapper = ({
-                                   name,
+                                   activityName,
                                    index,
                                    stats,
                                 }: ActivityProps & { index: number }) => {
@@ -22,5 +22,5 @@ export const ActivityWrapper = ({
       navigate(Pages.ACTIVITY);
    }, []);
 
-   return <ClickableCard titleFontSize={15} title={name} onClick={openActivity} />
+   return <ClickableCard titleFontSize={15} title={activityName} onClick={openActivity}/>
 };

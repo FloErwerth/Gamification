@@ -29,9 +29,9 @@ export const Step3 = () => {
             <Chip key={`ActivityManipulatorChipForSelectedWeeklyInterval${weekInterval}`} label={weekInterval}/>)}</div>
       <div>
          <div className={cssClasses.title}>Stats</div>
-         {stats?.map((stat) => <Chip key={`ActivityManipulatorChipForStat${stat.name}`}
+         {stats?.map((stat) => <Chip key={`ActivityManipulatorChipForStat${stat.statName}`}
                                      sx={{height: 35, borderRadius: 35}}
-                                     label={<div>{stat.name} <br/><small><i>{stat.preferedUnit}</i></small>
+                                     label={<div>{stat.statName} <br/><small><i>{stat.unit}</i></small>
                                      </div>}/>)}
       </div>
 

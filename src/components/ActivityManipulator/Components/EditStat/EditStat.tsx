@@ -9,11 +9,11 @@ import {ActivityManipulatorContext} from "../../ActivityManipulatorContext/Activ
 const cssClasses = getClasses(styles);
 export const EditStat = () => {
    const {editedStat, handleEditedStat} = useContext(ActivityManipulatorContext);
-   const options = getUnitOptions(editedStat?.name);
+   const options = getUnitOptions(editedStat?.statName);
 
 
    return <div className={cssClasses.wrapper}>
-      <div><strong>Editing {editedStat?.name}</strong><br/>
+      <div><strong>Editing {editedStat?.statName}</strong><br/>
          <small>Note: This change is only affecting the stat for this activity.</small>
       </div>
       <div className={cssClasses.fields}>
@@ -23,7 +23,7 @@ export const EditStat = () => {
                size="small"
                labelId="options-label"
                id="options-select"
-               value={editedStat?.preferedUnit}
+               value={editedStat?.unit}
                label="Age"
                onChange={(e) => handleEditedStat?.(e.target.value)}
             >

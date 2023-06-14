@@ -17,7 +17,7 @@ const cssClasses = getClasses(overStyles);
 
 export const Overview = () => {
    const activities = useAppSelector(getActivities);
-   const {filteredArray, setFilter, filter} = usePropsFilter(activities, "name");
+   const {filteredArray, setFilter, filter} = usePropsFilter(activities, "activityName");
    const dispatch = useAppDispatch();
    const {openActivityManipulator} = useContext(ActivityManipulatorContext);
 
@@ -39,7 +39,7 @@ export const Overview = () => {
          </div>
 
          <div className={cssClasses.statsWrapper}>{filteredArray.map((activityProps, index) =>
-            <ActivityWrapper key={activityProps.name} index={index} {...activityProps} />)}</div>
+            <ActivityWrapper key={activityProps.activityName} index={index} {...activityProps} />)}</div>
          <div className={cssClasses.activityAdderWrapper}>
             <Button onClick={() => openActivityManipulator?.(false)}>Add activity</Button>
          </div>

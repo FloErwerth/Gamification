@@ -109,8 +109,8 @@ export const useCalendar = () => {
       const numberDatesInBack = fillableSpace - numberDatesInFront >= 7 ? fillableSpace - numberDatesInFront - 7 : fillableSpace - numberDatesInFront;
       const startDayIndex = gregorian.daysInMonth(previousMonth) - numberDatesInFront;
       const dates = getClampedDays(previousMonth, startDayIndex, numberDatesInFront).concat(getDates(shownDate)).concat(getClampedDays(nextMonth, 0, numberDatesInBack));
-      const daysInWeek = getDaysInWeek(activity.activity?.weekdays);
-      const weeksInMonth = getWeeksInMonth(activity.activity?.weeklyInterval);
+      const daysInWeek = getDaysInWeek(activity.activity?.daysToPerform);
+      const weeksInMonth = getWeeksInMonth(activity.activity?.weeksToPerform);
       for (let i = 0; i < dates.length; i++) {
          const temporalDate = Temporal.PlainDate.from(dates[i]);
          const _weekInMonth = Math.ceil(temporalDate.day / 7);
@@ -120,7 +120,7 @@ export const useCalendar = () => {
          const appendDisabled = i < dates.length - numberDatesInBack;
          const isDisabled = frontDisabled && appendDisabled;
          const isIncludedInDays = daysInWeek?.includes(temporalDate.dayOfWeek) && weeksInMonth?.includes(weekInMonth);
-         const hasStats = existentCellInfos && existentCellInfos.stats && existentCellInfos.stats.length > 0;
+         const hasStats = existentCellInfos && existentCellInfos.statValuePairs && existentCellInfos.statValuePairs.length > 0;
          const getIsInteractable = () => {
             if (isDisabled && !isIncludedInDays && !hasStats) {
                return false;
@@ -136,7 +136,6 @@ export const useCalendar = () => {
             calendar[dates[i]] = {...existentCellInfos, interactable: getIsInteractable()};
          } else {
             calendar[dates[i]] = {
-               marked: false,
                interactable: getIsInteractable(),
             }
          }
@@ -146,7 +145,7 @@ export const useCalendar = () => {
 
    useEffect(() => {
       constructCalendar();
-   }, [activity.activity?.weeklyInterval, activity.activity?.weekdays, calendarEntries])
+   }, [activity.activity?.weeksToPerform, activity.activity?.daysToPerform, calendarEntries])
 
    useEffect(() => {
       dispatch(setDaysInMonth({daysInMonth: shownDate.daysInMonth}));
