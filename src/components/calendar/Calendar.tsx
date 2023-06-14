@@ -34,7 +34,6 @@ const CalendarCell = ({onClick, calendarObject, date}: CalendarCell) => {
 const calendarClasses = getClasses(styles);
 export const Calendar = ({onClick}: CalendarProps) => {
    const [currentCalendar, showPreviousMonth, showNextMonth, showJump, decreaseMonth, increaseMonth, showCurrentMonth, dayLabels] = useCalendar();
-   console.log(currentCalendar);
    return <div className={calendarClasses.mainWrapper}>
       <div className={calendarClasses.calendarWrapper}>
          <>{dayLabels.map((label) => <div key={label}
