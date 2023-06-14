@@ -50,30 +50,30 @@ const stepCount = 6;
 export const ActivityChart = () => {
    const chartRef = useRef<Chart<"line", number[], string>>(null);
    const activeActivity = useAppSelector(getActiveActivity).activity;
-   const [stat, setStat] = useState(activeActivity?.stats[0]);
+   const [selectedStat, setSelectedStat] = useState(activeActivity?.stats[0]);
 
    const [showAllMonths, setShowAllMonths] = useState(false);
-   const chartData = useAppSelector(getActivityChartData(stat?.statName, showAllMonths));
+   const chartData = useAppSelector(getActivityChartData(selectedStat?.statName, showAllMonths));
    const {min, max} = useMinMax(chartData?.datasets);
 
    const showChartSheet = useMemo(() => (chartData?.labels.length ?? 0) > 1, [chartData]);
 
    useEffect(() => {
       if (!showChartSheet && activeActivity.stats.length > 0) {
-         setStat(activeActivity?.stats[0]);
+         setSelectedStat(activeActivity?.stats[0]);
       }
    }, [showChartSheet])
 
    const getLabel = useCallback((tooltipItem: TooltipItem<"line">) => {
       const data = tooltipItem.dataset.data[tooltipItem.dataIndex]
-      if (stat.type && isTimeType(stat?.type) && typeof data === "number") {
-         return `${toTimeFormat(data, stat?.type)} ${stat?.unit ?? ""}`
+      if (selectedStat.type && isTimeType(selectedStat?.type) && typeof data === "number") {
+         return `${toTimeFormat(data, selectedStat?.type)} ${selectedStat?.unit ?? ""}`
       }
-      return `${data} ${stat?.unit ?? ""}`
-   }, [stat])
+      return `${data} ${selectedStat?.unit ?? ""}`
+   }, [selectedStat])
 
    const getValue = useCallback((value: number | string) => {
-      if (stat?.type && isTimeType(stat.type)) {
+      if (selectedStat?.type && isTimeType(selectedStat.type)) {
          let val = typeof value === "string" ? parseFloat(value) : value;
          return `${toTimeFormat(val, ActivityInputTypes.HOURS, {
             show: {
@@ -81,11 +81,11 @@ export const ActivityChart = () => {
                seconds: false,
                hours: true,
             }
-         })} ${stat?.unit}`
+         })} ${selectedStat?.unit}`
       } else {
-         return `${value} ${stat?.unit}`;
+         return `${value} ${selectedStat?.unit}`;
       }
-   }, [stat])
+   }, [selectedStat])
 
    const options: ChartOptions<"line"> = useMemo(() => {
       return {
@@ -122,14 +122,14 @@ export const ActivityChart = () => {
          },
          ...commonOptions,
       }
-   }, [min, max, stat, chartData]);
+   }, [min, max, selectedStat, chartData]);
 
-   //if user removes stat, remove the current entries for the stat
+   //if user removes selectedStat, remove the current entries for the selectedStat
 
    const handleSetFilter = useCallback((label: StatEnumType) => {
       let foundStat = Object.values(activeActivity?.stats).find((stat) => stat.statName === label);
       if (foundStat) {
-         setStat(foundStat);
+         setSelectedStat(foundStat);
       }
    }, [activeActivity])
 
@@ -137,11 +137,11 @@ export const ActivityChart = () => {
        <FormControlLabel control={<Switch onClick={() => setShowAllMonths((current) => !current)}/>}
                          label={"Show all data"}/>
        <div>Show Stat:
-           <div style={{display: "flex", gap: 10,}}>{chartData.datasets.map((data) => <Button key={data.label}
-                                                                                              theme={stat?.statName === data.label ? "contained" : "outlined"}
-                                                                                              onClick={() => handleSetFilter(data.label)}>{data.label}</Button>)}</div>
+           <div style={{display: "flex", gap: 10,}}>{activeActivity?.stats.map((stat) => <Button key={stat.statName}
+                                                                                                 theme={stat?.statName === selectedStat?.statName ? "contained" : "outlined"}
+                                                                                                 onClick={() => handleSetFilter(stat.statName)}>{stat.statName}</Button>)}</div>
        </div>
-      {stat ? showChartSheet ? <Line ref={chartRef} options={options} data={chartData}/> :
+      {selectedStat ? showChartSheet ? <Line ref={chartRef} options={options} data={chartData}/> :
          <div>Please add more data.</div> : <div>Please select data to show</div>}
    </div>}</>
 

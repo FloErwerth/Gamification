@@ -1,7 +1,7 @@
-import {ActivityProps, DateType} from "./types";
+import {ActivityProps, DateType, StatValuePair} from "./types";
 import {generateAction} from "../utils";
 
-type UpdateCell = { activityIndex: number, date: DateType, values: number[] };
+type UpdateCell = { activityIndex: number, date: DateType, pairs: StatValuePair[] };
 type UpdateActivityPayload = { index: number, activity: ActivityProps };
 type DeleteCell = { activityIndex: number, date: DateType };
 type DeleteActivityPayload = { activityIndex: number };

@@ -4,12 +4,11 @@ import {Dayjs} from "dayjs";
 import {useAppSelector} from "../../store/store";
 import {getActiveActivityInfo} from "../../store/activeActivity/activitySelector";
 import {Stat} from "../../activitiesAssembly/stats";
-import {getIsNumberType} from "../../utils/getStringifiedTime";
 import {StatValuePair} from "../../store/activities/types";
 
 interface IActivityInput {
    label: string;
-   onChange: (pair: StatValuePair) => void;
+   onChange: (pair?: StatValuePair) => void;
    stat: Stat;
 }
 
@@ -17,6 +16,7 @@ export enum ActivityInputTypes {
    NUMBER = "number", SECONDS = "seconds", MINUTES = "minutes", HOURS = "hours", MIN_PER_KM = "min/km"
 }
 
+const numberRegex = /^(\d)*[.,]?(\d)*?$/;
 
 export const ActivityInput = ({stat, label, onChange}: IActivityInput) => {
    const activeActivityInfo = useAppSelector(getActiveActivityInfo(stat.statName));
@@ -27,7 +27,7 @@ export const ActivityInput = ({stat, label, onChange}: IActivityInput) => {
       return {
          label,
          inputProps: {
-            maxLength: getIsNumberType(activeActivityInfo?.type) ? 12 : undefined,
+            maxLength: 12,
          },
          InputProps: {
             endAdornment: <div>{activeActivityInfo?.unit}</div>
@@ -38,21 +38,16 @@ export const ActivityInput = ({stat, label, onChange}: IActivityInput) => {
    const handleChange = useCallback(function (value: string) {
       setError(false);
       if (value) {
-         if (getIsNumberType(activeActivityInfo?.type)) {
-            const regex = /^(\d)*[.,]?(\d)*?$/;
-            if (regex.test(value)) {
-               const val = value.replace(",", ".")
-               setValue(value);
-               onChange({statName: stat.statName, value: parseFloat(val)});
-            }
-         } else {
-            //todo: add hint that only numbers are allowed
-            setValue(value);
+         setValue(value);
+         if (numberRegex.test(value)) {
+            const val = value.replace(",", ".")
+            onChange({statName: stat.statName, value: parseFloat(val)});
          }
       } else {
          setValue("");
+         onChange(undefined)
       }
-   }, [activeActivityInfo]);
+   }, [activeActivityInfo, onChange]);
    return <TextField
       onChange={(e) => handleChange(e.target.value)}
       value={value} {...getFieldProps} />

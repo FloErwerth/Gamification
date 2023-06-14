@@ -42,14 +42,14 @@ export const ActivityPage = () => {
          const values = stats.map((pair) => {
             const currentType = activeActivity.activity?.stats.find(({statName}) => statName === pair.statName)?.type;
             if (isTimeType(currentType)) {
-               return toSeconds(pair.value, currentType) ?? pair.value;
+               return {statName: pair.statName, value: toSeconds(pair.value, currentType) ?? pair.value};
             }
-            return pair.value;
+            return pair;
          })
          dispatch(updateCell({
             activityIndex: activeActivity.index,
             date: selectedDate,
-            values,
+            pairs: values,
          }));
          toast("Updated Progress!", {type: "success"})
       }

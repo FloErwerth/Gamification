@@ -49,7 +49,7 @@ export const activitiesReducer = (oldActivities = InitialGamificiationState.acti
          const cell = newActivities[action.payload.activityIndex].calendarEntries[action.payload.date];
          newActivities[action.payload.activityIndex].calendarEntries[action.payload.date] = {
             ...cell,
-            statValuePairs: cell.statValuePairs
+            statValuePairs: action.payload.pairs
          };
       })
    }

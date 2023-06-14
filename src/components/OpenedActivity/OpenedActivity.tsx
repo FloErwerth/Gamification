@@ -28,20 +28,32 @@ export const OpenedActivity = ({
                                }: OpenedActivityProps) => {
 
    const cell = useAppSelector(getCell(activeActivity.index, date));
-   const cellMarked = useMemo(() => Boolean(cell), [cell]);
+   const cellMarked = useMemo(() => Boolean(cell?.statValuePairs), [cell]);
 
    const [values, setValues] = useState<StatValuePair[]>([]);
 
-   const handleStatsChange = useCallback((pair: StatValuePair, index: number) => {
+   const handleStatsChange = useCallback((index: number, pair?: StatValuePair) => {
       if (!cellMarked) {
          setValues((old) => produce(old, newStats => {
-            newStats[index] = pair;
+            const entryExists = Boolean(newStats[index])
+            if (pair) {
+               if (entryExists) {
+                  newStats[index] = pair;
+               } else {
+                  newStats.push(pair);
+               }
+            } else {
+               if (entryExists) {
+                  newStats.splice(index, 1);
+               }
+            }
          }));
+
       }
-   }, [values]);
+   }, [values, cellMarked]);
 
    const handleConfirm = useCallback(() => {
-      if (!values.every((value) => value !== undefined)) {
+      if (values.length !== activeActivity.activity.stats.length) {
          //todo: fehlermeldung einbauen, wenn value nicht vorhanden
          return;
       } else {
@@ -63,7 +75,7 @@ export const OpenedActivity = ({
          {!cellMarked && <div className={cssClasses.inputWrapper}>
             {activeActivity.activity.stats.map((stat, index) =>
                <ActivityInput key={stat.statName} label={stat.statName}
-                              onChange={(value) => handleStatsChange(value, index)}
+                              onChange={(pair) => handleStatsChange(index, pair)}
                               stat={stat}/>
             )}</div>}
       </div>
