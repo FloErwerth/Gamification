@@ -77,8 +77,8 @@ const sortDatasets = (dates: DateType[], datasets: ChartData["datasets"]): Chart
       }
    });
 
-   const sortedData = produce(datasets[0].data, newData => {
-      for (let i = 0; i < newData.length; i++) {
+   const sortedData = produce(datasets[0]?.data, newData => {
+      for (let i = 0; i < newData?.length; i++) {
          const currentIndex = sortedDatesWithIndicies[i].index;
          newData[i] = datasets[0].data[currentIndex];
       }

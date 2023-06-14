@@ -120,23 +120,19 @@ export const useCalendar = () => {
          const appendDisabled = i < dates.length - numberDatesInBack;
          const isDisabled = frontDisabled && appendDisabled;
          const isIncludedInDays = daysInWeek?.includes(temporalDate.dayOfWeek) && weeksInMonth?.includes(weekInMonth);
-         const hasStats = existentCellInfos && existentCellInfos.statValuePairs && existentCellInfos.statValuePairs.length > 0;
-         const getIsInteractable = () => {
-            if (isDisabled && !isIncludedInDays && !hasStats) {
-               return false;
-            } else {
-               if (hasStats && !isIncludedInDays) {
-                  return true;
-               }
-               return isIncludedInDays;
+         const hasStats = existentCellInfos && !!existentCellInfos.statValuePairs
+         const getIsDisabled = () => {
+            if ((!isDisabled || !isIncludedInDays)) {
+               return !hasStats;
             }
+            return false;
          }
 
          if (existentCellInfos) {
-            calendar[dates[i]] = {...existentCellInfos, interactable: getIsInteractable()};
+            calendar[dates[i]] = {...existentCellInfos, interactable: !getIsDisabled()};
          } else {
             calendar[dates[i]] = {
-               interactable: getIsInteractable(),
+               interactable: !getIsDisabled(),
             }
          }
       }
