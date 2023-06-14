@@ -22,7 +22,7 @@ const isEqualDay = (date1: Temporal.PlainDate, date2: Temporal.PlainDate) => {
 }
 const CalendarCell = ({onClick, calendarObject, date}: CalendarCell) => {
    const isCurrentDay = useMemo(() => isEqualDay(currentDay, Temporal.PlainDate.from(date)), [date]);
-   const cssClasses = useMemo(() => getClasses(cellStyles(Boolean(calendarObject) ?? false, calendarObject?.interactable ?? true, isCurrentDay)), [calendarObject, isCurrentDay]);
+   const cssClasses = useMemo(() => getClasses(cellStyles(Boolean(calendarObject.statValuePairs) ?? false, calendarObject?.interactable ?? true, isCurrentDay)), [calendarObject, isCurrentDay]);
 
    return <button disabled={!calendarObject?.interactable && calendarObject?.interactable === false}
                   onClick={() => onClick(date)}
