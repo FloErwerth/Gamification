@@ -54,7 +54,4 @@ export const toSeconds = (value?: number, type?: ActivityInputTypes) => {
    return value;
 }
 
-export const getIsNumberType = (input?: ActivityInputTypes) => {
-   return input && input === ActivityInputTypes.NUMBER || input === ActivityInputTypes.SECONDS || input === ActivityInputTypes.MINUTES || input === ActivityInputTypes.HOURS || input === ActivityInputTypes.MIN_PER_KM
-};
 export const isTimeType = (type?: ActivityInputTypes) => type && type === ActivityInputTypes.SECONDS || type === ActivityInputTypes.MINUTES || type === ActivityInputTypes.HOURS;
