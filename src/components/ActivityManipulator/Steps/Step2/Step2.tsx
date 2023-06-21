@@ -1,4 +1,4 @@
-import React, {useContext, useState} from "react";
+import React, {useCallback, useContext, useState} from "react";
 import {ActivityCategory, MapCategoryToStats, TActivityCategory} from "../../../../activitiesAssembly/categories";
 import {AutoComplete} from "../../../AutocompleteItem/AutoComplete";
 import {SelectableField} from "../../../SelectableField/SelectableField";
@@ -13,6 +13,7 @@ import {
    DeleteableAndEditableChip
 } from "../../Components/DisplayedChips/DeleteableAndEditableChip/DeleteableAndEditableChip";
 import {DeleteableChip} from "../../Components/DisplayedChips/DeleteableChip/DeleteableChip";
+import {getUnitOptions} from "../../../../activitiesAssembly/units";
 
 const useAvailableFields = (filter: TActivityCategory, alreadyAdded: Stat[] | undefined) => {
    const availableStats = getDefaultStats(MapCategoryToStats(filter).options.filter((option) => !alreadyAdded?.find((stat) => stat.statName === option)));
@@ -41,6 +42,22 @@ export const Step2 = () => {
       availableStats
    } = useAvailableFields(categoryFilter, stats);
 
+   const renderChip = useCallback((stat: Stat) => {
+      if(withState) {
+         return <DeleteableChip onDeletion={handleStatDeletion} stat={stat} />
+      } else {
+         const unitOptions = getUnitOptions(stat.statName);
+         if(unitOptions) {
+            return <DeleteableAndEditableChip key={`ActivityManipulatorStep2Stat${stat.statName}`}
+                                              onDeletion={handleStatDeletion}
+                                              onEdit={handleStatEdit} stat={stat}
+            />
+         } else {
+            return <DeleteableChip onDeletion={handleStatDeletion} stat={stat} />
+         }
+      }
+   }, [handleStatDeletion, handleStatEdit, withState])
+
    return <div className={cssClasses.selectorWrapper}>
       {editStat ? <EditStat/> :
          <>
@@ -63,12 +80,7 @@ export const Step2 = () => {
             <>
                {stats && stats.length > 0 && <small className={cssClasses.info}>Selected stats</small>}
                <div className={cssClasses.selectedStats}>
-                  {stats?.map((field) =>
-                      withState ? <DeleteableChip onDeletion={handleStatDeletion} stat={field} /> :
-                     <DeleteableAndEditableChip key={`ActivityManipulatorStep2Stat${field.statName}`}
-                                     onDeletion={handleStatDeletion}
-                                     onEdit={handleStatEdit} stat={field}
-                     />)}
+                  {stats?.map((field) => renderChip(field))}
                </div>
             </>
          </>}
