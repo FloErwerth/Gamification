@@ -65,7 +65,7 @@ export const ActivityChart = () => {
    }, [showChartSheet])
 
    const getLabel = useCallback((tooltipItem: TooltipItem<"line">) => {
-      const data = tooltipItem.dataset.data[tooltipItem.dataIndex]
+      const data = tooltipItem.dataset.data[tooltipItem.dataIndex];
       if (selectedStat.type && isTimeType(selectedStat?.type) && typeof data === "number") {
          return `${toTimeFormat(data, selectedStat?.type)} ${selectedStat?.unit ?? ""}`
       }
@@ -80,7 +80,7 @@ export const ActivityChart = () => {
                minutes: false,
                seconds: false,
                hours: true,
-            }
+            },
          })} ${selectedStat?.unit}`
       } else {
          return `${value} ${selectedStat?.unit}`;

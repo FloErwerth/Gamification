@@ -4,11 +4,12 @@ const withLeadingZero = (number: string | number) => {
    return number.toString().padStart(2, "0");
 }
 type TimeFormatOptions = {
-   show: {
+   show?: {
       hours?: boolean;
       minutes?: boolean;
       seconds?: boolean;
-   }
+   },
+   leadingZerosHours?: boolean;
 }
 const concatTime = (timeString: string, toConcat: string, concat?: boolean) => {
    if (concat === undefined || concat) {
@@ -18,38 +19,21 @@ const concatTime = (timeString: string, toConcat: string, concat?: boolean) => {
    }
 }
 export const toTimeFormat = (seconds: number, timeFormat?: ActivityInputTypes, options?: TimeFormatOptions) => {
-   switch (timeFormat) {
-      case "seconds": {
-         return withLeadingZero(seconds);
+   if(timeFormat === "seconds") {
+      return withLeadingZero(seconds);
+   }
+   else {
+      const hours = Math.floor(seconds / 3600);
+      const minutes = Math.floor((seconds - (hours * 3600)) / 60);
+      const remainingSeconds = Math.floor(seconds - (hours * 3600) - (minutes * 60));
+      const hourString = withLeadingZero(hours);
+      const minuteString = withLeadingZero(minutes);
+      const secondString = withLeadingZero(remainingSeconds.toFixed(0));
+      if(timeFormat === "minutes") {
+            return concatTime(minuteString, secondString, options?.show?.seconds);
       }
-      case "minutes": {
-         const minutes = seconds / 60;
-         const remainingSeconds = seconds - (minutes * 60);
-         const minutesString = withLeadingZero(minutes);
-         const secondString = withLeadingZero(remainingSeconds.toFixed(0));
-         if (remainingSeconds > 0) {
-            return concatTime(minutesString, secondString, options?.show.seconds);
-         } else {
-            return minutesString;
-         }
-      }
-      case "hours": {
-         const hours = Math.floor(seconds / 3600);
-         const minutes = Math.floor((seconds - (hours * 3600)) / 60);
-         const remainingSeconds = seconds - (hours * 3600) - (minutes * 60);
-         const hourString = hours.toString();
-         const minuteString = withLeadingZero(minutes);
-         const secondString = withLeadingZero(remainingSeconds.toFixed(0));
-         if (minutes === 0 && remainingSeconds === 0) {
-            return hourString;
-         }
-         if (minutes > 0 && remainingSeconds === 0) {
-            if (!options?.show.minutes) {
-               return hourString;
-            }
-            return concatTime(hourString, minuteString, options?.show.minutes);
-         }
-         return concatTime(hourString, concatTime(minuteString, secondString, options?.show.seconds), options?.show.minutes);
+      if(timeFormat === "hours") {
+         return concatTime(hourString, concatTime(minuteString, secondString, options?.show?.seconds), options?.show?.minutes);
       }
    }
 }
