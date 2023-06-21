@@ -1,5 +1,5 @@
 import {Stat} from "../../activitiesAssembly/stats";
-import {DisplayedField} from "../ActivityManipulator/Components/DisplayedField/DisplayedField";
+import {ClickableChip} from "../ActivityManipulator/Components/DisplayedChips/ClickableChip/ClickableChip";
 
 interface ISelectableButton {
    onClick: (value: Stat) => void
@@ -8,13 +8,12 @@ interface ISelectableButton {
 
 export const SelectableField = ({onClick, selectableStat}: ISelectableButton) => {
 
-   return <DisplayedField
+   return <ClickableChip
       onClick={() => onClick(selectableStat)}
       wrapperClasses={{
          ":hover": {
             outline: "1px solid black"
          }
       }}
-      stat={selectableStat}
-      showDeleteButton={false}/>
+      stat={selectableStat}/>
 }

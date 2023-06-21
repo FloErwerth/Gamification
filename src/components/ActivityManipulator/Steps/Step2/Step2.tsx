@@ -1,4 +1,3 @@
-import {DisplayedField} from "../../Components/DisplayedField/DisplayedField";
 import React, {useContext, useState} from "react";
 import {ActivityCategory, MapCategoryToStats, TActivityCategory} from "../../../../activitiesAssembly/categories";
 import {AutoComplete} from "../../../AutocompleteItem/AutoComplete";
@@ -10,6 +9,10 @@ import {EditStat} from "../../Components/EditStat/EditStat";
 import {usePropsFilter} from "../../../../utils/usePropsFilter";
 import {Input} from "../../../Input/Input";
 import {ActivityManipulatorContext} from "../../ActivityManipulatorContext/ActivityManipulatorContext";
+import {
+   DeleteableAndEditableChip
+} from "../../Components/DisplayedChips/DeleteableAndEditableChip/DeleteableAndEditableChip";
+import {DeleteableChip} from "../../Components/DisplayedChips/DeleteableChip/DeleteableChip";
 
 const useAvailableFields = (filter: TActivityCategory, alreadyAdded: Stat[] | undefined) => {
    const availableStats = getDefaultStats(MapCategoryToStats(filter).options.filter((option) => !alreadyAdded?.find((stat) => stat.statName === option)));
@@ -28,7 +31,8 @@ export const Step2 = () => {
       editStat,
       handleSetAdditionalStats,
       handleStatDeletion,
-      handleStatEdit
+      handleStatEdit,
+       withState
    } = useContext(ActivityManipulatorContext);
 
    const [categoryFilter, setCategoryFilter] = useState<TActivityCategory>("All");
@@ -60,7 +64,8 @@ export const Step2 = () => {
                {stats && stats.length > 0 && <small className={cssClasses.info}>Selected stats</small>}
                <div className={cssClasses.selectedStats}>
                   {stats?.map((field) =>
-                     <DisplayedField key={`ActivityManipulatorStep2Stat${field.statName}`}
+                      withState ? <DeleteableChip onDeletion={handleStatDeletion} stat={field} /> :
+                     <DeleteableAndEditableChip key={`ActivityManipulatorStep2Stat${field.statName}`}
                                      onDeletion={handleStatDeletion}
                                      onEdit={handleStatEdit} stat={field}
                      />)}
